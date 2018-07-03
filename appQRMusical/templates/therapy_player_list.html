@@ -1,0 +1,113 @@
+
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+<a href="{% url 'activity_settings' %}">
+	<div>
+		<strong><button class="buttonback" style="width: 100%;font-size:x-large;">Back</button></strong>
+	</div>
+</a>
+<div class="col-sm-12 QRM_box {{QRM_color}}">
+<ul>
+  <strong><li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a class="active" href="{% url 'therapy_player' %}">Therapies-Activities List</a></li>
+</strong>
+</ul>
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Activity</th>
+						<th>Indicator</th>
+						<th>Delete</th>						
+
+			    	</tr>
+				</thead>
+				<tbody>
+					{% for son in object_list %}
+						<tr onclick="document.location = ;">
+		      				<td scope="row" style="width: 10%;">{{ son.player }}</td>
+		      				<td style="width: 80%;">{{ son.therapy }}</td>
+
+							<td style="width: 10%;">
+								<form action="{% url 'delete_therapy_player' son.id %}" method="post">
+									{% csrf_token %}
+
+										<input type="hidden" name="son_id" value="{{ son.id }}"/>
+										<button type="submit" class="btn btn-danger btn-sm">
+											<p>✖</p>
+										</button>
+								</form>
+							</td>							
+		    			</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<a href="{% url 'add_therapy_player' %}">
+			<div class="btn btn-sm btn-default">
+				<p>Vinculate a Therapy with an Activity</p>
+			</div>	
+		</a>
+                <a href="{% url 'upload_multimedia' %}" class="float2">
+                    <i class="fa fa-plus-circle my-float" style="font-size:60px" ></i>
+                </a>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h1>SCANNING...</h1>
+    <div class="spinner">
+  <div class="rect1"></div>
+  <div class="rect2"></div>
+  <div class="rect3"></div>
+  <div class="rect4"></div>
+  <div class="rect5"></div>
+</div>
+    <h2>Put the card on the scanner</h2>
+  </div>
+
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+//var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+function btn() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+	</div>
+</div>
+
+{% include "message.html" %}
+
+{% endblock content_wrapper %}

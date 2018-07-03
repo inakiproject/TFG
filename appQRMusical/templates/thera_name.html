@@ -1,0 +1,32 @@
+
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+
+<div class="container-fluid">
+	<div class="row">
+		<h1>{{ object.title }}</h1>
+        <h2>{{ object.subtitle }}</h2>
+
+        <a href="{% url 'user' %}">
+	        <div>
+	        	<p>← Back to User options</p>
+			</div>
+		</a>
+
+		<div class="jumbotron {{ QRM_color }}">
+			<center>
+				<form action="" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+				    {{ form.as_p }}
+				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
+				</form>
+			</center>
+		</div>
+		
+	</div>
+</div>
+
+{% include "message.html" %}
+
+{% endblock content_wrapper %}

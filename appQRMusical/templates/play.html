@@ -1,0 +1,50 @@
+
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+<a href="{% url 'home' %}">
+	<div>
+				<strong><button class="buttonback" style="width: 100%;font-size:x-large;">← Back</button></strong>
+	</div>
+</a>
+<div class="col-sm-12 QRM_box {{QRM_color}}">
+	<div class="QRM_box_in">
+		<div style='text-align:center; margin: 0 auto; width: 90%'>
+
+{% if skip == 1%}
+
+<a>
+                    <div class="QRM_btn QRM_btn_home">
+					<img class="QRM_btn_image" src="/files/static/error.png">
+					<h5>No activities enabled</h5>
+				</div>
+</a>
+
+{% endif %}
+{% for obj in mult %}
+			<a href="{% url 'songs_list' %}">
+				<div class="QRM_btn QRM_btn_home">
+					<img class="QRM_btn_image" src="/files/static/player.png">
+					<h5>Interactive player {{ obj.content.multimedia.name }}</h5>
+				</div>
+			</a>
+{% endfor %}
+{% for i in kk%}
+{% for object in therapy_p %}
+{% if i.id == object.therapy.id %}
+            <a href="{% url 'match_game' object.player.id %}">
+				<div class="QRM_btn QRM_btn_home">
+					<img class="QRM_btn_image" src="/files/static/game_match.png">
+					<h5>{{ object.therapy }}</h5>
+				</div>
+			</a>
+{% endif %}
+{% endfor %}
+{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% include "message.html" %}
+
+{% endblock content_wrapper %}

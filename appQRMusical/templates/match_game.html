@@ -1,0 +1,138 @@
+
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+
+{% load staticfiles %}
+
+<a href="{% url 'play' %}">
+	<div>
+		<p>← Back to Play </p>
+	</div>
+</a>
+
+
+<div id="auto" >
+	
+	<div class="QRM_supercool_background" style="display:{{game_display}};">
+		<div class="col-sm-1" style="display:inline"></div>
+		<div class="col-sm-6 QRM_supercool_window">
+			<h1>Supercool!!!</h1>
+			<img src="/files/static/congrats.png">
+			<p>You are awesome {{ player_name }}!!</p>
+			<p>come <a href="{% url 'play' %}" class="btn btn-default">← BACK</a> to select another game, and play again!.</p>
+<p> {{ game_time }} Corrects--> {{ correct }} Fails--> {{ fails }}</p>
+		</div>
+		<div class="col-sm-2" style="display:inline"></div>
+	</div>
+
+	<div class="col-sm-12 QRM_box QRM_pink" id="media">
+<!-- Desde aquí -->
+		<div class="QRM_box_in">
+		                
+			<div style="border-radius: 30px; border: 2px dashed; width: 50px; height: 50px; overflow: hidden; float: right;">
+			        <div id="success" style=" font-weight: 300; font-size: 24px; margin: 0; margin-top: 10px; color: white !important;">
+			                <p>{{ game_success }} | {{ game_number_objects }}</p>
+			        </div>
+			        <div id="fails" style="font-size: 10px;line-height: 12px;margin-top: 0px; color: #a94442;">
+			                {{ game_fail }}
+			        </div>
+			</div>
+
+			<div style="width:200; overflow: hidden">
+			        <h5>Scan the Card shown in the image from the list <strong>{{ name_player }}</strong></h5>
+			        {% if not image_prev %}
+			                <img src="/files/static/Who.png" width="400" title="Who" alt="Who">             
+			        {% else %}
+			                <img src="{{ image_prev }}" width="500" style="border-radius: 40px">
+			        {% endif %}
+			        
+			        <div style="margin-top:10px">
+			                {% if file %}
+<!--
+                                    <a id="file" href="/{{ file }}" target="_blank" class="btn btn-default" >play file</a> 
+-->
+                                    <a href="{% url 'match_game_image' id_player %}" class="btn btn-default"> Play</a>
+                                                                                 
+			                {% endif %}
+			        </div>
+			        
+			</div>  
+			        
+		</div>
+<!-- Hasta aquí -->		
+	</div>
+	
+
+	<div class="col-sm-12 QRM_box alert alert-danger" style="display: none;" id="danger">
+	</div>
+	<div class="col-sm-12 QRM_box alert alert-info" id="info">
+		Scan the card!
+	</div>
+	
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>	
+
+<script type="text/javascript">
+
+//    var old_value = null
+
+//	var flag_file = null;
+
+    function update_message_home(){
+ 	/*
+    	var file = document.getElementById('file')
+    	
+    	if(file != null && file != flag_file){
+    		flag_file = file;
+    		windows.open(file.href);
+    	}
+*/
+
+
+        $.get('{% url 'match_game_matching' id_player %}', function(data) {
+        	console.log(data);
+        	console.log(data.url);
+
+        	$('#success').html('<p>' + data.game_success + ' | ' + data.game_number_objects + '</p>')
+        	$('#fails').html(data.game_fail)
+
+        	// if (data.url) {
+        	// 	console.log('open', data.url)
+        	// 	window.location.assign(data.url)
+        	// }
+
+
+        	if (data.image) {
+        		console.log('open', data.url)
+       		    window.location.assign(data.url)
+        	}
+
+        	var danger = $('#danger');
+        	var info = $('#info')
+        	if (data.message_alert == 'alert-danger') {
+        		danger.html("<strong>Error!</strong>The scanned card '" + data.message_text + "' does not exist match, is not a " + data.name_player + " or has already been counted. <strong>Please try another one.</strong>")
+        		danger.show()
+        		info.hide()
+
+        		console.log('danger')
+        	} if (data.message_alert == 'alert-success')  {
+				danger.hide()
+                info.html("<strong>WELL DONE!</strong>The scanned card is correct</strong>")
+				info.show()        		
+        	}
+		})
+
+
+
+		//$('#auto').load('{% url 'player_game' id_player %} #auto');
+	}
+   
+    setInterval( "update_message_home()", 2000 );
+    
+</script>
+
+
+{% endblock content_wrapper %}
+

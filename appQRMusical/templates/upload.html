@@ -1,0 +1,41 @@
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+
+<div style='text-align:center; margin: 0 auto; width: 90%'>
+    <a href="{% url 'gallery' %}">
+        <div style="position:absolute;">
+		        <strong><button class="buttonback" style="width: 100%;font-size:x-large;">Back to Content</button></strong>
+        </div>
+    </a>
+
+    <h1 class="page-header">
+        {% if 'update' in request.get_full_path %}
+            Multimedia Edit
+        {% else %}
+            Upload Files
+        {% endif %}
+    </h1>
+
+    <div class="jumbotron">
+        <h2 class="form-signin-heading">Select your files to upload</h2>
+
+        <form method="post" enctype="multipart/form-data" class="form-signin">
+            
+            {% csrf_token %}
+            <center>
+                <p>{{ form.as_p }}</p>
+            </center>
+
+            <br>
+            <input class="btn btn-default" type="submit" value="Upload" />
+        
+        </form>
+    </div>
+
+</div>
+
+
+{% include "message.html" %}
+
+{% endblock content_wrapper %}

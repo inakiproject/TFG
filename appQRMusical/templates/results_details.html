@@ -1,0 +1,130 @@
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+<a href="{% url 'results' %}">
+	<div>
+		<strong><button class="buttonback" style="width: 100%;font-size:x-large;">Back</button></strong>
+	</div>
+</a>
+
+        <canvas id="myChart"></canvas>
+
+ <p><input class="btn btn-danger" value="Remove Data" onclick="removeData()"></input></p>
+
+<div class="col-sm-12 QRM_box {{QRM_color}}">
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>ADD Data</th>
+						<th>Name of the activity</th>
+						<th>Date of the session</th>
+			    	</tr>
+				</thead>
+				<tbody>
+
+{% for i in success %}
+    {% for j in failures %}
+
+        {%if i.session.id_session == j.session.id_session %}
+<tr>
+		 	<td style="width: 5%; vertical-align: middle;">{{ i.session.id_session }}</td>
+
+            <td style="width: 10%; vertical-align: left;">
+            <p><input class="btn btn-warning" value="Add Data" onclick="addCorrectData({{i.result}}, '{{j.result}}', '{{i.session.date}}')"></input></p>
+            </td>
+
+		 	<td style="width: 15%; vertical-align: middle;">{{ i.player }}</td>
+
+		 	<td style="width: 70%; vertical-align: middle;">{{i.session.date}}</td>
+
+
+</tr>
+        {%endif%}
+
+    {% endfor %}
+{% endfor %}
+
+            </tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+
+
+<script>
+
+var ctx = document.getElementById("myChart").getContext('2d');
+
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: [
+        {
+            label: 'Successed Answers',
+            data: [],
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.85)'
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)'
+            ],
+            borderWidth: 1
+        },{
+            label: 'Failed Answers',
+            data: [],
+            backgroundColor: [
+               'rgba(255, 99, 132, 0.85)'
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)'
+            ],
+            borderWidth: 1
+        }
+            ]
+    },
+
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+
+function addCorrectData(x,y,z){
+myChart.data.labels.push(z);
+myChart.data.datasets[0].data.push(x);
+myChart.data.datasets[1].data.push(-y);
+//myChart.data.datasets.forEach((dataset) => {
+//dataset.data.push(x);
+myChart.data.datasets[0].backgroundColor.push('rgba(54, 162, 235, 0.85)');
+myChart.data.datasets[0].borderColor.push('rgba(54, 162, 235, 1)');
+myChart.data.datasets[1].backgroundColor.push('rgba(255, 99, 132, 0.85)');
+myChart.data.datasets[1].borderColor.push('rgba(255,99,132,1)');
+//});
+//myChart.data.backgroundColor.push('rgba(54, 162, 235, 0.2)');
+myChart.update();
+}
+
+function removeData(){
+myChart.data.labels.pop();
+myChart.data.datasets.forEach((dataset) => {
+dataset.data.pop();
+});
+myChart.update();
+}
+</script>
+
+{% include "message.html" %}
+
+{% endblock content_wrapper %}

@@ -1,0 +1,87 @@
+
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+<a href="{% url 'game_settings' %}">
+	<div>
+		<p>← Back</p>
+	</div>
+</a>
+<div class="col-sm-12 QRM_box {{QRM_color}}">
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Image</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Enable</th>	
+						<th>Delete</th>						
+			    	</tr>
+				</thead>
+				<tbody>
+					{% for object in object_list %}
+						<tr onclick="document.location = '{% url 'update_match_list' object.id %}';">
+		      				<th scope="row" style="width: 3%; vertical-align: middle;">{{ object.id }}</th>
+
+		      				<td style="width: 10%; vertical-align: middle; ">
+								{% if object.image %}
+			      					<img src="/{{ object.image.url }}" class="QRM_image_list">
+								{% endif %}
+		      				</td>	
+
+		      				<td style="width: 20%; vertical-align: middle;">
+		      					{{ object.name }}  					
+		      				</td>
+
+		      				<td style="width: 60%; vertical-align: middle;">{{ object.description }}</td>
+							
+							<td style=" vertical-align: middle;"> 
+								<center>
+								<p>{% if object.enabled %}<strong style="color:green">YES</strong>{% else %}<strong style="color:red">NO</strong>{% endif %}</p>
+
+
+								</center>
+							</td>
+							
+							<td style=" vertical-align: middle;">
+								<form action="{% url 'delete_match_list' object.id %}" method="post">
+									{% csrf_token %}
+									<center>
+										<input type="hidden" name="object_id" value="{{ object.id }}"/>
+										<button type="submit" class="btn btn-danger btn-sm">
+											<p>✖</p>
+										</button>
+									</center>
+								</form>
+							</td>	
+
+		    			</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<a href="{% url 'create_match_list' %}">
+			<div class="btn btn-sm btn-default">
+				<p>Add a new List</p>
+			</div>	
+		</a>
+
+	</div>
+</div>
+
+<script>
+function  toggle_select(id) {
+    var object = document.getElementById(id);
+ 	object.enabled = !object.enabled;
+}	
+
+</script>
+
+{% include "message.html" %}
+
+{% endblock content_wrapper %}
