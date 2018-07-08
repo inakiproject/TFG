@@ -10,9 +10,12 @@
 
         <a href="{% url 'players_list' %}">
 	        <div>
-	        	<strong><button class="buttonback" style="width: 100%;font-size:x-large;">Back</button></strong>
-			</div>
-		</a>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
+</a>
+<a href="{% url 'add_multimedia_to_player' object.id %}">
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
+	</div>
+</a>
 
 		<div class="jumbotron {{ QRM_color }}">
 			<center>

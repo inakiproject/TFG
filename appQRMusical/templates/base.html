@@ -74,15 +74,18 @@
 					</div>
 				</center>
 			</div>
-                <a href onclick="goBack()" class="float">
-                    <i class="fa fa-arrow-circle-left my-float" style="font-size:60px" ></i>
+                <a onclick="scrollWin(-50)" class="float2">
+                   <button type="button" class="btn btn-info btn-circle btn-xl"> <i class="glyphicon glyphicon-chevron-up" style="font-size:65px" ></i></button>
+                </a>
+                <a onclick="scrollWin(50)" class="float">
+                   <button type="button" class="btn btn-info btn-circle btn-xl"> <i class="glyphicon glyphicon-chevron-down" style="font-size:65px" ></i></button>
                 </a>
 		</footer>
 	</body>
 
         <script>
-        function goBack() {
-            window.history.back();
+        function scrollWin(x) {
+            window.scrollBy(0,x);
         }
         </script>
 

@@ -4,7 +4,10 @@
 {% block content_wrapper %}
 <a href="{% url 'settings' %}">
 	<div>
-		<strong><button class="buttonback" style="width: 100%;font-size:x-large;">Back</button></strong>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
+</a>
+<a href="{% url 'create_user' %}">
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
 	</div>
 </a>
 
@@ -125,10 +128,6 @@
 				<p>Add User</p>
 			</div>	
 		</a>
-
-                <a href="{% url 'create_user' %}" class="float2">
-                    <i class="fa fa-plus-circle my-float" style="font-size:60px" ></i>
-                </a>
 
 <!-- The Modal -->
 <div id="myModal" class="modal">

@@ -207,7 +207,7 @@ svg:hover #play{
 }
 
 .my-float{
-	margin-top:22px;
+	margin-top:20px;
 }
 
 .float2{
@@ -464,4 +464,16 @@ li a:hover:not(.active) {
     background-color: white; 
     color: black; 
 }
+
+.btn-circle{
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    padding: 20px 15px;
+    font-size: 24px;
+    line-height: 2;
+    border-radius: 50px;
+}
+
+
 
