@@ -3,9 +3,15 @@
 {% block content_wrapper %}
 <a href="{% url 'results' %}">
 	<div>
-		<strong><button class="buttonback" style="width: 100%;font-size:x-large;">Back</button></strong>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
 	</div>
 </a>
+
+<h1>Chart type</h1>
+  <p class="btn btn-warning" value="bar" onclick="ChangeType(1)">Bar</p>
+  <p class="btn btn-warning" value="horizontalbar" onclick="ChangeType(2)">Horizontal Bar</p>
+  <p class="btn btn-warning" value="pie" onclick="ChangeType(3)">Pie</p>
+  <p class="btn btn-warning" value="doughnut" onclick="ChangeType(4)">Doughnut</p>
 
         <canvas id="myChart"></canvas>
 
@@ -54,16 +60,57 @@
 	</div>
 </div>
 
+<h1>Chart type</h1>
+  <p class="btn btn-warning" value="bar" onclick="ChangeTypeTiming(1)">Bar</p>
+  <p class="btn btn-warning" value="horizontalbar" onclick="ChangeTypeTiming(2)">Horizontal Bar</p>
 
+        <canvas id="myChartTiming"></canvas>
+
+ <p><input class="btn btn-danger" value="Remove Data" onclick="removeDataTiming()"></input></p>
+
+<div class="col-sm-12 QRM_box {{QRM_color}}">
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>ADD Time</th>
+						<th>Name of the activity</th>
+						<th>Date of the session</th>
+			    	</tr>
+				</thead>
+				<tbody>
+
+{% for i in time %}
+<tr>
+		 	<td style="width: 5%; vertical-align: middle;">{{ i.session.id_session }}</td>
+
+            <td style="width: 10%; vertical-align: left;">
+            <p><input class="btn btn-warning" value="Add Data" onclick="addDataTiming({{i.result}}, '{{i.session.date}}')"></input></p>
+            </td>
+
+		 	<td style="width: 15%; vertical-align: middle;">{{ i.player }}</td>
+
+		 	<td style="width: 70%; vertical-align: middle;">{{i.session.date}}</td>
+
+
+</tr>
+{% endfor %}
+                </tbody>
+			</table>
+		</div>
+	</div>
+</div>
 
 
 <script>
 
 var ctx = document.getElementById("myChart").getContext('2d');
-
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
+var colorF = 'rgba(255, 99, 132, 0.85)';
+var colorFB = 'rgba(255, 99, 132, 1)';
+var chartData = {
         labels: [],
         datasets: [
         {
@@ -80,37 +127,85 @@ var myChart = new Chart(ctx, {
             label: 'Failed Answers',
             data: [],
             backgroundColor: [
-               'rgba(255, 99, 132, 0.85)'
+               colorF
             ],
             borderColor: [
-                'rgba(54, 162, 235, 1)'
+                colorFB
             ],
             borderWidth: 1
         }
             ]
-    },
+    };
+var chartOptions = {
 
-    options: {
         scales: {
+            xAxes: [{
+                ticks: {
+                    min: 0
+                }
+            }],
             yAxes: [{
                 ticks: {
-                    beginAtZero:true
+                    min: 0
                 }
             }]
         }
-    }
+    
+
+};
+
+
+
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: chartData,
+    options: chartOptions,
 });
+
+function ChangeType(x){
+myChart.destroy()
+//var temp = jQuery.extend(true, {}, config);
+//temp.type='bar';
+    if(x==1){
+        myChart=new Chart(ctx, {
+            type:'bar',
+            data: chartData,
+            options: chartOptions,
+        });
+    }
+    if(x==2){
+        myChart=new Chart(ctx, {
+            type:'horizontalBar',
+            data: chartData,
+            options: chartOptions,
+        });
+    }
+    if(x==3){
+        myChart=new Chart(ctx, {
+            type:'pie',
+            data: chartData,
+            options: chartOptions,
+        });
+    }
+    if(x==4){
+        myChart=new Chart(ctx, {
+            type:'doughnut',
+            data: chartData,
+            options: chartOptions,
+        });
+    }
+}
 
 function addCorrectData(x,y,z){
 myChart.data.labels.push(z);
 myChart.data.datasets[0].data.push(x);
-myChart.data.datasets[1].data.push(-y);
+myChart.data.datasets[1].data.push(y);
 //myChart.data.datasets.forEach((dataset) => {
 //dataset.data.push(x);
 myChart.data.datasets[0].backgroundColor.push('rgba(54, 162, 235, 0.85)');
-myChart.data.datasets[0].borderColor.push('rgba(54, 162, 235, 1)');
+myChart.data.datasets[0].borderColor.push('rgba(255, 255, 0, 1)');
 myChart.data.datasets[1].backgroundColor.push('rgba(255, 99, 132, 0.85)');
-myChart.data.datasets[1].borderColor.push('rgba(255,99,132,1)');
+myChart.data.datasets[1].borderColor.push('rgba(255,255,0,1)');
 //});
 //myChart.data.backgroundColor.push('rgba(54, 162, 235, 0.2)');
 myChart.update();
@@ -123,6 +218,88 @@ dataset.data.pop();
 });
 myChart.update();
 }
+
+
+var ctxTiming = document.getElementById("myChartTiming").getContext('2d');
+var chartDataTiming = {
+        labels: [],
+        datasets: [
+        {
+            label: 'Time of the execution',
+            data: [],
+            backgroundColor: [
+                'rgba(75, 192, 192, 0.85)'
+            ],
+            borderColor: [
+                'rgba(75, 192, 192, 1)'
+            ],
+            borderWidth: 1
+        },
+            ]
+    };
+
+var chartOptionsTiming = {
+
+        scales: {
+            xAxes: [{
+                ticks: {
+                    min: 0
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    min: 0
+                }
+            }]
+        }
+    
+
+};
+var myChartTiming = new Chart(ctxTiming, {
+    type: 'bar',
+    data: chartDataTiming,
+    options: chartOptionsTiming,
+});
+
+function ChangeTypeTiming(x){
+myChartTiming.destroy()
+//var temp = jQuery.extend(true, {}, config);
+//temp.type='bar';
+    if(x==1){
+        myChartTiming=new Chart(ctxTiming, {
+            type:'bar',
+            data: chartDataTiming,
+            options: chartOptionsTiming,
+        });
+    }
+    if(x==2){
+        myChartTiming=new Chart(ctxTiming, {
+            type:'horizontalBar',
+            data: chartDataTiming,
+            options: chartOptionsTiming,
+        });
+    }
+}
+
+function addDataTiming(x,z){
+myChartTiming.data.labels.push(z);
+myChartTiming.data.datasets[0].data.push(x);
+
+myChartTiming.data.datasets[0].backgroundColor.push('rgba(75, 192, 192, 0.85)');
+myChartTiming.data.datasets[0].borderColor.push('rgba(75, 192, 192, 1)');
+myChartTiming.update();
+}
+
+function removeDataTiming(){
+myChartTiming.data.labels.pop();
+myChartTiming.data.datasets.forEach((dataset) => {
+dataset.data.pop();
+});
+myChartTiming.update();
+}
+
+
+
 </script>
 
 {% include "message.html" %}

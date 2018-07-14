@@ -8,7 +8,7 @@
 		<h1>{{ object.title }}</h1>
         <h2>{{ object.subtitle }}</h2>
 
-        <a href onclick="goBack()">
+        <a href="{% url 'categories_list' %}">
 	        <div>
         <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
 			</div>

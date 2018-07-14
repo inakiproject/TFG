@@ -86,9 +86,8 @@ from django.http import JsonResponse
 
 def read_ID():
     arduinoPort = serial.Serial(serialPort, 9600, timeout=1)
-    arduinoPort.close()
     code = 0
-    arduinoPort = serial.Serial(serialPort, 9600, timeout=1)
+
     while True:
         tag = arduinoPort.readline()
         code = tag.decode('utf-8')
@@ -96,6 +95,9 @@ def read_ID():
             #arduinoPort.close()
             if len(code)==8:
                 global_vars.message = code
+                arduinoPort.flushInput()
+            else:
+                arduinoPort.flushInput()
 
 
 
@@ -418,9 +420,8 @@ def gamem(id_player,asgn_thera,thera_indi):
 		sessionone.save()
 		global_vars.identifier = sessionone.id_session
 		global_vars.thera_indi = thera_indi
-		
+		global_vars.timestart =time.time()
 
-	timestart = datetime.now()
 	
 
 	global_vars.match = 0
@@ -432,15 +433,16 @@ def gamem(id_player,asgn_thera,thera_indi):
 
 	if global_vars.game_success == global_vars.game_number_objects:
 		global_vars.game_display = "inline"
-		timeend =  datetime.now()
-		time = timeend - timestart
+		#timestart = global_vars.time
+		global_vars.timeend =  time.time()
+		timefinal = global_vars.timeend - global_vars.timestart
 		results = Result_Session()
 		for i in global_vars.thera_indi:
 			if i.indicator.id_indicator == 1:
 				results.session = Session.objects.get(id_session=global_vars.identifier)
 				results.player = Player.objects.get(id=id_player)
 				results.indicator = Indicator.objects.get(id_indicator=1)
-				results.result = time
+				results.result = timefinal
 				results.save()
 			if i.indicator.id_indicator == 2:
 				results.session = Session.objects.get(id_session=global_vars.identifier)
@@ -664,7 +666,7 @@ def match_game(request, id_player):
 	context['game_points'] = global_vars.game_points
 	context['game_number_objects'] = global_vars.game_number_objects
 	context['game_display'] = global_vars.game_display
-	context['game_time'] = datetime.now() - global_vars.time
+	#context['game_time'] = time.time() - global_vars.time
 	context['correct'] = global_vars.correct
 	context['fails'] = global_vars.fail
 	
@@ -1403,7 +1405,7 @@ class Add_therapy_player(LoginRequiredMixin, CreateView):
 class Create_player(LoginRequiredMixin, CreateView):
 	model = Player
 	form_class = UploadPlayerForm
-	template_name="player_detail.html"
+	template_name="create_player.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
 	success_url = reverse_lazy('players_list')
@@ -1852,17 +1854,7 @@ def Results_details(request, pk):
 	objects = Result_Session.objects.filter(session_id__in=Session.objects.filter(asign_therapy_id__in=Asign_Therapy.objects.filter(treatment_id__in=Treatment.objects.filter(profile_id=pk))))
 	success = objects.filter(indicator_id=2)
 	fail = objects.filter(indicator_id=3)
-	"""success = -1
-	fail = -1
-	timing = -1
-	for i in objects:
-		if i.indicator.id_indicator == 1:
-			timing = i.result
-		if i.indicator.id_indicator == 2:
-			success = i.result
-		if i.indicator.id_indicator == 3:
-			fail = i.result
-"""
+	timing = objects.filter(indicator_id=1)
 	context = {
 		'QRM_color' : "QRM_orange",
 		'message_alert' : "alert-info",
@@ -1871,7 +1863,7 @@ def Results_details(request, pk):
 		'title' : "Results",
 		'success' : success,
 		'failures' : fail,
-		#'time' : timing,
+		'time' : timing,
 		#'data' : data,
 		'objects' : objects,
 		'subtitle' : "Add the data that you want"
