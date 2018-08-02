@@ -1,0 +1,191 @@
+
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+<a href="{% url 'settings' %}">
+	<div>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
+</a>
+<a href="{% url 'upload_multimedia' %}">
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
+	</div>
+</a>
+<div class="sticky">
+
+<ul class="ullist">
+  <strong><li><a class="ullista" href="{% url 'home' %}">Home</a></li>
+  <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
+  <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a class="ullistactive" href="{% url 'gallery' %}">Content</a></li>
+  <li><a class="ullista" href="{% url 'results' %}">Results</a></li>
+  <li><a class="ullista" href="{% url 'users_list' %}">Patients</a></li>
+  <li><a class="ullista" href="{% url 'treatments_list' %}">Treatments </a></li>
+  <li><a class="ullista" href="{% url 'therapies_list' %}">Therapies </a></li>
+  <li><a class="ullista" href="{% url 'user' %}">User </a></li>
+  <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
+</strong>
+</ul>
+</div>
+<div class="col-sm-12 QRM_box {{QRM_color}}">
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Image</th>
+						<th>Name</th>
+						<th>Activities asociated with</th>
+                        <th>Code</th>	
+                        <th>Clean</th>					
+						<th>QR</th>	
+						<th>Track</th>						
+						<th>delete</th>						
+
+			    	</tr>
+				</thead>
+				<tbody>
+					{% for son in object_list %}
+						<tr onclick="document.location = '{% url 'multimedia_update' son.id_content %}';">
+		      				<th scope="row" style="width: 3%;">{{ son.id_content }}</th>
+		      				<td style="width: 10%;"><img src="/{{ son.image.url }}" style="width: 100px;"></td>
+		      				<td style="width: 10%;">{{ son.name }}</td>
+		      				<td style="width: 15%;">
+			      				<p>
+				      				<small>
+
+				      					{% for player in player_content %}
+{% if player.content.id_content == son.id_content%}
+				      						<a>{{ player.player }},</a>
+{%endif%}
+				      					{% endfor %}
+			      					</small>	
+			      				</p>
+		      				</td>
+                            <td style="width: 10%;">
+                                {% if son.code %}	      					
+
+                                    {{ son.code }}
+
+                            </td>
+
+                            <td style="width: 10%; vertical-align: left;">
+
+                                    <form onclick="btn()" action="{% url 'multi_id' son.id_content %}" method="post">
+									    {% csrf_token %}
+										<input type="hidden" name="son_id" value="{{ son.id }}"/>
+                                        <button type="submit" class="btn btn-warning">Change ID</button>
+                                    </form>
+
+                                    <form action="{% url 'multi_id_delete' son.id_content %}" method="post">
+									    {% csrf_token %}
+										<input type="hidden" name="son_id" value="{{ son.id }}"/>
+										<button type="submit" class="btn btn-danger">Clean ID</button>
+        							</form>
+		      				</td>
+                                {% else %}
+                                    <form onclick="btn()" action="{% url 'multi_id' son.id_content %}" method="post">
+							        {% csrf_token %}
+									<input type="hidden" name="son_id" value="{{ son.id }}"/>
+                                    <button type="submit"class="btn btn-success">Add ID</button>
+                                    </form>
+                                    <td style="width: 5%;"></td>
+                                {% endif %}
+                            </td>
+
+							<td>
+								<a href="{% url 'multimedia_detail' son.pk %}">
+									<div class="btn btn-sm btn-info">
+										<p>QR</p>
+									</div>
+								</a>								
+							</td>
+
+		      				<td style="width: 25%;">
+		      					{% if son.file %}
+		      					<audio controls style="width: 100%;">
+									<source src="/{{ son.file.url }}" type="audio/mp3">
+									Your browser does not support the audio element.
+								</audio>
+								{% endif %}
+							</td>
+
+							<td>
+								<form action="{% url 'multimedia_delete' son.id_content %}" method="post">
+									{% csrf_token %}
+									<center>
+										<input type="hidden" name="son_id" value="{{ son.id }}"/>
+										<button type="submit" class="btn btn-danger btn-sm">
+											<p>✖</p>
+										</button>
+									</center>
+								</form>
+							</td>							
+		    			</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<a href="{% url 'upload_multimedia' %}">
+			<div class="btn btn-sm btn-default">
+				<p>Add Multimedia</p>
+			</div>	
+		</a>
+                <a href="{% url 'upload_multimedia' %}" class="float2">
+                    <i class="fa fa-plus-circle my-float" style="font-size:60px" ></i>
+                </a>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h1>SCANNING...</h1>
+    <div class="spinner">
+  <div class="rect1"></div>
+  <div class="rect2"></div>
+  <div class="rect3"></div>
+  <div class="rect4"></div>
+  <div class="rect5"></div>
+</div>
+    <h2>Put the card on the scanner</h2>
+  </div>
+
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+//var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+function btn() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+	</div>
+</div>
+
+
+{% endblock content_wrapper %}

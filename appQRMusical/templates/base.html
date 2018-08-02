@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load zbar_extras %}
+<html lang="es">
+	<head>
+		<title>PiMusic</title>
+
+		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+		<link href="{% static 'css/QRMusical.css' %}" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="{% static 'css/bootstrap-select.css' %}" type="text/css"/>
+		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+
+		<script src="{% static 'js/jquery.min.js' %}"></script>
+		<script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+		<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+	</head>
+	<body>
+		<div id="sidebar" class="navbar QRM_nav navbar-static-top">
+			<div class="container-fluid QRM_container">
+       				<div class="navbar-header">
+                        <a href="{% url 'settings' %}">
+                            <button type="button" onclick="goBack()" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
+                        </a>
+					<a class="navbar-brand QRM_navbar-brand" href="/">
+						<img src="/files/static/logo.png" class="QRM_logo">
+						PiMusic
+					</a>
+				</div>
+				<div class="navbar-collapse collapse" style="height: 1px;">
+					<ul class="nav navbar-nav QRM_navbar_nav">
+                        {% if player.online == "yes" %}
+						<li><a>Connected as: {{ player }}</a></li>
+                        <li style="top: -11px;">
+								<a href="{% url 'disconnect' player.id %}">
+									<img onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
+								</a>
+						</li>
+                        {% else %}
+						{% if user.is_authenticated %}
+						<li><a>Connected as: {{ user }}</a></li>
+							<li style="top: -11px;">
+								<a href>
+									<img  onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
+								</a>
+							</li>
+						{% else %}
+						<li><a>Click to connect --></a></li>
+							<li style="top: -11px;">
+								<a href="/login/">
+									<img src="/files/static/log_b.png" style="width: 50px" title="Login" alt="Login">		
+								</a>
+							</li>
+						{% endif %}
+
+                        {% endif %}
+
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="content">
+			{% block body %}{% endblock body %}
+		</div>
+	
+		<div style="display:none">
+			{% if not 'player_game/' in request.get_full_path and not 'match_game/' in request.get_full_path and not 'player_game_matching/' in request.get_full_path %}
+				{% stop_cam %}
+				{% restart_game_vars %}
+			{% elif 'player_game_song' in request.get_full_path %}
+				{% stop_cam %}
+			{% endif %}
+		</div>
+		
+		<footer>
+	
+                <a onclick="scrollWin(-50)" class="float2">
+                   <button type="button" class="btn btn-info btn-circle btn-xl"> <i class="glyphicon glyphicon-chevron-up" style="font-size:65px" ></i></button>
+                </a>
+                <a onclick="scrollWin(50)" class="float">
+                   <button type="button" class="btn btn-info btn-circle btn-xl"> <i class="glyphicon glyphicon-chevron-down" style="font-size:65px" ></i></button>
+                </a>
+		</footer>
+	</body>
+
+        <script>
+        function scrollWin(x) {
+            window.scrollBy(0,x);
+        }
+
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function confirmation() {
+            var txt;
+            var r = confirm("Are you sure?");
+            if (r == true) {
+                 window.location.href ="/logout/"
+            } else {
+                txt = "You pressed Cancel!";
+            }
+            document.getElementById("demo").innerHTML = txt;
+        }
+        </script>
+
+</html>

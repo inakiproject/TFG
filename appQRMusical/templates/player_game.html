@@ -1,0 +1,159 @@
+
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+
+{% load staticfiles %}
+
+<a href="{% url 'songs_list' %}">
+	<div>
+		<p>← Back to songs list</p>
+	</div>
+</a>
+
+
+<div id="auto" >
+	
+	<div class="QRM_supercool_background" style="display:{{game_display}};">
+		<div class="col-sm-1" style="display:inline"></div>
+		<div class="col-sm-6 QRM_supercool_window">
+			<h1>Supercool!!!</h1>
+			<img src="/files/static/congrats.png">
+			<p>You are awesome!!</p>
+			<p>come <a href="{% url 'songs_list' %}" class="btn btn-default">← BACK</a> to select another one game, and play again!.</p>
+		</div>
+		<div class="col-sm-2" style="display:inline"></div>
+	</div>
+
+	<div class="col-sm-12 QRM_box QRM_pink" id="media">
+<!-- Desde aquí -->
+		<div class="QRM_box_in">
+		                
+			<div style="border-radius: 30px; border: 2px dashed; width: 50px; height: 50px; overflow: hidden; float: right;">
+			        <div id="success" style=" font-weight: 300; font-size: 24px; margin: 0; margin-top: 10px; color: white !important;">
+			                <p>{{ game_success }} | {{ game_number_objects }}</p>
+			        </div>
+			        <div id="fails" style="font-size: 10px;line-height: 12px;margin-top: 0px; color: #a94442;">
+			                {{ game_fail }}
+			        </div>
+			</div>
+
+			<div style="width:200; overflow: hidden">
+			        <h5>Show to cam <strong>{{ name_player }}</strong> QR codes</h5>
+			        {% if not image %}
+			                <img src="/files/static/Who.png" width="200" title="Who" alt="Who">             
+			        {% else %}
+			                <img src="{{ image }}" width="200" style="border-radius: 10px">
+			        {% endif %}
+			        
+			        <div style="margin-top:10px">
+			                {% if file %}
+<!--
+                                    <a id="file" href="/{{ file }}" target="_blank" class="btn btn-default" >play file</a> 
+-->
+                                    <a href="{% url 'player_game_song' id_player %}" class="btn btn-default"> Play</a>
+                                                                                 
+			                {% endif %}
+			        </div>
+			        
+			</div>  
+			        
+		</div>
+<!-- Hasta aquí -->		
+	</div>
+	
+
+	<div class="col-sm-12 QRM_box alert alert-danger" style="display: none;" id="danger">
+	</div>
+	<div class="col-sm-12 QRM_box alert alert-info" id="info">
+		Get close QR code to cam
+	</div>
+
+	
+<!-- 	<div class="col-sm-12 QRM_box alert {{ message_alert }}">
+		<p>
+			<strong>
+				{% if message_alert == 'alert-info' %}
+					Info. 
+				{% elif message_alert == 'alert-success' %}
+					Succes!.
+				{% elif message_alert == 'alert-danger' %}
+					Error!.
+				{% endif %}
+			</strong>
+			{% if message_alert == 'alert-danger' %}
+				The QR code "{{ message_text }}" does not exist, is not an {{ name_player }} or has already been counted. 
+				<strong>Please try another one.</strong>
+			{% elif message_alert == 'alert-success' %}
+				The QR code <strong>{{ message_text }}</strong> is a <strong>{{ name_player }}</strong>.
+			{% else %}
+				{{ message_text }}
+			{% endif %}
+		</p>
+	</div> -->
+	
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>	
+
+<script type="text/javascript">
+
+//    var old_value = null
+
+//	var flag_file = null;
+
+    function update_message_home(){
+ 	/*
+    	var file = document.getElementById('file')
+    	
+    	if(file != null && file != flag_file){
+    		flag_file = file;
+    		windows.open(file.href);
+    	}
+*/
+
+
+        $.get('{% url 'player_game_matching' id_player %}', function(data) {
+        	console.log(data);
+        	console.log(data.url);
+
+        	$('#success').html('<p>' + data.game_success + ' | ' + data.game_number_objects + '</p>')
+        	$('#fails').html(data.game_fail)
+
+        	// if (data.url) {
+        	// 	console.log('open', data.url)
+        	// 	window.location.assign(data.url)
+        	// }
+
+
+        	if (data.image) {
+        		console.log('open', data.url)
+        		window.location.assign(data.url)
+        	}
+
+        	var danger = $('#danger');
+        	var info = $('#info')
+        	if (data.message_alert == 'alert-danger') {
+        		danger.html("<strong>Error!</strong>The QR code '" + data.message_text + "' does not exist, is not an " + data.name_player + " or has already been counted. <strong>Please try another one.</strong>")
+        		danger.show()
+        		info.hide()
+
+        		console.log('danger')
+        	} else {
+				danger.hide()
+				info.show()        		
+        	}
+		})
+
+
+
+		//$('#auto').load('{% url 'player_game' id_player %} #auto');
+	}
+   
+    setInterval( "update_message_home()", 2000 );
+    
+</script>
+
+
+{% endblock content_wrapper %}
+

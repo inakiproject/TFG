@@ -1,0 +1,94 @@
+
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+<a href="{% url 'game_settings' %}">
+	<div>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
+</a>
+<a href="{% url 'create_player' %}">
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
+	</div>
+</a>
+<div class="col-sm-12 QRM_box {{QRM_color}}">
+<ul>
+  <strong><li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a href="{% url 'activity_settings' %}"><i class="glyphicon glyphicon-arrow-right" ></i>Activity Settings</a></li>
+  <li><a href="{% url 'game_settings' %}"><i class="glyphicon glyphicon-arrow-right" ></i>Game Settings</a></li>
+  <li><a class="active" href="{% url 'players_list' %}"><i class="glyphicon glyphicon-arrow-right" ></i>Activity List</a></li>
+</strong>
+</ul>
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Purpose</th>
+						<th>Category</th>
+						<th>Delete</th>						
+			    	</tr>
+				</thead>
+				<tbody>
+					{% for object in object_list %}
+						<tr onclick="document.location = '{% url 'update_player' object.id %}';">
+
+		      				<td style="width: 20%; vertical-align: middle;">
+		      					{{ object.name }}				
+		      				</td>
+
+		      				<td style="width: 40%; vertical-align: middle;">{{ object.description }}</td>
+							
+							<td style="width: 20%; vertical-align: middle;">{{ object.purpose }}</td>
+							
+
+                            {% for i in category %}
+                                {% if i.player.id == object.id %}
+                                    {% if i.category %}
+                                    <td style="width: 20%; vertical-align: middle;">{{ i.category.category }}</td>
+
+                                    {% endif %}
+                                {% else %}
+                                <td></td>
+                                {% endif %}
+                            {% endfor %}
+							<td style=" vertical-align: middle;">
+								<form action="{% url 'player_delete' object.id %}" method="post">
+									{% csrf_token %}
+									<center>
+										<input type="hidden" name="object_id" value="{{ object.id }}"/>
+										<button type="submit" class="btn btn-danger btn-sm">
+											<p>✖</p>
+										</button>
+									</center>
+								</form>
+							</td>	
+
+		    			</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<a href="{% url 'create_player' %}">
+			<div class="btn btn-sm btn-default">
+				<p>Create Activity</p>
+			</div>	
+		</a>
+	</div>
+</div>
+
+<script>
+function  toggle_select(id) {
+    var object = document.getElementById(id);
+ 	object.enabled = !object.enabled;
+}	
+
+</script>
+
+{% include "message.html" %}
+
+{% endblock content_wrapper %}

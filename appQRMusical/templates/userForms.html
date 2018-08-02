@@ -1,0 +1,41 @@
+{% extends "body.html" %}
+
+{% block content_wrapper %}
+
+<div style='text-align:center; margin: 0 auto; width: 90%'>
+    <a href="{% url 'user' %}">
+        <div style="position:absolute;">
+            <p>← Back to User Settings</p>
+        </div>
+    </a>
+    <h1 class="page-header">
+        {% if 'email' in request.get_full_path %}
+            Edit eMail
+        {% elif 'name' in request.get_full_path %}
+            Edit Name and Surname
+        {% else %}
+            Edit Password
+        {% endif %}
+    </h1>
+
+    <div class="jumbotron">
+        <h2 class="form-signin-heading">User <strong>{{ user.username }}</strong></h2>
+        <h2 class="form-signin-heading">Name <strong>{{ user.first_name }}</strong></h2>
+        <form method="post" enctype="multipart/form-data" class="form-signin">
+            
+            {% csrf_token %}
+            <center>
+                <p>{{ form.as_p }}</p>
+            </center>
+
+            <input class="btn btn-default" type="submit" value="Confirm changes" />
+        
+        </form>
+    </div>
+
+</div>
+
+
+{% include "message.html" %}
+
+{% endblock content_wrapper %}
