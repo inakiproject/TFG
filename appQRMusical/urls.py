@@ -13,11 +13,7 @@ urlpatterns = [
 
 	# Identify
 	url(r'^identify/$', Identify, name='identify'),
-<<<<<<< HEAD
 	url(r'^disconnect/$', Disconnect, name='disconnect'),	
-=======
-	url(r'^disconnect/(?P<pk>\d+)/$', Disconnect, name='disconnect'),	
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 
 	# Play-Songs
 	url(r'^play/$', Play.as_view(), name='play'),	

@@ -15,12 +15,8 @@
 					    <h5>Play</h5>
 				    </div>
 			    </a>
-
-<<<<<<< HEAD
     	        <a href="{% url 'disconnect' %}">
-=======
-    	        <a href="{% url 'disconnect' player.id %}">
->>>>>>> 095192f6faba87468904e961a719516f910b185f
+
 			        <div class="QRM_btn QRM_btn_home">
 				        <img class="QRM_btn_image" src="/files/static/disconnect.png" >
 				        <h5>Disconnect {{ player.name }}</h5>
@@ -36,18 +32,6 @@
 				        </div>
 			        </a>
                 {% endif %}
-<<<<<<< HEAD
-=======
-      
-			{% if user.is_authenticated %}
-				<a href="{% url 'settings' %}">
-					<div class="QRM_btn QRM_btn_home">
-						<img class="QRM_btn_image" src="/files/static/setting.png">
-						<h5>Settings</h5>
-					</div>
-				</a>
-			{% endif %}
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 
 		</div>
 
@@ -101,9 +85,4 @@ window.onclick = function(event) {
 	</div>
 </div>
 
-<<<<<<< HEAD
-=======
-{% include "message.html" %}
-
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 {% endblock content_wrapper %}
