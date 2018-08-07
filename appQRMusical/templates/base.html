@@ -25,12 +25,13 @@
 		<div id="sidebar" class="navbar QRM_nav navbar-static-top">
 			<div class="container-fluid QRM_container">
        				<div class="navbar-header">
-                        <a href="{% url 'settings' %}">
-                            <button type="button" onclick="goBack()" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
+                        <a class="navbar-nav">
+                            <button type="button" onclick="goBack()" class="btn btn-info btn-back btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:50px"></i></button>
                         </a>
-					<a class="navbar-brand QRM_navbar-brand" href="/">
+					<a class="navbar-brand QRM_navbar-brand">
 						<img src="/files/static/logo.png" class="QRM_logo">
 						PiMusic
+
 					</a>
 				</div>
 				<div class="navbar-collapse collapse" style="height: 1px;">
@@ -38,15 +39,15 @@
                         {% if player.online == "yes" %}
 						<li><a>Connected as: {{ player }}</a></li>
                         <li style="top: -11px;">
-								<a href="{% url 'disconnect' player.id %}">
-									<img onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
+								<a>
+									<img onclick="confirmationUser()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
 								</a>
 						</li>
                         {% else %}
 						{% if user.is_authenticated %}
 						<li><a>Connected as: {{ user }}</a></li>
 							<li style="top: -11px;">
-								<a href>
+								<a>
 									<img  onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
 								</a>
 							</li>
@@ -99,15 +100,22 @@
             window.history.back();
         }
 
+        function confirmationUser() {
+            var txt;
+            var r = confirm("Are you sure?");
+            if (r == true) {
+            window.location.replace('/disconnect');
+            } else {
+            }
+        }
+
         function confirmation() {
             var txt;
             var r = confirm("Are you sure?");
             if (r == true) {
-                 window.location.href ="/logout/"
+                 document.location.href ="/logout/"
             } else {
-                txt = "You pressed Cancel!";
             }
-            document.getElementById("demo").innerHTML = txt;
         }
         </script>
 

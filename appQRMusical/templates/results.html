@@ -2,15 +2,10 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
-<a href="{% url 'settings' %}">
-	<div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
-	</div>
-</a>
 
 <div class="sticky">
 <ul class="ullist">
-  <strong><li><a class="ullista" href="{% url 'home' %}">Home</a></li>
+  <strong><li>
   <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
   <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
   <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
@@ -20,7 +15,6 @@
   <li><a class="ullista" href="{% url 'therapies_list' %}">Therapies </a></li>
   <li><a class="ullista" href="{% url 'user' %}">User </a></li>
   <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
-  <li><a class="ullista" href="{% url 'camera' %}">Cam</a></li>
 </strong>
 </ul>
 </div>
@@ -59,7 +53,5 @@ function  toggle_select(id) {
 }	
 
 </script>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

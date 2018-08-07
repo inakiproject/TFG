@@ -8,12 +8,6 @@
 		<h1>{{ object.title }}</h1>
         <h2>{{ object.subtitle }}</h2>
 
-        <a href="{% url 'users_list' %}">
-	        <div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
-			</div>
-		</a>
-
 		<div class="jumbotron {{ QRM_color }}">
 			<center>
 				<form action="" method="post" enctype="multipart/form-data">
@@ -26,7 +20,5 @@
 		
 	</div>
 </div>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

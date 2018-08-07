@@ -1,16 +1,11 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
-<a href="{% url 'settings' %}">
-	<div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
-	</div>
-</a>
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 
 <ul>
-  <strong><li><a href="{% url 'home' %}">Home</a></li>
+  <strong><li>
   <li><a href="{% url 'settings' %}">Settings</a></li>
   <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
   <li><a href="{% url 'gallery' %}">Content</a></li>
@@ -20,7 +15,6 @@
   <li><a href="{% url 'therapies_list' %}">Therapies </a></li>
   <li><a class="active" href="{% url 'user' %}">User </a></li>
   <li><a href="{% url 'therapists_list' %}">Therapists </a></li>
-  <li><a href="{% url 'camera' %}">Cam</a></li>
 </strong>
 </ul>
 
@@ -51,7 +45,5 @@
 		</div>
 	</div>
 </div>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

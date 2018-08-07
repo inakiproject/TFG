@@ -3,11 +3,6 @@
 {% block content_wrapper %}
 
 <div style='text-align:center; margin: 0 auto; width: 90%'>
-    <a href="{% url 'gallery' %}">
-        <div style="position:absolute;">
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
-        </div>
-    </a>
 
     <h1 class="page-header">
         {% if 'update' in request.get_full_path %}

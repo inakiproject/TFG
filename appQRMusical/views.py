@@ -152,7 +152,11 @@ class Play(TemplateView):
 	model = Player.objects.all()
 	def get_context_data(self, **kwargs):
 		context = super(Play, self).get_context_data(**kwargs)
-		player = Profile.objects.get(online="yes")
+		try:
+			player = Profile.objects.get(online="yes")
+		except Profile.DoesNotExist:
+			player = None
+			return context
 
 		content = list()
 		skip = 1
@@ -177,6 +181,7 @@ class Play(TemplateView):
 		context['message_text'] = "Select a game."
 		context['title'] = "Play"
 		context['subtitle'] = "Select between the different games"
+		context['player'] = player
 		return context
 
 
@@ -321,7 +326,7 @@ def Identify(request):
 			'subtitle' : "Click on Play to begin!!",
 			'player' : user
     	}
-		return render(request, 'home.html', context)		
+		return HttpResponseRedirect('/play/')
 	except:
 		user = None
 		context = {
@@ -336,20 +341,27 @@ def Identify(request):
 
 	return render(request, 'info.html', context)
 
-def Disconnect(request, pk):
-	#template_name="hom
-	user = get_object_or_404(Profile, pk=pk)
-	user.online = "no"
-	user.save()
-	context = {
-		'QRM_color' : "QRM_blue",
-		'message_alert' : "alert-info",
-		'message_head' : user.name,
-		'message_text' : "Has just disconnect",
-		'title' : "User disconnected",
-		'subtitle' : "Click on Identify Player to register another player!!",
-		'player' : user
-    }		
+def Disconnect(request):
+	try:
+		user = Profile.objects.get(online="yes")
+		user.online = "no"
+		user.save()
+		context = {
+			'QRM_color' : "QRM_blue",
+			'message_alert' : "alert-info",
+			'message_head' : user.name,
+			'message_text' : "Has just disconnect",
+			'title' : "User disconnected",
+			'subtitle' : "Click on Identify Player to register another player!!",
+			'player' : user
+	    }
+		return render(request, 'home.html', context)
+	except Profile.DoesNotExist:
+		user = None
+		context = {
+			'QRM_color' : "QRM_blue",
+	    }		
+
 	return render(request, 'home.html', context)
 
 def game(id_player):
@@ -666,7 +678,7 @@ def match_game(request, id_player):
 	context['game_points'] = global_vars.game_points
 	context['game_number_objects'] = global_vars.game_number_objects
 	context['game_display'] = global_vars.game_display
-	#context['game_time'] = time.time() - global_vars.time
+	context['player'] = profile
 	context['correct'] = global_vars.correct
 	context['fails'] = global_vars.fail
 	
@@ -777,11 +789,12 @@ def Login(request):
 def Logout(request):
     logout(request)
     context = {
+		'QRM_color' : "QRM_blue",
     	'message_alert' : 	'alert-success',
     	'message_head'	:	'Success!',
     	'message_text'	:	'User logout correctly.',
     }
-    return HttpResponseRedirect('/')
+    return render(request, 'home.html', context)  
 
 
 # ======== Settings zone ========
@@ -1873,6 +1886,7 @@ def Results_details(request, pk):
 @login_required(login_url='login')
 def edit_name(request):
 	context = {
+		'QRM_color'		: "QRM_blue",
 		'message_alert' : 'alert-info',
 		'message_head' : 'Info!',
 		'message_text' : 'Change your name/surname.' 
@@ -1901,6 +1915,7 @@ def edit_name(request):
 @login_required(login_url='login')
 def edit_email(request):
 	context = {
+		'QRM_color'		: "QRM_blue",
 		'message_alert' : 'alert-info',
 		'message_head' : 'Info!',
 		'message_text' : 'Change your mail.' 
@@ -1928,6 +1943,7 @@ def edit_email(request):
 @login_required(login_url='login')
 def edit_password(request):
 	context = {
+		'QRM_color'		: "QRM_blue",
 		'message_alert' : 'alert-info',
 		'message_head' : 'Info!',
 		'message_text' : 'Change your password.' 

@@ -1,11 +1,6 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
-<a href="{% url 'results' %}">
-	<div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
-	</div>
-</a>
 
 <h1>Chart type</h1>
   <p class="btn btn-warning" value="bar" onclick="ChangeType(1)">Bar</p>
@@ -301,7 +296,5 @@ myChartTiming.update();
 
 
 </script>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

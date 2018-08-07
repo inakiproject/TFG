@@ -445,19 +445,14 @@ li a:hover:not(.active) {
     background-color: #FFFFFF;
 }
 
-.buttonback {
-    background-color: #f44336;
-    color: white;
-    border: 2px solid red;
-    padding: 16px 32px;
+.btn-back{
+    width: 70px;
+    height: 70px;
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    cursor: pointer;
+    padding: 7px 7px;
+    font-size: 2px;
+    line-height: 2;
+    border-radius: 50px;
 }
 
 .buttonback:hover {
@@ -474,6 +469,7 @@ li a:hover:not(.active) {
     line-height: 2;
     border-radius: 50px;
 }
+
 
 
 

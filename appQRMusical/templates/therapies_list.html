@@ -2,17 +2,9 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
-<a href="{% url 'settings' %}">
-	<div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
-</a>
-<a href="{% url 'create_therapy' %}">
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
-	</div>
-</a>
 
 <ul class="ullist">
-  <strong><li><a class="ullista" href="{% url 'home' %}">Home</a></li>
+  <strong><li>
   <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
   <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
   <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
@@ -22,14 +14,17 @@
   <li><a class="ullistactive" href="{% url 'therapies_list' %}">Therapies </a></li>
   <li><a class="ullista" href="{% url 'user' %}">User </a></li>
   <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
-  <li><a class="ullista" href="{% url 'camera' %}">Cam</a></li>
 </strong>
 </ul>
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
+		<a href="{% url 'create_therapy' %}">
+			<div class="btn btn-sm btn-info">
+				<p>Create Therapy</p>
+			</div>	
+		</a>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
-
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -81,7 +76,7 @@
 		</div>
 
 		<a href="{% url 'create_therapy' %}">
-			<div class="btn btn-sm btn-default">
+			<div class="btn btn-sm btn-info">
 				<p>Create Therapy</p>
 			</div>	
 		</a>
@@ -144,7 +139,5 @@ function  toggle_select(id) {
 }	
 
 </script>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}
