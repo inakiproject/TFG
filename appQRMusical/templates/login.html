@@ -3,41 +3,23 @@
 {% block content_wrapper %}
 
 <div style='text-align:center; margin: 0 auto; width: 90%'>
-
-<<<<<<< HEAD
     <h1 class="page-header">Login to PiMusic</h1>
-=======
-    <h1 class="page-header">Login to QRMusical by Teo</h1>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
-
     <div class="jumbotron">
         <h2 class="form-signin-heading">Please, identify yourself</h2>
 
         <form id="login_form" method="post" action="/login/" class="form-signin">
             {% csrf_token %}
-<<<<<<< HEAD
             <p style="color: #333 !important;">User:</p><input class="form-control" placeholder="Username" type="text" name="username" value="" size="50" required autofocus=""/>
-=======
-            <p style="color: #333 !important;">User:</p><input class="form-control" placeholder="Nombre de usuario" type="text" name="username" value="" size="50" required autofocus=""/>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
+
             <br />
             <p style="color: #333 !important;">Password:</p> <input class="form-control" placeholder="Password" type="password" name="password" value="" size="50" />
             <br />
-
-<<<<<<< HEAD
             <input class="btn btn-primary" type="submit" value="Send" />
-=======
-            <input class="btn btn-primary" type="submit" value="Enviar" />
->>>>>>> 095192f6faba87468904e961a719516f910b185f
+
         </form>
     </div>
 
 </div>
 
-<<<<<<< HEAD
 {% endblock content_wrapper %}
-=======
-{% include "message.html" %}
 
-{% endblock content_wrapper %}
->>>>>>> 095192f6faba87468904e961a719516f910b185f

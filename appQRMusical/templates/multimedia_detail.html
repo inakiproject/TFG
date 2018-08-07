@@ -8,15 +8,6 @@
 		<h1>{{ object.title }}</h1>
         <h2>{{ object.subtitle }}</h2>
 
-<<<<<<< HEAD
-=======
-        <a href="{% url 'gallery' %}">
-	        <div>
-		        <strong><button class="buttonback" style="width: 100%;font-size:x-large;">Back to Content</button></strong>
-			</div>
-		</a>
-
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 		<div class="col-sm-12 QRM_box {{ QRM_color }}">
 			<div class="QRM_box_in">
 				{% if object.file %}
@@ -42,8 +33,5 @@
 		</div>
 	</div>
 </div>
-		
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

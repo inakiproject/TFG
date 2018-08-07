@@ -2,12 +2,13 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
-<a href="{% url 'users_list' %}">
-	<div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
-	</div>
-</a>
+
 <div class="col-sm-12 QRM_box {{QRM_color}}">
+		<a href="{% url 'create_diagnostic' ide %}">
+			<div class="btn btn-sm btn-info">
+				<p>Add Diagnostic</p>
+			</div>	
+		</a>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
 
@@ -53,11 +54,9 @@
 		</div>
 
 		<a href="{% url 'create_diagnostic' ide %}">
-			<div class="btn btn-sm btn-default">
+			<div class="btn btn-sm btn-info">
 				<p>Add Diagnostic</p>
 			</div>	
 		</a>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

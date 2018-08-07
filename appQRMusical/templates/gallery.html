@@ -2,25 +2,11 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
-<<<<<<< HEAD
+
 <div class="sticky">
 
 <ul class="ullist">
-  <strong><li>
-=======
-<a href="{% url 'settings' %}">
-	<div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
-</a>
-<a href="{% url 'upload_multimedia' %}">
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
-	</div>
-</a>
-<div class="sticky">
-
-<ul class="ullist">
-  <strong><li><a class="ullista" href="{% url 'home' %}">Home</a></li>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
+  <strong>
   <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
   <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
   <li><a class="ullistactive" href="{% url 'gallery' %}">Content</a></li>
@@ -34,14 +20,12 @@
 </ul>
 </div>
 <div class="col-sm-12 QRM_box {{QRM_color}}">
-<<<<<<< HEAD
 		<a href="{% url 'upload_multimedia' %}">
 			<div class="btn btn-sm btn-info">
 				<p>Add Multimedia</p>
 			</div>	
 		</a>
-=======
->>>>>>> 095192f6faba87468904e961a719516f910b185f
+
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
 
@@ -52,14 +36,9 @@
 						<th>Image</th>
 						<th>Name</th>
 						<th>Activities asociated with</th>
-<<<<<<< HEAD
                         <th>Code</th>
                         <th>Change ID</th>						
                         <th>Clean ID</th>					
-=======
-                        <th>Code</th>	
-                        <th>Clean</th>					
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 						<th>QR</th>	
 						<th>Track</th>						
 						<th>delete</th>						
@@ -98,12 +77,8 @@
 										<input type="hidden" name="son_id" value="{{ son.id }}"/>
                                         <button type="submit" class="btn btn-warning">Change ID</button>
                                     </form>
-<<<<<<< HEAD
                             </td>
                             <td style="width: 10%; vertical-align: left;">
-=======
-
->>>>>>> 095192f6faba87468904e961a719516f910b185f
                                     <form action="{% url 'multi_id_delete' son.id_content %}" method="post">
 									    {% csrf_token %}
 										<input type="hidden" name="son_id" value="{{ son.id }}"/>
@@ -117,10 +92,7 @@
                                     <button type="submit"class="btn btn-success">Add ID</button>
                                     </form>
                                     <td style="width: 5%;"></td>
-<<<<<<< HEAD
                                     <td style="width: 5%;"></td>
-=======
->>>>>>> 095192f6faba87468904e961a719516f910b185f
                                 {% endif %}
                             </td>
 
@@ -159,21 +131,11 @@
 		</div>
 
 		<a href="{% url 'upload_multimedia' %}">
-<<<<<<< HEAD
 			<div class="btn btn-sm btn-info">
 				<p>Add Multimedia</p>
 			</div>	
 		</a>
 </div>
-=======
-			<div class="btn btn-sm btn-default">
-				<p>Add Multimedia</p>
-			</div>	
-		</a>
-                <a href="{% url 'upload_multimedia' %}" class="float2">
-                    <i class="fa fa-plus-circle my-float" style="font-size:60px" ></i>
-                </a>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -191,11 +153,6 @@
 </div>
     <h2>Put the card on the scanner</h2>
   </div>
-
-<<<<<<< HEAD
-=======
-</div>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 
 <script>
 // Get the modal
@@ -227,10 +184,5 @@ window.onclick = function(event) {
 
 	</div>
 </div>
-
-<<<<<<< HEAD
-=======
-{% include "message.html" %}
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 
 {% endblock content_wrapper %}
