@@ -1,6 +1,14 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
+<<<<<<< HEAD
+=======
+<a href="{% url 'results' %}">
+	<div>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
+	</div>
+</a>
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 
 <h1>Chart type</h1>
   <p class="btn btn-warning" value="bar" onclick="ChangeType(1)">Bar</p>
@@ -297,4 +305,9 @@ myChartTiming.update();
 
 </script>
 
+<<<<<<< HEAD
+=======
+{% include "message.html" %}
+
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 {% endblock content_wrapper %}

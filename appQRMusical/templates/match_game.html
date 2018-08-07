@@ -5,6 +5,16 @@
 
 {% load staticfiles %}
 
+<<<<<<< HEAD
+=======
+<a href="{% url 'play' %}">
+	<div>
+		<p>← Back to Play </p>
+	</div>
+</a>
+
+
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 <div id="auto" >
 	
 	<div class="QRM_supercool_background" style="display:{{game_display}};">
@@ -14,6 +24,10 @@
 			<img src="/files/static/congrats.png">
 			<p>You are awesome {{ player_name }}!!</p>
 			<p>come <a href="{% url 'play' %}" class="btn btn-default">← BACK</a> to select another game, and play again!.</p>
+<<<<<<< HEAD
+=======
+<p> {{ game_time }} Corrects--> {{ correct }} Fails--> {{ fails }}</p>
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 		</div>
 		<div class="col-sm-2" style="display:inline"></div>
 	</div>

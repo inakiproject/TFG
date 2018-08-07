@@ -2,9 +2,23 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
+<<<<<<< HEAD
 
 <ul class="ullist">
   <strong><li>
+=======
+<a href="{% url 'settings' %}">
+	<div>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
+</a>
+<a href="{% url 'create_therapy' %}">
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
+	</div>
+</a>
+
+<ul class="ullist">
+  <strong><li><a class="ullista" href="{% url 'home' %}">Home</a></li>
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
   <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
   <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
   <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
@@ -14,10 +28,15 @@
   <li><a class="ullistactive" href="{% url 'therapies_list' %}">Therapies </a></li>
   <li><a class="ullista" href="{% url 'user' %}">User </a></li>
   <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
+<<<<<<< HEAD
+=======
+  <li><a class="ullista" href="{% url 'camera' %}">Cam</a></li>
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 </strong>
 </ul>
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
+<<<<<<< HEAD
 		<a href="{% url 'create_therapy' %}">
 			<div class="btn btn-sm btn-info">
 				<p>Create Therapy</p>
@@ -25,6 +44,11 @@
 		</a>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
+=======
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -76,7 +100,11 @@
 		</div>
 
 		<a href="{% url 'create_therapy' %}">
+<<<<<<< HEAD
 			<div class="btn btn-sm btn-info">
+=======
+			<div class="btn btn-sm btn-default">
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 				<p>Create Therapy</p>
 			</div>	
 		</a>
@@ -140,4 +168,9 @@ function  toggle_select(id) {
 
 </script>
 
+<<<<<<< HEAD
+=======
+{% include "message.html" %}
+
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 {% endblock content_wrapper %}

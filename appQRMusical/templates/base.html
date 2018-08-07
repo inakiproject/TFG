@@ -24,6 +24,7 @@
 	<body>
 		<div id="sidebar" class="navbar QRM_nav navbar-static-top">
 			<div class="container-fluid QRM_container">
+<<<<<<< HEAD
        				<div class="navbar-header">
                         <a class="navbar-nav">
                             <button type="button" onclick="goBack()" class="btn btn-info btn-back btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:50px"></i></button>
@@ -32,10 +33,17 @@
 						<img src="/files/static/logo.png" class="QRM_logo">
 						PiMusic
 
+=======
+				<div class="navbar-header">
+					<a class="navbar-brand QRM_navbar-brand" href="/">
+						<img src="/files/static/logo.png" class="QRM_logo">
+						PiMusic
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 					</a>
 				</div>
 				<div class="navbar-collapse collapse" style="height: 1px;">
 					<ul class="nav navbar-nav QRM_navbar_nav">
+<<<<<<< HEAD
                         {% if player.online == "yes" %}
 						<li><a>Connected as: {{ player }}</a></li>
                         <li style="top: -11px;">
@@ -53,15 +61,29 @@
 							</li>
 						{% else %}
 						<li><a>Click to connect --></a></li>
+=======
+						<li><a href="/">Home</a></li>
+						<li><a href="/settings/">Settings</a></li>
+						{% if user.is_authenticated %}
+							<li style="top: -11px;">
+								<a href="/logout/">
+									<img src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
+								</a>
+							</li>
+						{% else %}
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 							<li style="top: -11px;">
 								<a href="/login/">
 									<img src="/files/static/log_b.png" style="width: 50px" title="Login" alt="Login">		
 								</a>
 							</li>
 						{% endif %}
+<<<<<<< HEAD
 
                         {% endif %}
 
+=======
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 					</ul>
 				</div>
 			</div>
@@ -94,6 +116,7 @@
         function scrollWin(x) {
             window.scrollBy(0,x);
         }
+<<<<<<< HEAD
 
 
         function goBack() {
@@ -117,6 +140,8 @@
             } else {
             }
         }
+=======
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
         </script>
 
 </html>

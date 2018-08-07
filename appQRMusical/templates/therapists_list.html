@@ -2,9 +2,20 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
+<<<<<<< HEAD
 
 <ul class="ullist">
   <strong><li>
+=======
+<a href="{% url 'settings' %}">
+	<div>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
+	</div>
+</a>
+
+<ul class="ullist">
+  <strong><li><a class="ullista" href="{% url 'home' %}">Home</a></li>
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
   <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
   <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
   <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
@@ -14,6 +25,10 @@
   <li><a class="ullista" href="{% url 'therapies_list' %}">Therapies </a></li>
   <li><a class="ullista" href="{% url 'user' %}">User </a></li>
   <li><a class="ullistactive" href="{% url 'therapists_list' %}">Therapists </a></li>
+<<<<<<< HEAD
+=======
+  <li><a class="ullista" href="{% url 'camera' %}">Cam</a></li>
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 </strong>
 </ul>
 
@@ -59,4 +74,9 @@
 		    </a>
         {% endif %}
 
+<<<<<<< HEAD
+=======
+{% include "message.html" %}
+
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 {% endblock content_wrapper %}

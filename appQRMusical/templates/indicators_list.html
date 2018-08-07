@@ -2,6 +2,7 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
+<<<<<<< HEAD
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 <ul>
@@ -20,11 +21,33 @@
 			</div>	
 		</a>
 		<div class="QRM_wrapper_table">
+=======
+<a href="{% url 'activity_settings' %}">
+	<div>
+        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
+	</div>
+</a>
+<div class="col-sm-12 QRM_box {{QRM_color}}">
+<ul>
+  <strong><li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a href="{% url 'activity_settings' %}"><i class="glyphicon glyphicon-arrow-right" ></i>Activity Settings</a></li>
+  <li><a class="active" href="{% url 'indicators_list' %}"><i class="glyphicon glyphicon-arrow-right" ></i>Indicators List</a></li>
+</strong>
+</ul>
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 			<table class="table table-hover">
 				<thead>
 					<tr>
 						<th>Activity</th>
+<<<<<<< HEAD
 						<th>Indicators</th>
+=======
+						<th>Indicator</th>
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 						<th>Description</th>						
 						<th>Delete</th>						
 
@@ -52,6 +75,7 @@
 				</tbody>
 			</table>
 		</div>
+<<<<<<< HEAD
 		<a href="{% url 'create_indicator' %}">
 			<div class="btn btn-sm btn-info">
 				<p>Vinculate an Indicator with an Activity</p>
@@ -59,6 +83,17 @@
 		</a>
 </div>
 
+=======
+
+		<a href="{% url 'create_indicator' %}">
+			<div class="btn btn-sm btn-default">
+				<p>Vinculate an Indicator with an Activity</p>
+			</div>	
+		</a>
+                <a href="{% url 'upload_multimedia' %}" class="float2">
+                    <i class="fa fa-plus-circle my-float" style="font-size:60px" ></i>
+                </a>
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -77,6 +112,11 @@
     <h2>Put the card on the scanner</h2>
   </div>
 
+<<<<<<< HEAD
+=======
+</div>
+
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 <script>
 // Get the modal
 var modal = document.getElementById('myModal');
@@ -108,4 +148,9 @@ window.onclick = function(event) {
 	</div>
 </div>
 
+<<<<<<< HEAD
+=======
+{% include "message.html" %}
+
+>>>>>>> 095192f6faba87468904e961a719516f910b185f
 {% endblock content_wrapper %}
