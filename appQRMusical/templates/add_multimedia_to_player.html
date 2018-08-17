@@ -3,26 +3,19 @@
 
 {% block content_wrapper %}
 
-        <a href="{% url 'update_player' player_id %}">
-	        <div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
-			</div>
-		</a>
-
 <div class="col-sm-12 QRM_box {{QRM_color}}">
+    <p style="font-size:30px;color:white;"><strong>Click on any of the multimedia to add it<strong></p>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
-
 			<table class="table table-hover ">
 				<thead>
 					<tr>
 						<th>#</th>
 						<th>Image</th>
 						<th>Name</th>
-						<th>Add?</th>
 						<th>track</th>	
 						<th>QR</th>						
-						<th>delete</th>						
+						<th>Delete</th>						
 
 			    	</tr>
 				</thead>
@@ -32,19 +25,8 @@
 						<tr onclick="document.location = '{% url 'add_multimedia_to_player_function' player_id son.id_content %}';">
 		      				<th scope="row" style="width: 3%;">{{son.id_content}}</th>
 		      				<td style="width: 10%;"><img src="/{{ son.multimedia.image.url }}" style="width: 100px;"></td>
-		      				<td style="width: 60%;">{{ son.multimedia.name}}</td>
-		      				<td>
-								<form action="{% url 'add_multimedia_to_player_function' player_id son.id_content %}" method="post">
-									{% csrf_token %}
-									<center>
-										<input type="hidden" name="son_id" value="{{ son.id_content }}"/>
-										<button type="submit" class="btn btn-default btn-sm">
-											<p>Add</p>
-										</button>
-									</center>
-								</form>
-		      				</td>
-		      				<td style="width: 20%;">
+		      				<td style="width: 10%;">{{ son.multimedia.name}}</td>
+		      				<td style="width: 60%;">
 		      					{% if son.file %}
 		      					<audio controls style="width: 100%;">
 									<source src="/{{ i.file.url }}" type="audio/mp3">
@@ -52,7 +34,7 @@
 								</audio>
 								{% endif %}
 							</td>
-							<td>
+							<td style="width: 10%;">
 								<a href="{% url 'multimedia_detail' son.pk %}">
 									<div class="btn btn-sm btn-info">
 										<p>QR</p>
@@ -62,12 +44,10 @@
 							<td>
 								<form action="{% url 'multimedia_delete' son.id_content %}" method="post">
 									{% csrf_token %}
-									<center>
 										<input type="hidden" name="son_id" value="{{ son.id_content }}"/>
 										<button type="submit" class="btn btn-danger btn-sm">
 											<p>✖</p>
 										</button>
-									</center>
 								</form>
 							</td>							
 		    			</tr>

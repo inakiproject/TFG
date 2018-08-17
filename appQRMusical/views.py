@@ -979,6 +979,7 @@ def upload_multimedia(request):
 			file_up = Multimedia()
 			files = request.FILES
 			data = request.POST
+			success_url = '/settings/gallery'
 			file_up.image = files['image']
 
 			if 'file' in files:

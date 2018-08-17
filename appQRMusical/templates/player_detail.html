@@ -5,17 +5,19 @@
 
 <div class="container-fluid">
 	<div class="row">
-		<h1>{{ object.title }}</h1>
-        <h2>{{ object.subtitle }}</h2>
-
-        <a href="{% url 'players_list' %}">
-	        <div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
-</a>
-<a href="{% url 'add_multimedia_to_player' object.id %}">
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
-	</div>
-</a>
+<ul>
+  <strong><li>
+  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
+  <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
+  <li><a href="{% url 'game_settings' %}">Game Settings</a></li>
+  <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
+  <li><a href="{% url 'players_list' %}">Activity List</a></li>
+  <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
+  <li><a class="active" href="{% url 'players_list' %}">Edit Activity</a></li>
+</strong>
+</ul>
 
 		<div class="jumbotron {{ QRM_color }}">
 			<center>
@@ -26,6 +28,14 @@
 				</form>
 			</center>
 		</div>
+
+		{% if object.id %}
+		<a href="{% url 'add_multimedia_to_player' object.id %}">
+			<div class="btn btn-sm btn-info">
+				<p>Add Multimedia</p>
+			</div>	
+		</a>
+		{% endif %}
 
 		<table class="table table-hover">
 			<thead>
@@ -87,14 +97,12 @@
 
 		{% if object.id %}
 		<a href="{% url 'add_multimedia_to_player' object.id %}">
-			<div class="btn btn-sm btn-default">
+			<div class="btn btn-sm btn-info">
 				<p>Add Multimedia</p>
 			</div>	
 		</a>
 		{% endif %}
 	</div>
 </div>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

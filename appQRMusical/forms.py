@@ -17,7 +17,7 @@ class UploadMultimediaForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(UploadMultimediaForm, self).__init__(*args, **kwargs)
-		self.fields['file'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['file'].widget.attrs.update({'class' : 'form-control btn btn-default btn-file'})
 		self.fields['image'].widget.attrs.update({'class' : 'form-control btn btn-default btn-file'})
 
 
