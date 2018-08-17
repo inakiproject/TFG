@@ -55,6 +55,7 @@ def directory_to_upload(self, file):
 
 class Profile(models.Model):
     id = models.AutoField(primary_key=True)
+    image = models.ImageField(upload_to='profiles/', blank=True)
     name = models.CharField("Name",max_length=50)
     surname = models.CharField("Surname",max_length=50)
     date_of_birth = models.DateField(null=True,blank=True)

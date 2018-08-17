@@ -470,3 +470,7 @@ li a:hover:not(.active) {
     border-radius: 50px;
 }
 
+.img-circle {
+        border-radius: 50%;
+}
+

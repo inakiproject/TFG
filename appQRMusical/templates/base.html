@@ -40,11 +40,19 @@
 
                         {% if player.online == "yes" %}
 						<li><a>Connected as: {{ player }}</a></li>
-                        <li style="top: -11px;">
-								<a>
-									<img onclick="confirmationUser()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
-								</a>
-						</li>
+                        {% if player.image %}
+                            <li style="top: -11px;">
+  						    <a>
+                                <img onclick="confirmationUser()" class="img-circle"src="/{{ player.image.url }}" style="width: 50px" title="Logout" alt="Logout" >
+						    </a>
+						    </li>
+                        {% else %}
+                            <li style="top: -11px;">
+								    <a>
+									    <img onclick="confirmationUser()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
+								    </a>
+						    </li>
+                        {% endif %}
                         {% else %}
 						{% if user.is_authenticated %}
 						<li><a>Connected as: {{ user }}</a></li>

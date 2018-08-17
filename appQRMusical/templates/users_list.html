@@ -30,7 +30,7 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>#</th>
+						<th>Photo</th>
 						<th>Name</th>
 						<th>Surname</th>
 						<th>Gender</th>
@@ -47,7 +47,11 @@
 					{% for object in object_list %}
 						<tr onclick="document.location = '{% url 'update_user' object.id %}';">
 		      				<th scope="row" style="width: 3%; vertical-align: middle;">
-                                {{ object.id }}
+                                {% if object.image %}
+                                    <img class="img-circle"src="/{{ object.image.url }}" style="width: 100px;">
+                                {% else %}
+                                <center>-</centerx>
+                                {% endif %}
                             </th>
 
 		      				<td style="width: 10%; vertical-align: middle;">

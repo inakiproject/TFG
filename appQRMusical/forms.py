@@ -36,10 +36,11 @@ class UploadPlayerForm(forms.ModelForm):
 class UploadUserForm(forms.ModelForm):	
 	class Meta:
 		model = Profile
-		fields = ['name', 'surname','date_of_birth','age','gender','level']
+		fields = ['image','name', 'surname','date_of_birth','age','gender','level']
 
 	def __init__(self, *args, **kwargs):
 		super(UploadUserForm, self).__init__(*args, **kwargs)
+		self.fields['image'].widget.attrs.update({'class' : 'form-control btn btn-default btn-file'})
 		self.fields['name'].widget.attrs.update({'class' : 'form-control'})
 		self.fields['surname'].widget.attrs.update({'class' : 'form-control'})
 		self.fields['date_of_birth'].widget=forms.SelectDateWidget(years=YEARS)
