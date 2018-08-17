@@ -3,14 +3,6 @@
 {% block content_wrapper %}
 
 <div style='text-align:center; margin: 0 auto; width: 90%'>
-<<<<<<< HEAD
-=======
-    <a href="{% url 'user' %}">
-        <div style="position:absolute;">
-            <p>← Back to User Settings</p>
-        </div>
-    </a>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
     <h1 class="page-header">
         {% if 'email' in request.get_full_path %}
             Edit eMail
@@ -21,11 +13,7 @@
         {% endif %}
     </h1>
 
-<<<<<<< HEAD
     <div class="jumbotron {{QRM_color}}">
-=======
-    <div class="jumbotron">
->>>>>>> 095192f6faba87468904e961a719516f910b185f
         <h2 class="form-signin-heading">User <strong>{{ user.username }}</strong></h2>
         <h2 class="form-signin-heading">Name <strong>{{ user.first_name }}</strong></h2>
         <form method="post" enctype="multipart/form-data" class="form-signin">
@@ -35,21 +23,11 @@
                 <p>{{ form.as_p }}</p>
             </center>
 
-<<<<<<< HEAD
             <input class="btn btn-success" type="submit" value="Confirm changes" />
-=======
-            <input class="btn btn-default" type="submit" value="Confirm changes" />
->>>>>>> 095192f6faba87468904e961a719516f910b185f
         
         </form>
     </div>
 
 </div>
 
-<<<<<<< HEAD
-=======
-
-{% include "message.html" %}
-
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 {% endblock content_wrapper %}

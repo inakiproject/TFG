@@ -18,6 +18,13 @@
 </ul>
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
+		{% if admin %}
+		    <a href="{% url 'create_therapist' %}">
+		    	<div class="btn btn-sm btn-info">
+		    		<p>Add a Therapist</p>
+		    	</div>	
+		    </a>
+        {% endif %}
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
 
@@ -53,7 +60,7 @@
 
 		{% if admin %}
 		    <a href="{% url 'create_therapist' %}">
-		    	<div class="btn btn-sm btn-default">
+		    	<div class="btn btn-sm btn-info">
 		    		<p>Add a Therapist</p>
 		    	</div>	
 		    </a>

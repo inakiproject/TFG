@@ -2,23 +2,9 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
-<<<<<<< HEAD
 
 <ul class="ullist">
-  <strong><li>
-=======
-<a href="{% url 'settings' %}">
-	<div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:60px"></i></button>
-</a>
-<a href="{% url 'create_treatment' %}">
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
-	</div>
-</a>
-
-<ul class="ullist">
-  <strong><li><a class="ullista" href="{% url 'home' %}">Home</a></li>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
+  <strong>
   <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
   <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
   <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
@@ -28,22 +14,15 @@
   <li><a class="ullista" href="{% url 'therapies_list' %}">Therapies </a></li>
   <li><a class="ullista" href="{% url 'user' %}">User </a></li>
   <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
-<<<<<<< HEAD
-=======
-  <li><a class="ullista" href="{% url 'camera' %}">Cam</a></li>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 </strong>
 </ul>
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
-<<<<<<< HEAD
 		<a href="{% url 'create_treatment' %}">
 			<div class="btn btn-sm btn-info">
 				<p>Add Treatment</p>
 			</div>	
 		</a>
-=======
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
 
@@ -111,18 +90,11 @@
 		</div>
 
 		<a href="{% url 'create_treatment' %}">
-<<<<<<< HEAD
 			<div class="btn btn-sm btn-info">
 				<p>Add Treatment</p>
 			</div>	
 		</a>
 </div>
-=======
-			<div class="btn btn-sm btn-default">
-				<p>Add Treatment</p>
-			</div>	
-		</a>
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -141,11 +113,6 @@
     <h2>Put the brazalet on the scanner</h2>
   </div>
 
-<<<<<<< HEAD
-=======
-</div>
-
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 <script>
 // Get the modal
 var modal = document.getElementById('myModal');
@@ -186,9 +153,4 @@ function  toggle_select(id) {
 
 </script>
 
-<<<<<<< HEAD
-=======
-{% include "message.html" %}
-
->>>>>>> 095192f6faba87468904e961a719516f910b185f
 {% endblock content_wrapper %}
