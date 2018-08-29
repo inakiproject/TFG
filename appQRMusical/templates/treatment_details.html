@@ -13,6 +13,10 @@
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 				    {{ form.as_p }}
+                    <strong><p>Vinculate with a Therapy (Optional):</p></strong>
+				    {{ form2.as_p }}
+                    <strong><p>Vinculate with an Activity (Optional):</p></strong>
+				    {{ form1.as_p }}
 				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
 				</form>
 			</center>

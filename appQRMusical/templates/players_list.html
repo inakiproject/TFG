@@ -41,18 +41,17 @@
 
 		      				<td style="width: 40%; vertical-align: middle;">{{ object.description }}</td>
 							
-							<td style="width: 20%; vertical-align: middle;">{{ object.purpose }}</td>
+							<td style="width: 10%; vertical-align: middle;">{{ object.purpose }}</td>
 							
-
+                            <td style="width: 30%; vertical-align: middle;">
                             {% for i in category %}
                                 {% if i.player.id == object.id %}
                                     {% if i.category %}
-                                    <td style="width: 20%; vertical-align: middle;">{{ i.category.category }}</td>
-
+                                        {{ i.category.category }},
                                     {% endif %}
                                     {% endif %}
                             {% endfor %}
-
+                            </td>
 							<td style=" vertical-align: middle;">
 								<form action="{% url 'player_delete' object.id %}" method="post">
 									{% csrf_token %}

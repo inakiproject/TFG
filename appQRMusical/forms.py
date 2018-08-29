@@ -77,6 +77,16 @@ class UploadTherapyForm(forms.ModelForm):
 		self.fields['description'].widget.attrs.update({'class' : 'form-control'})
 		self.fields['therapy_type'].widget.attrs.update({'class' : 'custom-control-input'})
 
+class UploadAsignTherapyForm(forms.ModelForm):
+    therapy = forms.ModelChoiceField(queryset=Therapy.objects.all(),required=False)
+    class Meta:
+        model = Asign_Therapy
+        fields = ['therapy']
+
+    def __init__(self, *args, **kwargs):
+        super(UploadAsignTherapyForm, self).__init__(*args, **kwargs)
+        self.fields['therapy'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
+
 class UploadAsignForm(forms.ModelForm):
     class Meta:
         model = Asign_Therapy
@@ -95,6 +105,83 @@ class UploadIndicatorForm(forms.ModelForm):
 		super(UploadIndicatorForm, self).__init__(*args, **kwargs)
 		self.fields['player'].widget.attrs.update({'class' : 'form-control'})
 		self.fields['indicator'].widget.attrs.update({'class' : 'form-control'})
+
+class UploadOneIndicatorForm(forms.ModelForm):
+	indicator = forms.ModelChoiceField(queryset=Indicator.objects.all(),required=False)
+	class Meta:
+		model = Player_Indicator
+		fields = ['indicator']
+
+	def __init__(self, *args, **kwargs):
+		super(UploadOneIndicatorForm, self).__init__(*args, **kwargs)
+		self.fields['indicator'].widget.attrs.update({'class' : 'form-control'})
+
+class UploadHitsForm(forms.Form):
+    option = Indicator.objects.get(id_indicator=2)
+    indicator = forms.ChoiceField(choices=[(option, option)], widget=forms.CheckboxInput(),required = False)
+    #option = Indicator.objects.get(name='Tiempo')
+    #indicator = forms.ChoiceField(widget=forms.CheckboxInput())
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        return super(UploadHitsForm, self).__init__(*args, **kwargs)
+
+    def clean_indicator(self):
+        indicator2 = self.cleaned_data['indicator']
+#        exists = Player_Indicator.objects.filter(=email).exclude(username=username)
+ #       if exists:
+  #          raise forms.ValidationError('This emails is already registed.')
+        return indicator2
+
+class UploadFailuresForm(forms.Form):
+    option = Indicator.objects.get(id_indicator=3)
+    indicator = forms.ChoiceField(choices=[(option, option)], widget=forms.CheckboxInput(),required = False)
+    #option = Indicator.objects.get(name='Tiempo')
+    #indicator = forms.ChoiceField(widget=forms.CheckboxInput())
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        return super(UploadFailuresForm, self).__init__(*args, **kwargs)
+
+    def clean_indicator(self):
+        indicator3 = self.cleaned_data['indicator']
+#        exists = Player_Indicator.objects.filter(=email).exclude(username=username)
+ #       if exists:
+  #          raise forms.ValidationError('This emails is already registed.')
+        return indicator3
+
+class UploadIndicatorFormbeta(forms.Form):
+    option = Indicator.objects.get(id_indicator=1)
+    player = forms.ChoiceField(choices=[(option, option) for option in Player.objects.all()], widget=forms.RadioSelect())
+    indicator = forms.ChoiceField(choices=[(option, option)], widget=forms.RadioSelect())
+    #option = Indicator.objects.get(name='Tiempo')
+    #indicator = forms.ChoiceField(widget=forms.CheckboxInput())
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        return super(UploadIndicatorFormbeta, self).__init__(*args, **kwargs)
+    def clean_player(self):
+        player = self.cleaned_data['player']
+#        exists = Player_Indicator.objects.filter(=email).exclude(username=username)
+ #       if exists:
+  #          raise forms.ValidationError('This emails is already registed.')
+        return player
+    def clean_indicator(self):
+        indicator = self.cleaned_data['indicator']
+#        exists = Player_Indicator.objects.filter(=email).exclude(username=username)
+ #       if exists:
+  #          raise forms.ValidationError('This emails is already registed.')
+        return indicator
+"""
+class UploadIndicatorFormbeta(forms.ModelForm):
+    class Meta:
+        model = Player_Indicator
+        fields = ['player','indicator']
+
+    def __init__(self, *args, **kwargs):
+        super(UploadIndicatorFormbeta, self).__init__(*args, **kwargs)
+        self.fields['indicator'] =  ModelChoiceField(queryset=Player_Indicator.objects.get(indicator),empty_label="Choose a countries",)
+"""
 
 class UploadDiagnosticForm(forms.ModelForm):	
 	class Meta:
@@ -135,6 +222,24 @@ class UploadTherapyPlayerForm(forms.ModelForm):
 		self.fields['player'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
 		self.fields['therapy'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
 
+class UploadOneTherapyPlayerForm(forms.ModelForm):	
+	class Meta:
+		model = Therapy_Player
+		fields = ['therapy']
+
+	def __init__(self, *args, **kwargs):
+		super(UploadOneTherapyPlayerForm, self).__init__(*args, **kwargs)
+		self.fields['therapy'].widget.attrs.update({'class' : 'form-control'},required = False)
+
+class UploadOnePlayerTherapyForm(forms.ModelForm):
+	player = forms.ModelChoiceField(queryset=Player.objects.all(),required=False)
+	class Meta:
+		model = Therapy_Player
+		fields = ['player']
+
+	def __init__(self, *args, **kwargs):
+		super(UploadOnePlayerTherapyForm, self).__init__(*args, **kwargs)
+		self.fields['player'].widget.attrs.update({'class' : 'selectpicker'})
 
 class EditNameForm(forms.Form):
     name = forms.CharField(

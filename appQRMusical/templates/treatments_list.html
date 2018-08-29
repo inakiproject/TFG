@@ -69,7 +69,7 @@
                                     </td>
 
 							        <td style=" vertical-align: middle;">
-								        <form action="{% url 'treatment_delete' object.id %}" method="post">
+								        <form action="{% url 'treatment_delete' object.treatment.id %}" method="post">
 									        {% csrf_token %}
 
 										        <input type="hidden" name="object_id" value="{{ object.id }}"/>

@@ -43,7 +43,7 @@ from .forms import UploadTherapistForm
 
 # Therapy
 from .models import Therapy, Asign_Therapy, Therapist_Asign_Therapy, Therapy_Player
-from .forms import UploadTherapyForm, UploadAsignForm, UploadTherapyPlayerForm
+from .forms import UploadTherapyForm, UploadAsignForm, UploadTherapyPlayerForm, UploadOneTherapyPlayerForm, UploadAsignTherapyForm, UploadOnePlayerTherapyForm
 
 # Treatment
 from .models import Treatment, Supervise
@@ -55,7 +55,7 @@ from .forms import UploadDiagnosticForm
 
 # Indicator
 from .models import Indicator, Therapy_Indicator
-from .forms import UploadIndicatorForm
+from .forms import UploadIndicatorForm, UploadIndicatorFormbeta,UploadFailuresForm,UploadHitsForm, UploadOneIndicatorForm
 
 # Category
 from .models import Category, Category_Player
@@ -92,12 +92,15 @@ def read_ID():
         tag = arduinoPort.readline()
         code = tag.decode('utf-8')
         if hash(tag) != 0:
-            #arduinoPort.close()
+            #global_vars.message = code
+            #arduinoPort.flushInput()
             if len(code)==8:
                 global_vars.message = code
                 arduinoPort.flushInput()
+                arduinoPort.close()
             else:
                 arduinoPort.flushInput()
+                arduinoPort.close()
 
 
 
@@ -127,7 +130,6 @@ def Identify_ID():
 # Create your views here.
 class Home(TemplateView):
 	template_name="home.html"
-	#start_reader()
 	def get_context_data(self, **kwargs):
 		context = super(Home, self).get_context_data(**kwargs)
 		try:
@@ -442,34 +444,39 @@ def gamem(id_player,asgn_thera,thera_indi):
 	code = global_vars.message# del "\n" in end
 
 	matching = False
-
+	print(code)
 
 	if global_vars.game_success == global_vars.game_number_objects:
 		global_vars.game_display = "inline"
 		#timestart = global_vars.time
 		global_vars.timeend =  time.time()
 		timefinal = global_vars.timeend - global_vars.timestart
-		results = Result_Session()
-		for i in global_vars.thera_indi:
-			if i.indicator.id_indicator == 1:
-				results.session = Session.objects.get(id_session=global_vars.identifier)
-				results.player = Player.objects.get(id=id_player)
-				results.indicator = Indicator.objects.get(id_indicator=1)
-				results.result = timefinal
-				results.save()
-			if i.indicator.id_indicator == 2:
-				results.session = Session.objects.get(id_session=global_vars.identifier)
-				results.player = Player.objects.get(id=id_player)
-				results.indicator = Indicator.objects.get(id_indicator=2)
-				results.result = global_vars.correct
-				results.save()
-			if i.indicator.id_indicator == 3:
-				results.session = Session.objects.get(id_session=global_vars.identifier)
-				results.player = Player.objects.get(id=id_player)
-				results.indicator = Indicator.objects.get(id_indicator=3)
-				results.result = global_vars.fail
-				results.save()
-
+		if global_vars.end == 0:
+			for i in global_vars.thera_indi:
+				if i.indicator.id_indicator == 2:
+					results = Result_Session()
+					results.session = Session.objects.get(id_session=global_vars.identifier)
+					results.player = Player.objects.get(id=id_player)
+					results.indicator = Indicator.objects.get(id_indicator=2)
+					results.result = global_vars.correct
+					results.save()
+				if i.indicator.id_indicator == 3:
+					results = Result_Session()
+					results.session = Session.objects.get(id_session=global_vars.identifier)
+					results.player = Player.objects.get(id=id_player)
+					results.indicator = Indicator.objects.get(id_indicator=3)
+					results.result = global_vars.fail
+					results.save()
+				if i.indicator.id_indicator == 1:
+					results = Result_Session()
+					results.session = Session.objects.get(id_session=global_vars.identifier)
+					results.player = Player.objects.get(id=id_player)
+					results.indicator = Indicator.objects.get(id_indicator=1)
+					results.result = round(timefinal,2)
+					print(timefinal)
+					print(results.result)
+					results.save()
+					global_vars.end = 1
 
 		#global_vars.time = time
 
@@ -499,8 +506,21 @@ def gamem(id_player,asgn_thera,thera_indi):
 					global_vars.game_image = ('/%s%s') % (settings.MEDIA_URL,obj.content.multimedia.image.url[6:])
 					if obj.content.multimedia.file:
 						global_vars.game_file = obj.content.multimedia.file.url
+						#music = '/home/kiwi/Escritorio/PiMusic/appQRMusical/'+ global_vars.game_file
+						music = os.path.abspath('') + '/appQRMusical/'
+						music = music + global_vars.game_file
+						print(music)
+						print(global_vars.fail)
+						mixer.init()
+						mixer.music.load(os.path.abspath(music))
+						mixer.music.play()
 					else:
 						global_vars.game_file = None
+						music = os.path.abspath('') + '/appQRMusical/files/songs/success.wav'
+						mixer.init()
+						mixer.music.load(os.path.abspath(music))
+						mixer.music.play()
+
 				#buzzer = Buzzer(8)						# Init Buzzer
 				#blink(5, .05, 5)	# nTimes, speed, pin
 				#buzzer.play(1)		# 1 --> Sucess melody
@@ -510,6 +530,11 @@ def gamem(id_player,asgn_thera,thera_indi):
 			global_vars.fail = global_vars.game_fail
 			global_vars.last_message = global_vars.message
 			global_vars.message_alert = "alert-danger"
+			music = os.path.abspath('') + '/appQRMusical/files/songs/fail.mp3'
+			print(global_vars.fail)
+			mixer.init()
+			mixer.music.load(os.path.abspath(os.path.abspath(music)))
+			mixer.music.play()
 			#buzzer = Buzzer(8)						# Init Buzzer
 			#blink(5, .05, 7)	# nTimes, speed, pin
 			#buzzer.play(2)		# 1 --> Sucess melody
@@ -725,10 +750,24 @@ def player_game_matching(request, id_player):
         return JsonResponse(context)
 
 def match_game_matching(request, id_player):
-
         player = Player.objects.get(id=id_player)
+        profile = Profile.objects.get(online="yes")
+        global_vars.time = datetime.now()
+        start_reader()
 
-        gamem(id_player,1,1)
+        #print(global_vars.message)
+        treat = Treatment.objects.filter(profile_id=profile.id)
+        treat = treat.filter(enabled=True)
+	
+        for i in treat:
+            if  Asign_Therapy.objects.filter(treatment_id=i.id):
+                tera = Asign_Therapy.objects.filter(treatment_id=i.id)
+
+        for i in tera:
+            asgn_thera = tera.get(id_asign_therapy=i.id_asign_therapy)
+
+        thera_indi = Player_Indicator.objects.filter(player_id=id_player)
+        gamem(id_player,asgn_thera,thera_indi)
 
         context = {'message_alert' : global_vars.message_alert}
         context['image'] = global_vars.game_image  
@@ -851,6 +890,7 @@ class Indicators_list(LoginRequiredMixin, ListView):
 	redirect_field_name = "/login/"
 	def get_context_data(self, **kwargs):
 		context = super(Indicators_list, self).get_context_data(**kwargs)
+		context['Activities'] = Player.objects.all
 		context['QRM_color'] = "QRM_orange"
 		context['message_alert'] = "alert-info"
 		context['message_head'] = "Info, "
@@ -1136,6 +1176,28 @@ def Therapies_list(request):
 	}
 	return render(request,'therapies_list.html',context)
 
+def Summary(request):
+
+	template_name="treatments_list.html"
+	login_url='/login/'
+	redirect_field_name = "/login/"
+
+	context = {
+	'QRM_color' : "QRM_orange",
+	'message_alert' : "alert-info",
+	'message_head' : "Info, ",
+	'message_text' : "Actual list of Treatments.",
+	'title' : "Treatments",
+	'subtitle' : "Configure your Treatments",
+	'patients' : Profile.objects.all(),
+	'treatments' : Treatment.objects.all(),
+	'therapies' : Asign_Therapy.objects.all(),
+	'activities' : Therapy_Player.objects.all()
+	}
+	return render(request,'summary.html',context)
+
+
+
 @login_required(login_url='login')
 def Therapists_list(request):
 	template_name="therapists_list.html"
@@ -1377,6 +1439,9 @@ class Update_player(LoginRequiredMixin, UpdateView):
 		context['title'] = "Update the Activity"
 		context['subtitle'] = "Update and Configure your activity"
 		context['btn_label'] = 'Update'
+		context['therapy'] = Therapy_Player.objects.filter(player_id=self.object.id)
+		context['indicators'] = Indicator.objects.all()
+		context['playerindicators'] = Player_Indicator.objects.filter(player_id=self.object.id)
 		context['activities'] = Player_Content.objects.filter(player_id=self.object.id)
 		context['player_id'] = self.object.id
 		return context
@@ -1419,7 +1484,7 @@ class Add_therapy_player(LoginRequiredMixin, CreateView):
 		context['btn_label'] = 'Update'
 		return context
 
-class Create_player(LoginRequiredMixin, CreateView):
+"""class Create_player(LoginRequiredMixin, CreateView):
 	model = Player
 	form_class = UploadPlayerForm
 	template_name="create_player.html"
@@ -1437,10 +1502,83 @@ class Create_player(LoginRequiredMixin, CreateView):
 		context['subtitle'] = "Create your activity"
 		context['btn_label'] = "Create"
 		return context
+"""
+def Create_player(request):
+	context = {
+		'QRM_color'		: "QRM_blue"
+	}
+	if request.method == 'POST':
+		context['form'] = UploadPlayerForm(request.POST)
+		context['form1'] = UploadOneIndicatorForm(request.POST)
+		context['form2'] = UploadOneTherapyPlayerForm(request.POST)
+		if context['form'].is_valid() & context['form1'].is_valid() & context['form2'].is_valid():
+#			indi = Player_Indicator()
+			Player = context['form'].save(commit=False)
+			Player_Indicator = context['form1'].save(commit=False)
+			Therapy_Player = context['form2'].save(commit=False)
+			Player.name = context['form'].cleaned_data['name']
+			Player.description = context['form'].cleaned_data['description']
+			Player.purpose = context['form'].cleaned_data['purpose']
+			Player.save()
+			Player_Indicator.indicator = context['form1'].cleaned_data['indicator']
+			Player_Indicator.player = Player
+			try:
+				Player_Indicator.indicator
+				Player_Indicator.save()
+			except:
+				Player_Indicator.player = Player
+			Therapy_Player.therapy = context['form2'].cleaned_data['therapy']
+			Therapy_Player.player = Player
+			Therapy_Player.save()
+			return render(request, 'Game_settings.html', context)
+	else:
+		context['form'] = UploadPlayerForm()
+		context['form1'] = UploadOneIndicatorForm()
+		context['form2'] = UploadOneTherapyPlayerForm()
+	return render(request, 'create_player.html', context)
+"""
+def Update_player(request,pk):
+	context = {
+		'QRM_color'		: "QRM_orange",
+	}
+	if request.method == 'POST':
+		context['form'] = UploadPlayerForm(request.POST)
+		context['form1'] = UploadOneIndicatorForm(request.POST)
+		context['form2'] = UploadOneTherapyPlayerForm(request.POST)
+		if context['form'].is_valid() & context['form1'].is_valid() & context['form2'].is_valid():
+#			indi = Player_Indicator()
+			Player = context['form'].save(commit=False)
+			Player_Indicator = context['form1'].save(commit=False)
+			Therapy_Player = context['form2'].save(commit=False)
+			Player.name = context['form'].cleaned_data['name']
+			Player.description = context['form'].cleaned_data['description']
+			Player.purpose = context['form'].cleaned_data['purpose']
+			Player.save()
+			Player_Indicator.indicator = context['form1'].cleaned_data['indicator']
+			Player_Indicator.player = Player
+			try:
+				Player_Indicator.indicator
+				Player_Indicator.save()
+			except:
+				Player_Indicator.player = Player
+			Therapy_Player.therapy = context['form2'].cleaned_data['therapy']
+			Therapy_Player.player = Player
+			Therapy_Player.save()
+			context['therapy'] = Therapy_Player.objects.filter(player_id=self.object.id)
+			context['indicators'] = Indicator.objects.all()
+			context['playerindicators'] = Player_Indicator.objects.filter(player_id=self.object.id)
+			context['activities'] = Player_Content.objects.filter(player_id=self.object.id)
+			context['player_id'] = self.object.id
+			return render(request, 'Game_settings.html', context)
+	else:
+		context['form'] = UploadPlayerForm()
+		context['form1'] = UploadOneIndicatorForm()
+		context['form2'] = UploadOneTherapyPlayerForm()
+	return render(request, 'player_detail.html', context)
 
 class Create_indicator(LoginRequiredMixin, CreateView):
 	model = Indicator
-	form_class = UploadIndicatorForm
+	form_class = UploadIndicatorFormbeta
 	template_name="indicator_details.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1456,7 +1594,7 @@ class Create_indicator(LoginRequiredMixin, CreateView):
 		context['subtitle'] = "Create your indicators"
 		context['btn_label'] = "Create"
 		return context
-
+"""
 class Update_indicator(LoginRequiredMixin, UpdateView):
 	model = Indicator
 	form_class = UploadIndicatorForm
@@ -1493,16 +1631,23 @@ def Create_treatment(request):
 	context = {
 		'message_alert' : 'alert-info',
 		'message_head' : 'Info!',
-		'message_text' : 'Create a Treatment.' 
+		'message_text' : 'Create a Treatment.',
+		'QRM_color'	: "QRM_blue"
 	}
 
 	if request.method == 'POST':
 		context['form'] = UploadTreatmentForm(request.POST)
-		if context['form'].is_valid():
+		context['form1'] = UploadOnePlayerTherapyForm(request.POST)
+		context['form2'] = UploadAsignTherapyForm(request.POST)
+		if context['form'].is_valid() & context['form1'].is_valid() & context['form2'].is_valid():
 			supervise = Supervise()
 			req = request.user.id
 			thera = Therapist.objects.get(user_id=req)
 			Treatment = context['form'].save(commit=False)
+			Therapy_Player = context['form1'].save(commit=False)
+			Asign_Therapy = context['form2'].save(commit=False)
+			Therapy_Player.player = context['form1'].cleaned_data['player']
+			Asign_Therapy.therapy = context['form2'].cleaned_data['therapy']
 			Treatment.profile = context['form'].cleaned_data['profile']
 			Treatment.start_date = context['form'].cleaned_data['start_date']
 			Treatment.end_date = context['form'].cleaned_data['end_date']
@@ -1512,11 +1657,26 @@ def Create_treatment(request):
 			supervise.treatment = Treatment
 			supervise.therapist = thera
 			supervise.save()
-			context['message_alert'] = 'alert-success'
-			context['message_head'] = 'Success!!. '
-			context['message_text'] = 'Changes saved successfully'
+			try:
+				Asign_Therapy.therapy
+				Asign_Therapy.save()
+			except:
+				context['message_alert'] = 'alert-success'
+				context['message_head'] = 'Success!!. '
+				context['message_text'] = 'Changes saved successfully'
+			try:
+				Therapy_Player.player
+				Therapy_Player.save()
+			except:
+				context['message_alert'] = 'alert-success'
+				context['message_head'] = 'Success!!. '
+				context['message_text'] = 'Changes saved successfully'
+			return render(request, 'settings.html', context)
+
 	else:
 		context['form'] = UploadTreatmentForm()
+		context['form1'] = UploadOnePlayerTherapyForm()
+		context['form2'] = UploadAsignTherapyForm()
 	return render(request, 'treatment_details.html', context)
 
 class Update_treatment(LoginRequiredMixin, UpdateView):
@@ -1548,35 +1708,42 @@ class Treatment_delete(DeleteView):
 def Create_therapy(request):
 
 	context = {
-		'message_alert' : 'alert-info',
-		'message_head' : 'Info!',
-		'message_text' : 'Create a Therapy.', 
+		'QRM_color'	: "QRM_blue" 
 	}
 
 	if request.method == 'POST':
 		context['form'] = UploadTherapyForm(request.POST)
+		context['form1'] = UploadOnePlayerTherapyForm(request.POST)
 		context['form2'] = UploadAsignForm(request.POST)
 		if context['form'].is_valid() & context['form2'].is_valid():
 			TAT = Therapist_Asign_Therapy()
 			req = request.user.id
 			thera = Therapist.objects.get(user_id=req)
 			Therapy = context['form'].save(commit=False)
+			Therapy_Player = context['form1'].save(commit=False)
 			Asign_Therapy = context['form2'].save(commit=False)
 			Therapy.profile = context['form'].cleaned_data['name']
 			Therapy.description = context['form'].cleaned_data['description']
 			Therapy.enabled = context['form'].cleaned_data['therapy_type']
 			Therapy.save()
+			Therapy_Player.therapy = Therapy
+			Therapy_Player.player = context['form1'].cleaned_data['player']
 			Asign_Therapy.treatment = context['form2'].cleaned_data['treatment']
 			Asign_Therapy.therapy = Therapy
 			Asign_Therapy.save()
 			TAT.asign_therapy = Asign_Therapy
 			TAT.therapist = thera
 			TAT.save()
-			context['message_alert'] = 'alert-success'
-			context['message_head'] = 'Success!!. '
-			context['message_text'] = 'Changes saved successfully'
+			try:
+				Therapy_Player.player
+				Therapy_Player.save()
+			except:
+				context['message_alert'] = 'alert-success'
+				context['message_head'] = 'Success!!. '
+				context['message_text'] = 'Changes saved successfully'
 	else:
 		context['form'] = UploadTherapyForm()
+		context['form1'] = UploadOnePlayerTherapyForm()
 		context['form2'] = UploadAsignForm()
 	return render(request, 'therapy_details.html', context)
 
@@ -1646,7 +1813,7 @@ class Categories_list(LoginRequiredMixin, ListView):
 		return context
 
 class Create_category(LoginRequiredMixin, CreateView):
-	model = Indicator
+	model = Category
 	form_class = UploadCategoryForm
 	template_name="category_details.html"
 	login_url='/login/'
@@ -1886,6 +2053,33 @@ def Results_details(request, pk):
 		'subtitle' : "Add the data that you want"
 	}	
 	return render(request, 'results_details.html', context)  
+
+def Create_indicator(request):
+	context = {
+		'QRM_color'		: "QRM_blue"
+	}
+
+	if request.method == 'POST':
+		context['form'] = UploadIndicatorFormbeta(request.POST, request=request)
+		if context['form'].is_valid():
+			indi = Player_Indicator()
+			#print(indi.player)
+			print(indi)
+			player = context['form'].cleaned_data['player']
+			indi.player = Player.objects.get(name=player)
+			indicator = context['form'].cleaned_data['indicator']
+			print(indicator)
+			indi.indicator = Indicator.objects.get(name=indicator)
+			try:
+				PLINDI = Player_Indicator.objects.get(player=indi.player,indicator=indi.indicator)
+			except PLINDI.DoesNotExist:
+				indi.save()
+				return render(request, 'indicators_list.html', context)
+			return render(request, 'indicators_list.html', context)
+
+	else:
+		context['form'] = UploadIndicatorFormbeta(request=request)
+	return render(request, 'indicator_details.html', context)
 
 @login_required(login_url='login')
 def edit_name(request):

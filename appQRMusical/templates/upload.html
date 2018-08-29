@@ -7,21 +7,29 @@
     <h1 class="page-header">
         {% if 'update' in request.get_full_path %}
             Multimedia Edit
+        <h2 class="form-signin-heading">Edit the file/files </h2>
         {% else %}
             Upload Files
+        <h2 class="form-signin-heading">Select your files to upload</h2>
         {% endif %}
     </h1>
 
     <div class="jumbotron">
-        <h2 class="form-signin-heading">Select your files to upload</h2>
 
         <form method="post" enctype="multipart/form-data" class="form-signin">
             
             {% csrf_token %}
             <center>
-                <p>{{ form.as_p }}</p>
+				{% if object.file %}
+  					<audio controls style="width: 100%;">
+					<source src="/{{ object.file.url }}" type="audio/mp3">
+					Your browser does not support the audio element.
+					</audio>
+					{% endif %}
+                <p>{{ form.file }}</p>
+                <img src="/{{ object.image.url }}" style="width: 100px;">
+                <p>{{ form.image }}</p>
             </center>
-
             <br>
             <input class="btn btn-default" type="submit" value="Upload" />
         

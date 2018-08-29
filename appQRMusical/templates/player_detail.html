@@ -23,7 +23,18 @@
 			<center>
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
-				    {{ form.as_p }}
+				    {{ form.as_p }}<h2>List of indicators active:</h2>
+                    {% for i in playerindicators %}
+                    <input type="checkbox" disabled checked name="i.indicator" value="i.id_indicator">{{i.indicator}}
+                    {% endfor %}
+                    {{form1.as_p}}
+                    <br><br>
+                    <a>List of therapies associated with this activity:</a>
+                    {% for i in therapy %}
+                    <a>{{i.therapy}},</a>
+                    {% endfor %}
+                    {{form2.as_p}}
+                    <br><br>
 				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
 				</form>
 			</center>
@@ -44,7 +55,6 @@
 					<th>Image</th>
 					<th>Name</th>
 					<th>Code</th>
-					<th>QR</th>						
 					<th>Track</th>	
 					<th>unlink</th>						
 
@@ -53,25 +63,17 @@
 			<tbody>
 
 				{% for son in activities %}
-					<tr onclick="document.location = '/';">
-	      				<th scope="row" style="width: 3%;">{{ son.id }}</th>
+					<tr >
+	      				<th scope="row" style="width: 5%;">{{ son.id }}</th>
 	      				<td style="width: 10%;"><img src="/{{ son.content.multimedia.image.url }}" style="width: 100px;"></td>
-	      				<td style="width: 5%;">{{ son.content.multimedia.name }}</td>
-	      				<td style="width: 5%;">
+	      				<td style="width: 10%;">{{ son.content.multimedia.name }}</td>
+	      				<td style="width: 10%;">
 	      					{% if son.content.code %}
 	                            {{son.content.code }}
 							{% endif %}
 						</td>
 
-						<td>
-							<a href="{% url 'multimedia_detail' son.pk %}">
-								<div class="btn btn-sm btn-info">
-									<p>QR</p>
-								</div>
-							</a>								
-						</td>
-
-	      				<td style="width: 20%;">
+	      				<td style="width: 40%;">
 	      					{% if son.content.multimedia.file %}
 	      					<audio controls style="width: 100%;">
 								<source src="/{{ son.file.url }}" type="audio/mp3">

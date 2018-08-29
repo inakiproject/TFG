@@ -2,21 +2,16 @@
 {% extends "body.html" %}
 
 {% block content_wrapper %}
-<a href="{% url 'game_settings' %}">
-	<div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
-</a>
-<a href="{% url 'create_category' %}">
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-plus-circle" style="font-size:60px"></i></button>
-	</div>
-</a>
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 <ul>
-  <strong><li><a href="{% url 'home' %}">Home</a></li>
+  <strong>
   <li><a href="{% url 'settings' %}">Settings</a></li>
-  <li><a href="{% url 'activity_settings' %}"><i class="glyphicon glyphicon-arrow-right" ></i>Activity Settings</a></li>
-  <li><a href="{% url 'game_settings' %}"><i class="glyphicon glyphicon-arrow-right" ></i>Game Settings</a></li>
-  <li><a class="active" href="{% url 'categories_list' %}"><i class="glyphicon glyphicon-arrow-right" ></i>Category List</a></li>
+  <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
+  <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
+  <li><a href="{% url 'game_settings' %}">Game Settings</a></li>
+  <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
+  <li><a class="active" href="{% url 'categories_list' %}">Category List</a></li>
 </strong>
 </ul>
 	<div class="QRM_box_in">
@@ -75,7 +70,5 @@ function  toggle_select(id) {
 }	
 
 </script>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

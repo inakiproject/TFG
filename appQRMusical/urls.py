@@ -1,5 +1,5 @@
 from django.conf.urls import include, url
-from appQRMusical.views import Home, Identify, Disconnect, Settings, Game_settings, Play, Songs, List, Gallery, Multimedia_detail, Multimedia_delete, Players_list, Users_list, Update_player, Update_user, User_ID, Multi_ID, Multi_ID_delete, Create_player, Create_user, Multimedia_update, Player_delete, ID_delete, User_delete, User, Match, Match_list, Identify_ID, Therapists_list, Treatments_list, Therapies_list, Create_therapist, Create_treatment, Treatment_delete, Update_treatment, Diagnostic_list, Create_diagnostic, Update_diagnostic, Delete_diagnostic, Create_therapy, Update_therapy, Therapy_delete, Activity_settings, Indicators_list, Create_indicator, Update_indicator, Indicator_delete, Categories_list, Update_category, Category_delete, Create_category, Add_category_player, Results, Results_details, Add_therapy_player, Therapy_player_list,  Delete_therapy_player
+from appQRMusical.views import Home, Identify, Disconnect, Settings, Game_settings, Play, Songs, List, Gallery, Multimedia_detail, Multimedia_delete, Players_list, Users_list, Update_player, Update_user, User_ID, Multi_ID, Multi_ID_delete, Create_player, Create_user, Multimedia_update, Player_delete, ID_delete, User_delete, User, Match, Match_list, Identify_ID, Therapists_list, Treatments_list, Therapies_list, Create_therapist, Create_treatment, Treatment_delete, Update_treatment, Diagnostic_list, Create_diagnostic, Update_diagnostic, Delete_diagnostic, Create_therapy, Update_therapy, Therapy_delete, Activity_settings, Indicators_list, Create_indicator, Update_indicator, Indicator_delete, Categories_list, Update_category, Category_delete, Create_category, Add_category_player, Results, Results_details, Add_therapy_player, Therapy_player_list,  Delete_therapy_player, Summary
 from . import views
 
 # For load images in dev mode
@@ -64,7 +64,7 @@ urlpatterns = [
 	url(r'^settings/players_list/(?P<pk>\d+)/update/$', Update_player.as_view(), name='update_player'),
 	url(r'^settings/players_list/category_player/$', Add_category_player.as_view(), name='add_category_player'), 
 	url(r'^settings/players_list/(?P<pk>\d+)/delete/$', Player_delete.as_view(), name='player_delete'), 
-	url(r'^settings/players_list/create/$', Create_player.as_view(), name='create_player'), 
+	url(r'^settings/players_list/create/$', Create_player, name='create_player'), 
 	url(r'^settings/players_list/(?P<id>\d+)/add_multimedia_to_player/$', views.add_multimedia_to_player, name='add_multimedia_to_player'), 
 	url(r'^settings/players_list/(?P<id_player>\d+)/add_multimedia_to_player/(?P<id_multimedia>\d+)/$', views.add_multimedia_to_player_function, name='add_multimedia_to_player_function'), 
 	url(r'^settings/players_list/(?P<id_player>\d+)/update/(?P<id_multimedia>\d+)/$', views.del_multimedia_of_player_function, name='del_multimedia_of_player_function'), 
@@ -116,8 +116,11 @@ urlpatterns = [
 
 	#Settings - Indicators
 	url(r'^settings/activities/indicators/$', Indicators_list.as_view(), name='indicators_list'),
-	url(r'^settings/activities/indicators/create/$', Create_indicator.as_view(), name='create_indicator'),
+	url(r'^settings/activities/indicators/create/$', Create_indicator, name='create_indicator'),
 	url(r'^settings/activities/indicators/(?P<pk>\d+)/update/$', Update_indicator.as_view(), name='update_indicator'),
 	url(r'^settings/activities/indicators/(?P<pk>\d+)/delete/$', Indicator_delete.as_view(), name='indicator_delete'),  
+
+	#Settings - Summary
+	url(r'^settings/activities/summary/$', Summary, name='summary'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
