@@ -116,7 +116,7 @@ urlpatterns = [
 
 	#Settings - Indicators
 	url(r'^settings/activities/indicators/$', Indicators_list.as_view(), name='indicators_list'),
-	url(r'^settings/activities/indicators/create/$', Create_indicator, name='create_indicator'),
+	url(r'^settings/activities/indicators/create/$', Create_indicator.as_view(), name='create_indicator'),
 	url(r'^settings/activities/indicators/(?P<pk>\d+)/update/$', Update_indicator.as_view(), name='update_indicator'),
 	url(r'^settings/activities/indicators/(?P<pk>\d+)/delete/$', Indicator_delete.as_view(), name='indicator_delete'),  
 

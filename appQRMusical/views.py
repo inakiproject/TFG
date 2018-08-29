@@ -911,6 +911,7 @@ class Therapy_player_list(LoginRequiredMixin, ListView):
 		context['message_head'] = "Info, "
 		context['message_text'] = "List of Therapies associated with activities."
 		context['title'] = "Therapy-Activities"
+		context['activities'] = Player.objects.all()
 		context['subtitle'] = "Configure your Therapies-Activities"
 		return context
 
@@ -1575,10 +1576,10 @@ def Update_player(request,pk):
 		context['form1'] = UploadOneIndicatorForm()
 		context['form2'] = UploadOneTherapyPlayerForm()
 	return render(request, 'player_detail.html', context)
-
+"""
 class Create_indicator(LoginRequiredMixin, CreateView):
 	model = Indicator
-	form_class = UploadIndicatorFormbeta
+	form_class = UploadIndicatorForm
 	template_name="indicator_details.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1594,7 +1595,7 @@ class Create_indicator(LoginRequiredMixin, CreateView):
 		context['subtitle'] = "Create your indicators"
 		context['btn_label'] = "Create"
 		return context
-"""
+
 class Update_indicator(LoginRequiredMixin, UpdateView):
 	model = Indicator
 	form_class = UploadIndicatorForm
@@ -2053,7 +2054,7 @@ def Results_details(request, pk):
 		'subtitle' : "Add the data that you want"
 	}	
 	return render(request, 'results_details.html', context)  
-
+"""
 def Create_indicator(request):
 	context = {
 		'QRM_color'		: "QRM_blue"
@@ -2080,7 +2081,7 @@ def Create_indicator(request):
 	else:
 		context['form'] = UploadIndicatorFormbeta(request=request)
 	return render(request, 'indicator_details.html', context)
-
+"""
 @login_required(login_url='login')
 def edit_name(request):
 	context = {
