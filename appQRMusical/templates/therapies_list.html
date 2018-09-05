@@ -4,22 +4,22 @@
 {% block content_wrapper %}
 <ul class="ullist">
   <strong>
-  <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
-  <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
-  <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
-  <li><a class="ullista" href="{% url 'results' %}">Results</a></li>
-  <li><a class="ullista" href="{% url 'users_list' %}">Patients</a></li>
-  <li><a class="ullista" href="{% url 'treatments_list' %}">Treatments </a></li>
-  <li><a class="ullistactive" href="{% url 'therapies_list' %}">Therapies </a></li>
-  <li><a class="ullista" href="{% url 'user' %}">User </a></li>
-  <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
+  <li><a class="ullista" href="{% url 'settings' %}">Menú Principal</a></li>
+  <li><a class="ullista" href="{% url 'users_list' %}">Pacientes</a></li>
+  <li><a class="ullista" href="{% url 'gallery' %}">Contenido</a></li>
+  <li><a class="ullista" href="{% url 'therapists_list' %}">Especialistas </a></li>
+  <li><a class="ullista" href="{% url 'treatments_list' %}">Tratamientos </a></li>
+  <li><a class="ullistactive" href="{% url 'therapies_list' %}">Terapias </a></li>
+  <li><a class="ullista" href="{% url 'activity_settings' %}">Actividades</a></li>
+  <li><a class="ullista" href="{% url 'results' %}">Resultados</a></li>
+  <li><a class="ullista" href="{% url 'summary' %}">Inf. General</a></li>
 </strong>
 </ul>
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 		<a href="{% url 'create_therapy' %}">
 			<div class="btn btn-sm btn-info">
-				<p>Create Therapy</p>
+				<p>Añadir Terapia</p>
 			</div>	
 		</a>
 	<div class="QRM_box_in">
@@ -27,39 +27,42 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Name of the therapy</th>
-						<th>Type</th>
-						<th>Treatment code/patient</th>
-						<th>Therapist</th>
-						<th>Description</th>
-                        <th>Delete</th>	
+						<th>Nombre</th>
+						<th>Tipo</th>
+						<th>Creado</th>
+						<th>Descripción</th>
+                        <th>Eliminar</th>	
 			    	</tr>
 				</thead>
 				<tbody>
 
-				{% for object in asign_therapy %}
+				{% for object in object_list %}
 
-						<tr onclick="document.location = '{% url 'update_therapy' object.asign_therapy.therapy.id %}';">
+						<tr onclick="document.location = '{% url 'update_therapy' object.id %}';">
 		      				<th scope="row" style="width: 15%; vertical-align: middle;">
-                                {{ object.asign_therapy.therapy }}
+                                {{ object }}
                             </th>
 
 		      				<td style="width: 15%; vertical-align: middle;">
-                                {{ object.asign_therapy.therapy.therapy_type }}
+                                {{ object.tipo }}
 		      				</td>
 
-		      				<td style="width: 15%; vertical-align: middle;">{{ object.asign_therapy.treatment.id }} {{ object.asign_therapy.treatment.profile }}</td>
-
-		              				<td style="width: 15%; vertical-align: middle;"><strong>{{ object.therapist.name }}</strong></td>
-
-		      				<td style="width: 50%; vertical-align: middle;">{{ object.asign_therapy.therapy.description }}</td>
+   		              	    <td style="width: 15%; vertical-align: middle;">{% for i in asign_therapy %}
+                            {% for j in i.asigna_terapia.terapia.all %}
+                                    {% if j == object %}
+                                        <strong>{{ i.especialista.nombre }}</strong>
+            				    	{% endif %}
+        					    {% endfor %}
+                            {% endfor %}
+                            </td>
+		      				<td style="width: 50%; vertical-align: middle;">{{ object.descripcion }}</td>
 
 
 							<td style=" vertical-align: middle;">
-								<form action="{% url 'therapy_delete' object.asign_therapy.therapy.id %}" method="post">
+								<form action="{% url 'therapy_delete' object.id %}" method="post">
 									{% csrf_token %}
 
-										<input type="hidden" name="object_id" value="{{ object.asign_therapy.therapy.id }}"/>
+										<input type="hidden" name="object_id" value="{{ object.id  }}"/>
 										<button type="submit" class="btn btn-danger btn-sm">
 											<p>✖</p>
 										</button>
@@ -77,57 +80,9 @@
 		<a href="{% url 'create_therapy' %}">
 			<div class="btn btn-sm btn-info">
 
-				<p>Create Therapy</p>
+				<p>Añadir Terapia</p>
 			</div>	
 		</a>
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h1>SCANNING...</h1>
-    <div class="spinner">
-  <div class="rect1"></div>
-  <div class="rect2"></div>
-  <div class="rect3"></div>
-  <div class="rect4"></div>
-  <div class="rect5"></div>
-</div>
-    <h2>Put the brazalet on the scanner</h2>
-  </div>
-
-</div>
-
-<script>
-// Get the modal
-var modal = document.getElementById('myModal');
-
-// Get the button that opens the modal
-//var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal 
-function btn() {
-    modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-</script>
-
 
 	</div>
 </div>

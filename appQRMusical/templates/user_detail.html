@@ -11,9 +11,12 @@
 		<div class="jumbotron {{ QRM_color }}">
 			<center>
 				<form action="" method="post" enctype="multipart/form-data">
+                    {% if image.imagen %}
+                    <img src="/{{ image.imagen.url }}" style="width: 100px;">
+                    {% endif %}
 					{% csrf_token %}
 				    {{ form.as_p }}
-				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
+				    <input type="submit" value="Confirmar" class="btn btn-sm btn-success"/>
 				</form>
 			</center>
 		</div>

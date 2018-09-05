@@ -12,11 +12,12 @@
 			<center>
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
-				    {{ form2.as_p }}
 				    {{ form.as_p }}
-                    <strong><p>Vinculate with an Activity (Optional):</p></strong>
+                    <strong><p>Vincular con un tratamiento (Opcional):</p></strong>
+				    {{ form2.as_p }}
+                    <strong><p>Vincular con una actividad (Opcional):</p></strong>
 				    {{ form1.as_p }}
-				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
+				    <input type="submit" value="Confirmar" class="btn btn-sm btn-success"/>
 				</form>
 			</center>
 		</div>

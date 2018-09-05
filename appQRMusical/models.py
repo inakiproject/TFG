@@ -7,16 +7,17 @@ from django.utils.timezone import datetime
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from datetime import date
 
-Values_Online = [
-    ("yes", "yes"),
+Valores_Online = [
+    ("si", "si"),
     ("no", "no"),
 ]
-Gender_Choice = [
-    ("Male","Male"),
-    ("Female","Female"),
+Genero = [
+    ("Masculino","Masculino"),
+    ("Femenino","Femenino"),
 ]
-Level_Choice = [
+Nivel = [
     (1,'1'),
     (2,'2'),
     (3,'3'),
@@ -26,19 +27,33 @@ Level_Choice = [
     (7,'7'),
 ]
 
-# Create your models here.
-class Player(models.Model):
+# Creat tus modelos aqui.
+
+#Entidad que guarda los indicadores presentes en las actividades
+
+class Indicador(models.Model):
+    id_indicador =  models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50, blank=True)
+    descripcion = models.TextField(blank=True)
+    def __str__(self):
+        return self.nombre
+
+#Entidad que guarda las actividades
+
+class Actividad(models.Model):
 	id = models.AutoField(primary_key=True)
-	name = models.CharField(max_length=100)
-	description = models.CharField(max_length=200, blank=True)
-	purpose = models.CharField(max_length=100, blank=True)
+	nombre = models.CharField(max_length=100)
+	descripcion = models.CharField(max_length=200, blank=True)
+	proposito = models.CharField(max_length=100, blank=True)
+	indicador = models.ManyToManyField(Indicador, blank=True)
 
 	def __str__(self):
-		return self.name
+		return self.nombre
 
+#Directorio donde se suben los ficheros
 
 def directory_to_upload(self, file):
-    name, extension = os.path.splitext(file)
+    nombre, extension = os.path.splitext(file)
     extension.lower()
     directory = ''
 
@@ -53,141 +68,176 @@ def directory_to_upload(self, file):
 
     return os.path.join(directory, file)
 
-class Profile(models.Model):
-    id = models.AutoField(primary_key=True)
-    image = models.ImageField(upload_to='profiles/', blank=True)
-    name = models.CharField("Name",max_length=50)
-    surname = models.CharField("Surname",max_length=50)
-    date_of_birth = models.DateField(null=True,blank=True)
-    age = models.IntegerField("Age",default=0)
-    gender = models.CharField(max_length=10,choices = Gender_Choice, blank=True)
-    level = models.IntegerField(choices = Level_Choice,default=1)
-    code = models.CharField(max_length=8, blank=True)
-    online = models.CharField(max_length=10, choices=Values_Online, default="no")
-    def __str__(self):
-        return self.name
+def calcular_edad(self,fecha_de_nacimiento):
+    hoy = date.today()
+    return hoy.year - fecha_de_nacimiento.year - ((hoy.month, hoy.day) < (fecha_de_nacimiento.month, fecha_de_nacimiento.day))
 
-class Therapist(models.Model):
+#Entidad que guarda los pacientes existentes en el sistema
+
+class Paciente(models.Model):
+    id = models.AutoField(primary_key=True)
+    imagen = models.ImageField(upload_to='profiles/', blank=True)
+    nombre = models.CharField("Nombre",max_length=50)
+    apellido = models.CharField("Apellido",max_length=50)
+    fecha_de_nacimiento = models.DateField(null=True,blank=True)
+    edad = models.IntegerField(null=True,blank=True)
+    genero = models.CharField(max_length=10,choices = Genero, blank=True)
+    nivel = models.IntegerField(choices = Nivel,default=1)
+    codigo = models.CharField(max_length=8, blank=True)
+    online = models.CharField(max_length=10, choices=Valores_Online, default="no")
+    def __str__(self):
+        return self.nombre
+
+#Entidad que guarda los especialistas
+
+class Especialista(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField("Name",max_length=50)
-    surname = models.CharField("Surname",max_length=50)
+    nombre = models.CharField("Nombre",max_length=50)
+    apellido = models.CharField("Apellido",max_length=50)
     email = models.EmailField()    
 
 @receiver(post_save, sender=User)
 def create_therapist_profile(sender, instance, created, **kwargs):
     if created:
-        Therapist.objects.create(user=instance)
+        Especialista.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_therapist_profile(sender, instance, **kwargs):
-    instance.therapist.save()
+    instance.especialista.save()
 
 
-class Therapy(models.Model):
+#Entidad que guarda los tratamientos
+
+class Tratamiento(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField("Name",max_length=50) 
-    description = models.TextField(blank=True)
-    therapy_type = models.CharField("Type",max_length=50)
+    nombre = models.CharField("Nombre",max_length=50) 
+    paciente = models.ForeignKey(Paciente,on_delete=models.CASCADE)
+    fecha_inicio = models.DateField(null=True,blank=True)
+    fecha_fin = models.DateField(null=True,blank=True)
+    descripcion = models.TextField(blank=True)
+    activado = models.BooleanField(default=False)
     def __str__(self):
-        return self.name
+        return self.nombre
 
-class Treatment(models.Model):
+
+#Entidad que guarda las terapias
+
+class Terapia(models.Model):
     id = models.AutoField(primary_key=True)
-    profile = models.ForeignKey(Profile,on_delete=models.CASCADE)
-    start_date = models.DateField(null=True,blank=True)
-    end_date = models.DateField(null=True,blank=True)
-    description = models.TextField(blank=True)
-    enabled = models.BooleanField(default=False)
+    nombre = models.CharField("Nombre",max_length=50) 
+    descripcion = models.TextField(blank=True)
+    tipo = models.CharField("Tipo",max_length=50)
     def __str__(self):
-        return str(self.id) + str('-') + self.profile.name
+        return self.nombre
 
-class Asign_Therapy(models.Model):
+#Entidad que guarda las asiganaciones de las terapias y los tratamientos
+
+class Asigna_Terapia(models.Model):
     id_asign_therapy = models.AutoField(primary_key=True)
-    therapy = models.ForeignKey(Therapy,on_delete=models.CASCADE)
-    treatment = models.ForeignKey(Treatment,on_delete=models.CASCADE)
+    terapia = models.ManyToManyField(Terapia)
+    tratamiento = models.ForeignKey(Tratamiento,on_delete=models.CASCADE)
  
-class Therapist_Asign_Therapy(models.Model):
-    asign_therapy = models.ForeignKey(Asign_Therapy,on_delete=models.CASCADE)
-    therapist = models.ForeignKey(Therapist,on_delete=models.CASCADE)
-    date = models.DateField(null=True,blank=True)
+#Entidad que guarda el especialista ya la terapia asignada.
+
+class Especialista_Asigna_Terapia(models.Model):
+    asigna_terapia = models.ForeignKey(Asigna_Terapia,on_delete=models.CASCADE)
+    especialista = models.ForeignKey(Especialista,on_delete=models.CASCADE)
+    fecha = models.DateField(null=True,blank=True)
     class Meta:
-        unique_together = ("asign_therapy","therapist","date")
+        unique_together = ("asigna_terapia","especialista","fecha")
 
-class Supervise(models.Model):
-    therapist = models.ForeignKey(Therapist,on_delete=models.CASCADE)
-    treatment = models.ForeignKey(Treatment,on_delete=models.CASCADE)
+#Entidad que guarda el especialista que supervisa un tratamiento
+
+class Supervisa(models.Model):
+    especialista = models.ForeignKey(Especialista,on_delete=models.CASCADE)
+    tratamiento = models.ForeignKey(Tratamiento,on_delete=models.CASCADE)
     class Meta:
-        unique_together = ("therapist","treatment")
+        unique_together = ("especialista","tratamiento")
 
-class Diagnostic(models.Model):
-    id_diagnostic = models.AutoField(primary_key=True)
-    profile = models.ForeignKey(Profile,on_delete=models.CASCADE)
-    date = datetime.today()
-    assesment = models.CharField(max_length=50, blank=True)
-    notes = models.TextField(blank=True)
+#Entidad que guarda las actividades
 
-class Session(models.Model):
-    id_session = models.AutoField(primary_key=True)
-    asign_therapy = models.ForeignKey(Asign_Therapy,on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+class Diagnostico(models.Model):
+    id_diagnostico = models.AutoField(primary_key=True)
+    paciente = models.ForeignKey(Paciente,on_delete=models.CASCADE)
+    fecha = datetime.today()
+    valoracion = models.CharField(max_length=50, blank=True)
+    notas = models.TextField(blank=True)
 
-class Indicator(models.Model):
-    id_indicator =  models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50, blank=True)
-    description = models.TextField(blank=True)
+#Entidad que guarda las sesiones de los pacientes
+
+class Sesion(models.Model):
+    id_sesion = models.AutoField(primary_key=True)
+    asigna_Terapia = models.ForeignKey(Asigna_Terapia,on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+#Entidad que almacena los indicadores asociados a una actividad
+"""
+class Actividad_Indicador(models.Model):
+    actividad = models.ForeignKey(Actividad,on_delete=models.CASCADE)
+    indicador = models.ForeignKey(Indicador,on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ("actividad","indicador")
+"""
+#Entidad que guarda las actividades
+
+class Terapia_Actividad(models.Model):
+    actividad = models.ForeignKey(Actividad,on_delete=models.CASCADE)
+    terapia = models.ForeignKey(Terapia,on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ("actividad","terapia")
+
+#Entidad que guarda las actividades
+
+class Terapia_Indicador(models.Model):
+    terapia = models.ForeignKey(Terapia,on_delete=models.CASCADE)
+    indicador = models.ForeignKey(Indicador,on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ("terapia","indicador")
+
+#Entidad que guarda las actividades
+
+class Resultado_Sesion(models.Model):
+    sesion = models.ForeignKey(Sesion,on_delete=models.CASCADE)
+    indicador = models.ForeignKey(Indicador,on_delete=models.CASCADE)
+    actividad = models.ForeignKey(Actividad,on_delete=models.CASCADE)
+    resultado =  models.TextField(blank=True)
+    class Meta:
+        unique_together = ("sesion","indicador","actividad")
+
+#Entidad que guarda las actividades
+
+class Categoria(models.Model):
+    id_categoria =  models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50, blank=True)
     def __str__(self):
-        return self.name
+        return self.nombre
 
-class Player_Indicator(models.Model):
-    player = models.ForeignKey(Player,on_delete=models.CASCADE)
-    indicator = models.ForeignKey(Indicator,on_delete=models.CASCADE)
+#Entidad que guarda las actividades
+
+class Categoria_Actividad(models.Model):
+    categoria = models.ForeignKey(Categoria,on_delete=models.CASCADE)
+    actividad = models.ForeignKey(Actividad,on_delete=models.CASCADE)
     class Meta:
-        unique_together = ("player","indicator")
+        unique_together = ("categoria","actividad")
 
-class Therapy_Player(models.Model):
-    player = models.ForeignKey(Player,on_delete=models.CASCADE)
-    therapy = models.ForeignKey(Therapy,on_delete=models.CASCADE)
-    class Meta:
-        unique_together = ("player","therapy")
+#Entidad que guarda las actividades
 
-class Therapy_Indicator(models.Model):
-    therapy = models.ForeignKey(Therapy,on_delete=models.CASCADE)
-    indicator = models.ForeignKey(Indicator,on_delete=models.CASCADE)
-    class Meta:
-        unique_together = ("therapy","indicator")
+class Contenido(models.Model):
+    id_contenido =  models.AutoField(primary_key=True)
+    desripcion =  models.CharField(max_length=50, blank=True)
+    codigo = models.CharField(max_length=8, blank=True)
 
-class Result_Session(models.Model):
-    session = models.ForeignKey(Session,on_delete=models.CASCADE)
-    indicator = models.ForeignKey(Indicator,on_delete=models.CASCADE)
-    player = models.ForeignKey(Player,on_delete=models.CASCADE)
-    result =  models.TextField(blank=True)
-    class Meta:
-        unique_together = ("session","indicator","player")
+#Entidad que guarda las actividades
 
-class Category(models.Model):
-    id_category =  models.AutoField(primary_key=True)
-    category = models.CharField(max_length=50, blank=True)
-    def __str__(self):
-        return self.category
-
-class Category_Player(models.Model):
-    category = models.ForeignKey(Category,on_delete=models.CASCADE)
-    player = models.ForeignKey(Player,on_delete=models.CASCADE)
-    class Meta:
-        unique_together = ("category","player")
-
-class Content(models.Model):
-    id_content =  models.AutoField(primary_key=True)
-    desription =  models.CharField(max_length=50, blank=True)
-    code = models.CharField(max_length=8, blank=True)
-
-class Text(Content):
+class Texto(Contenido):
     data =  models.CharField(max_length=50, blank=True)
 
-class Multimedia(Content):
-	name = models.CharField(max_length=100)
+#Entidad que guarda las actividades
+
+class Multimedia(Contenido):
+	nombre = models.CharField(max_length=100)
 	file = models.FileField(upload_to=directory_to_upload, null=True, blank=True)
-	image = models.ImageField(upload_to='images/')
+	imagen = models.ImageField(upload_to='images/')
 	filetype = models.CharField(max_length=3)
 	datetime = models.DateTimeField(auto_now_add=True)
 
@@ -195,11 +245,13 @@ class Multimedia(Content):
 		ordering = ('datetime',)
 
 	def __str__(self):
-		return self.name
+		return self.nombre
 
-class Player_Content(models.Model):
-    player= models.ForeignKey(Player,on_delete=models.CASCADE)
-    content = models.ForeignKey(Content,on_delete=models.CASCADE)
+#Entidad que guarda las actividades
+
+class Actividad_Contenido(models.Model):
+    actividad= models.ForeignKey(Actividad,on_delete=models.CASCADE)
+    contenido = models.ForeignKey(Contenido,on_delete=models.CASCADE)
     class Meta:
-        unique_together = ("player","content")
+        unique_together = ("actividad","contenido")
 

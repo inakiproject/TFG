@@ -5,22 +5,22 @@
 
 <ul class="ullist">
   <strong>
-  <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
-  <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
-  <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
-  <li><a class="ullista" href="{% url 'results' %}">Results</a></li>
-  <li><a class="ullista" href="{% url 'users_list' %}">Patients</a></li>
-  <li><a class="ullistactive" href="{% url 'treatments_list' %}">Treatments </a></li>
-  <li><a class="ullista" href="{% url 'therapies_list' %}">Therapies </a></li>
-  <li><a class="ullista" href="{% url 'user' %}">User </a></li>
-  <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
+  <li><a class="ullista" href="{% url 'settings' %}">Menú Principal</a></li>
+  <li><a class="ullista" href="{% url 'users_list' %}">Pacientes</a></li>
+  <li><a class="ullista" href="{% url 'gallery' %}">Contenido</a></li>
+  <li><a class="ullista" href="{% url 'therapists_list' %}">Especialistas </a></li>
+  <li><a class="ullistactive" href="{% url 'treatments_list' %}">Tratamientos </a></li>
+  <li><a class="ullista" href="{% url 'therapies_list' %}">Terapias </a></li>
+  <li><a class="ullista" href="{% url 'activity_settings' %}">Actividades</a></li>
+  <li><a class="ullista" href="{% url 'results' %}">Resultados</a></li>
+  <li><a class="ullista" href="{% url 'summary' %}">Inf. General</a></li>
 </strong>
 </ul>
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 		<a href="{% url 'create_treatment' %}">
 			<div class="btn btn-sm btn-info">
-				<p>Add Treatment</p>
+				<p>Añadir tratamiento</p>
 			</div>	
 		</a>
 	<div class="QRM_box_in">
@@ -29,39 +29,39 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>#</th>
-						<th>Name of the patient</th>
-						<th>Start date</th>
-						<th>End date</th>
-						<th>Therapist</th>
-						<th>Description</th>
-						<th>Enabled</th>
-                        <th>Delete</th>				
+						<th>Nombre</th>
+						<th>Nombre del paciente</th>
+						<th>Fecha de inicio</th>
+						<th>Fecha de fin</th>
+						<th>Creado</th>
+						<th>Descripción</th>
+						<th>Activado</th>
+                        <th>Eliminar</th>				
 			    	</tr>
 				</thead>
 				<tbody>
 
 					    {% for object in supervise %}
 
-						        <tr onclick="document.location = '{% url 'update_treatment' object.treatment.id %}';">
+						        <tr onclick="document.location = '{% url 'update_treatment' object.tratamiento.id %}';">
 		              				<th scope="row" style="width: 3%; vertical-align: middle;">
-                                        {{ object.id }}
+                                        {{ object.tratamiento.nombre }}
                                     </th>
 
 		              				<td style="width: 15%; vertical-align: middle;">
-		              					{{ object.treatment.profile }}  					
+		              					{{ object.tratamiento.paciente }}  					
 		              				</td>
 
-		              				<td style="width: 15%; vertical-align: middle;">{{ object.treatment.start_date }}</td>
+		              				<td style="width: 15%; vertical-align: middle;">{{ object.tratamiento.fecha_inicio }}</td>
 
-		              				<td style="width: 15%; vertical-align: middle;">{{ object.treatment.end_date }}</td>
+		              				<td style="width: 15%; vertical-align: middle;">{{ object.tratamiento.fecha_fin }}</td>
 
-		              				<td style="width: 15%; vertical-align: middle;"><strong>{{ object.therapist.name }}</strong></td>
+		              				<td style="width: 15%; vertical-align: middle;"><strong>{{ object.especialista.nombre }}</strong></td>
 
-		              				<td style="width: 30%; vertical-align: middle;">{{ object.treatment.description }}</td>
+		              				<td style="width: 30%; vertical-align: middle;">{{ object.tratamiento.descripcion }}</td>
 
 		              				<td style="width: 5%; vertical-align: middle;">
-		              					{% if object.treatment.enabled %}
+		              					{% if object.tratamiento.activado %}
                                         <i class="fa fa-check-circle" style="font-size:40px;color:Green"></i>
                                         {% else %}
                                         <i class="fa fa-times-circle" style="font-size:40px;color:red"></i>
@@ -69,7 +69,7 @@
                                     </td>
 
 							        <td style=" vertical-align: middle;">
-								        <form action="{% url 'treatment_delete' object.treatment.id %}" method="post">
+								        <form action="{% url 'treatment_delete' object.tratamiento.id %}" method="post">
 									        {% csrf_token %}
 
 										        <input type="hidden" name="object_id" value="{{ object.id }}"/>
@@ -91,7 +91,7 @@
 
 		<a href="{% url 'create_treatment' %}">
 			<div class="btn btn-sm btn-info">
-				<p>Add Treatment</p>
+				<p>Añadir tratamiento</p>
 			</div>	
 		</a>
 </div>

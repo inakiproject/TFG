@@ -2,17 +2,11 @@
 
 {% block content_wrapper %}
 
-<h1>Chart type</h1>
-  <p class="btn btn-warning" value="bar" onclick="ChangeType(1)">Bar</p>
-  <p class="btn btn-warning" value="horizontalbar" onclick="ChangeType(2)">Horizontal Bar</p>
-  <p class="btn btn-warning" value="pie" onclick="ChangeType(3)">Pie</p>
-  <p class="btn btn-warning" value="doughnut" onclick="ChangeType(4)">Doughnut</p>
-
-        <canvas id="myChart"></canvas>
-
- <p><input class="btn btn-danger" value="Remove Data" onclick="removeData()"></input></p>
-
-<div class="col-sm-12 QRM_box {{QRM_color}}">
+{% for i in objects_treat %}
+<center><strong><h1>PACIENTE : {{i.paciente}} <> TRATAMIENTO : {{i}}</h1></strong></center>
+{% endfor %}
+<div style="font-size:14px" class="col-sm-5 QRM_box {{QRM_color}}">
+    <strong><p style="color:white">Aciertos/Fallos</p></strong>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
 
@@ -20,9 +14,9 @@
 				<thead>
 					<tr>
 						<th>#</th>
-						<th>ADD Data</th>
-						<th>Name of the activity</th>
-						<th>Date of the session</th>
+						<th>Añadir</th>
+						<th>Actividad</th>
+						<th>Fecha y hora de la sesión</th>
 			    	</tr>
 				</thead>
 				<tbody>
@@ -30,17 +24,17 @@
 {% for i in success %}
     {% for j in failures %}
 
-        {%if i.session.id_session == j.session.id_session %}
+        {%if i.sesion.id_sesion == j.sesion.id_sesion %}
 <tr>
-		 	<td style="width: 5%; vertical-align: middle;">{{ i.session.id_session }}</td>
+		 	<td style="width: 5%; vertical-align: middle;">{{ i.sesion.id_sesion }}</td>
 
             <td style="width: 10%; vertical-align: left;">
-            <p><input class="btn btn-warning" value="Add Data" onclick="addCorrectData({{i.result}}, '{{j.result}}', '{{i.session.date}}')"></input></p>
+            <p><button class="btn btn-info glyphicon glyphicon-plus-sign" onclick="addCorrectData({{i.resultado}}, '{{j.resultado}}', '{{i.sesion.fecha}}')"></button></p>
             </td>
 
-		 	<td style="width: 15%; vertical-align: middle;">{{ i.player }}</td>
+		 	<td style="width: 15%; vertical-align: middle;">{{ i.actividad }}</td>
 
-		 	<td style="width: 70%; vertical-align: middle;">{{i.session.date}}</td>
+		 	<td style="width: 70%; vertical-align: middle;">{{i.sesion.fecha}}</td>
 
 
 </tr>
@@ -55,15 +49,8 @@
 	</div>
 </div>
 
-<h1>Chart type</h1>
-  <p class="btn btn-warning" value="bar" onclick="ChangeTypeTiming(1)">Bar</p>
-  <p class="btn btn-warning" value="horizontalbar" onclick="ChangeTypeTiming(2)">Horizontal Bar</p>
-
-        <canvas id="myChartTiming"></canvas>
-
- <p><input class="btn btn-danger" value="Remove Data" onclick="removeDataTiming()"></input></p>
-
-<div class="col-sm-12 QRM_box {{QRM_color}}">
+<div style="font-size:14px" class="col-sm-5 QRM_box {{QRM_color}}">
+    <strong><p style="color:white">Tiempo</p></strong>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
 
@@ -71,24 +58,24 @@
 				<thead>
 					<tr>
 						<th>#</th>
-						<th>ADD Time</th>
-						<th>Name of the activity</th>
-						<th>Date of the session</th>
+						<th>Añadir</th>
+						<th>Actividad</th>
+						<th>Fecha y hora de la sesión</th>
 			    	</tr>
 				</thead>
 				<tbody>
 
 {% for i in time %}
 <tr>
-		 	<td style="width: 5%; vertical-align: middle;">{{ i.session.id_session }}</td>
+		 	<td style="width: 5%; vertical-align: middle;">{{ i.sesion.id_sesion }}</td>
 
             <td style="width: 10%; vertical-align: left;">
-            <p><input class="btn btn-warning" value="Add Data" onclick="addDataTiming({{i.result}}, '{{i.session.date}}')"></input></p>
+            <p><button class="btn btn-info glyphicon glyphicon-plus-sign" onclick="addDataTiming({{i.resultado}}, '{{i.sesion.fecha}}')"></button></p>
             </td>
 
-		 	<td style="width: 15%; vertical-align: middle;">{{ i.player }}</td>
+		 	<td style="width: 15%; vertical-align: middle;">{{ i.actividad }}</td>
 
-		 	<td style="width: 70%; vertical-align: middle;">{{i.session.date}}</td>
+		 	<td style="width: 70%; vertical-align: middle;">{{i.sesion.fecha}}</td>
 
 
 </tr>
@@ -99,8 +86,68 @@
 	</div>
 </div>
 
+<div style="font-size:12px" class="col-sm-2 QRM_box {{QRM_color}}">
+	<strong><p style="color:white">Mostrar/Ocultar</p></strong>
+	<div class="QRM_box_in">
+		<div class="QRM_wrapper_table">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Aciertos/Fallos</th>
+						<th>Tiempo</th>
+			    	</tr>
+				</thead>
+				<tbody>
+                    <tr>
+                        <td style="width: 50%; vertical-align: middle;"><button class="btn btn-info btn-lg" onclick="HideHits()">
+                        <span class="glyphicon glyphicon-eye-open"></span></button></td>
+                        <td style="width: 50%; vertical-align: middle;"><button class="btn btn-info btn-lg" onclick="HideTime()">
+                        <span class="glyphicon glyphicon-eye-open"></span></button></td>
+                    </tr>
+            </tbody>
+			</table>
+		</div>
+	</div>
+</div>
 
+<div class="col-sm-12" id="Hits">
+<h1>Tipo de diagrama</h1>
+  <p class="btn btn-warning" value="bar" onclick="ChangeType(1)">Barras</p>
+  <p class="btn btn-warning" value="horizontalbar" onclick="ChangeType(2)">Barras Horizontales</p>
+  <p class="btn btn-warning" value="pie" onclick="ChangeType(3)">Pastel</p>
+  <p class="btn btn-warning" value="doughnut" onclick="ChangeType(4)">Donut</p>
+        <canvas id="myChart"></canvas>
+ <p><input class="btn btn-danger" value="Remove Data" onclick="removeData()"></input></p>
+</div>
+
+<div class="col-sm-12" id="Time">
+<h1>Tipo de diagrama</h1>
+  <p class="btn btn-warning" value="bar" onclick="ChangeTypeTiming(1)">Barras</p>
+  <p class="btn btn-warning" value="horizontalbar" onclick="ChangeTypeTiming(2)">Barras horizontales</p>
+
+        <canvas id="myChartTiming"></canvas>
+
+ <p><input class="btn btn-danger" value="Remove Data" onclick="removeDataTiming()"></input></p>
+</div>
 <script>
+
+function HideHits() {
+    var x = document.getElementById("Hits");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
+function HideTime() {
+    var x = document.getElementById("Time");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
 
 var ctx = document.getElementById("myChart").getContext('2d');
 var colorF = 'rgba(255, 99, 132, 0.85)';
@@ -109,7 +156,7 @@ var chartData = {
         labels: [],
         datasets: [
         {
-            label: 'Successed Answers',
+            label: 'Respuestas acertadas',
             data: [],
             backgroundColor: [
                 'rgba(54, 162, 235, 0.85)'
@@ -119,7 +166,7 @@ var chartData = {
             ],
             borderWidth: 1
         },{
-            label: 'Failed Answers',
+            label: 'Respuestas falladas',
             data: [],
             backgroundColor: [
                colorF
@@ -220,7 +267,7 @@ var chartDataTiming = {
         labels: [],
         datasets: [
         {
-            label: 'Time of the execution',
+            label: 'Duracion de la actividad',
             data: [],
             backgroundColor: [
                 'rgba(75, 192, 192, 0.85)'

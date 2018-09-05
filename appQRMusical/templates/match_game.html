@@ -10,10 +10,11 @@
 	<div class="QRM_supercool_background" style="display:{{game_display}};">
 		<div class="col-sm-1" style="display:inline"></div>
 		<div class="col-sm-6 QRM_supercool_window">
-			<h1>Supercool!!!</h1>
-			<img src="/files/static/congrats.png">
-			<p>You are awesome {{ player_name }}!!</p>
-			<p>click <a href="{% url 'play' %}" class="btn btn-default">← BACK</a> to select another game, and play again!.</p>
+			<h1>Lo has conseguido!!!</h1>
+			<a  href="{% url 'choose_treatment' %}"><img src="/files/static/congrats.png"><a>
+			<p>Eres increible {{ player_name }}!!</p>
+			<p>Aciertos: {{game_success}} Fallos: {{game_fail}}</p>
+            <p>Pulsa sobre la imagen para volver atrás</p>
 		</div>
 		<div class="col-sm-2" style="display:inline"></div>
 	</div>
@@ -32,7 +33,7 @@
 			</div>
 
 			<div style="width:200; overflow: hidden">
-			        <h5>Scan the Card shown in the image from the list <strong>{{ name_player }}</strong></h5>
+			        <h5>Busca la tarjeta de la imagen de la lista <strong>{{ name_player }} para completar el juego!</strong></h5>
 			        {% if not image_prev %}
 			                <img src="/files/static/Who.png" width="400" title="Who" alt="Who">             
 			        {% else %}
@@ -48,7 +49,7 @@
 <!--
                                     <a id="file" href="/{{ file }}" target="_blank" class="btn btn-default" >play file</a> 
 --> 
-                                    <a href="{% url 'match_game_image' id_player %}" class="btn btn-default"> Play</a>
+                                    <a href="{% url 'match_game_image' id_player %}" class="btn btn-default"> Jugar!</a>
                                                                                  
 			                {% endif %}
 			        </div>
@@ -63,7 +64,7 @@
 	<div class="col-sm-12 QRM_box alert alert-danger" style="display: none;" id="danger">
 	</div>
 	<div class="col-sm-12 QRM_box alert alert-info" id="info">
-		Scan the card!
+		Escanea una tarjeta!!!
 	</div>
 	
 </div>
@@ -108,14 +109,14 @@
         	var danger = $('#danger');
         	var info = $('#info')
         	if (data.message_alert == 'alert-danger') {
-        		danger.html("<strong>Error!</strong>The scanned card '" + data.message_text + "' does not exist match, is not a " + data.name_player + " or has already been counted. <strong>Please try another one.</strong>")
+        		danger.html("<strong>Error!</strong>La tarjeta escaneada '" + data.message_text + "' no coincide con " + data.name_player + " o ya ha sido leida. <strong>Intentalo de nuevo!!!</strong>")
         		danger.show()
         		info.hide()
 
         		console.log('danger')
         	} if (data.message_alert == 'alert-success')  {
 				danger.hide()
-                info.html("<strong>WELL DONE!</strong>The scanned card is correct</strong>")
+                info.html("<strong>BIEN HECHO!</strong>La tarjeta escaneada es la correcta!!</strong>")
 				info.show()        		
         	}
 		})

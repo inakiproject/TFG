@@ -5,16 +5,15 @@
 
 <ul class="ullist">
   <strong>
-  <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
-  <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
-  <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
-  <li><a class="ullista" href="{% url 'results' %}">Results</a></li>
-  <li><a class="ullista" href="{% url 'users_list' %}">Patients</a></li>
-  <li><a class="ullista" href="{% url 'treatments_list' %}">Treatments </a></li>
-  <li><a class="ullista" href="{% url 'therapies_list' %}">Therapies </a></li>
-  <li><a class="ullista" href="{% url 'user' %}">User </a></li>
-  <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
-  <li><a class="ullistactive" href="{% url 'summary' %}">Summary</a></li>
+  <li><a class="ullista" href="{% url 'settings' %}">Menu Principal</a></li>
+  <li><a class="ullista" href="{% url 'users_list' %}">Pacientes</a></li>
+  <li><a class="ullista" href="{% url 'gallery' %}">Contenido</a></li>
+  <li><a class="ullista" href="{% url 'therapists_list' %}">Especialistas </a></li>
+  <li><a class="ullista" href="{% url 'treatments_list' %}">Tratamientos </a></li>
+  <li><a class="ullista" href="{% url 'therapies_list' %}">Terapias </a></li>
+  <li><a class="ullista" href="{% url 'activity_settings' %}">Actividades</a></li>
+  <li><a class="ullista" href="{% url 'results' %}">Resultados</a></li>
+  <li><a class="ullistactive" href="{% url 'summary' %}">Inf. General</a></li>
 </strong>
 </ul>
 
@@ -25,41 +24,43 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Name</th>
-						<th>Treatment/s</th>
-						<th>Therapy/ies</th>
-						<th>Activities</th>
-						<th>Diagnostics</th>                        					
+						<th>Nombre</th>
+						<th>Tratamientos</th>
+						<th>Terapias</th>
+						<th>Actividades</th>
+						<th>Diagnósticos</th>                        					
 			    	</tr>
 				</thead>
 				<tbody>
 					{% for object in patients %}
 						<tr>
-		      				<td style="width: 5%; vertical-align: middle;">{{ object.name }}</td>
+		      				<td style="width: 5%; vertical-align: middle;">{{ object.nombre }}</td>
 
 		      				<td style="width: 25%; vertical-align: middle;">
            					{% for i in treatments %}
-                               {% if i.profile == object %}
+                               {% if i.paciente == object %}
                                 <small><a>{{ i }},</a></small>
                                 {% endif %}
 					        {% endfor %}
                             </td>
 		      				<td style="width: 25%; vertical-align: middle;"> 
           					{% for i in therapies %}
-                               {% if i.treatment.profile == object %}
-                                <small><a>{{ i.therapy }},</a></small>
+                               {% if i.tratamiento.paciente == object %}
+                                <small><a> {% for j in i.terapia.all %}{{j}},{%endfor%}</a></small>
                                 {% endif %}
 					        {% endfor %}
                             </td>
 
 		      				<td style="width: 25%; vertical-align: middle;"> 
           					{% for i in therapies %}
-                               {% if i.treatment.profile == object %}
+                               {% if i.tratamiento.paciente == object %}
+                                {% for k in i.terapia.all %}
                   					{% for j in activities %}
-                                       {% if i.therapy == j.therapy %}
-                                <small><a>{{ j.player }},</a></small>
+                                       {% if k == j.terapia %}
+                                <small><a>{{ j.actividad }},</a></small>
                                        {% endif %}
 		        			        {% endfor %}
+		        			     {% endfor %}
                                 {% endif %}
 					        {% endfor %}
                             </td>
@@ -68,7 +69,7 @@
 
                             <form action="{% url 'diagnostic_list' object.id %}" method="post">
 									    {% csrf_token %}
-                            <button type="submit"  class="btn btn-primary">Diagnostics</button>
+                            <button type="submit"  class="btn btn-primary">Diagnósticos</button>
                             </form>
                             </td>
 		    			</tr>

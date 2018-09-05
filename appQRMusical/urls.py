@@ -1,5 +1,5 @@
 from django.conf.urls import include, url
-from appQRMusical.views import Home, Identify, Disconnect, Settings, Game_settings, Play, Songs, List, Gallery, Multimedia_detail, Multimedia_delete, Players_list, Users_list, Update_player, Update_user, User_ID, Multi_ID, Multi_ID_delete, Create_player, Create_user, Multimedia_update, Player_delete, ID_delete, User_delete, User, Match, Match_list, Identify_ID, Therapists_list, Treatments_list, Therapies_list, Create_therapist, Create_treatment, Treatment_delete, Update_treatment, Diagnostic_list, Create_diagnostic, Update_diagnostic, Delete_diagnostic, Create_therapy, Update_therapy, Therapy_delete, Activity_settings, Indicators_list, Create_indicator, Update_indicator, Indicator_delete, Categories_list, Update_category, Category_delete, Create_category, Add_category_player, Results, Results_details, Add_therapy_player, Therapy_player_list,  Delete_therapy_player, Summary
+from appQRMusical.views import Home, Identify, Disconnect, Settings, Game_settings, Play, Songs, List, Gallery, Multimedia_detail, Multimedia_delete, Actividads_list, Users_list, Update_player, Update_user, User_ID, Multi_ID, Multi_ID_delete, Create_player, Create_user, Multimedia_update, Actividad_delete, ID_delete, User_delete, User, Match, Match_list, Identify_ID, Especialistas_list, Tratamientos_list, Therapies_list, Create_therapist, Create_treatment, Tratamiento_delete, Update_treatment, Diagnostico_list, Create_diagnostic, Update_diagnostic, Delete_diagnostic, Create_therapy, Update_therapy, Terapia_delete, Activity_settings,Lista_Indicadores, Create_indicator, Update_indicator, Indicador_delete, Categories_list, Update_category, Categoria_delete, Create_category, Add_category_player, Resultados, Resultados_details, Add_therapy_player, Terapia_player_list,  Delete_therapy_player, Summary, ResultadosTratamiento, Choose_treatment
 from . import views
 
 # For load images in dev mode
@@ -16,7 +16,8 @@ urlpatterns = [
 	url(r'^disconnect/$', Disconnect, name='disconnect'),	
 
 	# Play-Songs
-	url(r'^play/$', Play.as_view(), name='play'),	
+	url(r'^choose_treatment/$', Choose_treatment.as_view(), name='choose_treatment'),	
+	url(r'^choose_treatment/(?P<pk>\d+)/play/$', Play, name='play'),	
 	url(r'^play/songs_list/$', Songs.as_view(), name='songs_list'),	
 	url(r'^play/songs_list/(?P<id_player>\d+)/player_game/$', views.player_game, name='player_game'),	
 	url(r'^play/songs_list/(?P<id_player>\d+)/player_game_matching/$', views.player_game_matching, name='player_game_matching'),	
@@ -38,17 +39,18 @@ urlpatterns = [
 	url(r'^settings/Games/$', Game_settings.as_view(), name='game_settings'), 
 	url(r'^settings/Categories/$', Categories_list.as_view(), name='categories_list'),
 	url(r'^settings/Categories/(?P<pk>\d+)/update/$', Update_category.as_view(), name='update_category'),
-	url(r'^settings/Categories/(?P<pk>\d+)/delete/$', Category_delete.as_view(), name='category_delete'), 
+	url(r'^settings/Categories/(?P<pk>\d+)/delete/$', Categoria_delete.as_view(), name='category_delete'), 
 	url(r'^settings/Categories/create/$', Create_category.as_view(), name='create_category'),
 
 	# Settings - Therapy-Activity
-	url(r'^settings/Activities/therapy-player/$', Therapy_player_list.as_view(), name='therapy_player'), 
+	url(r'^settings/Activities/therapy-player/$', Terapia_player_list.as_view(), name='therapy_player'), 
 	url(r'^settings/Activities/therapy-player/details/$', Add_therapy_player.as_view(), name='add_therapy_player'), 
 	url(r'^settings/Activities/therapy-player/(?P<pk>\d+)/delete/$', Delete_therapy_player.as_view(), name='delete_therapy_player'), 
 
 	# Settings - Results
-	url(r'^settings/Results/$', Results.as_view(), name='results'),
-	url(r'^settings/Results/(?P<pk>\d+)/Details/$', Results_details, name='results_details'),
+	url(r'^settings/Results/$', Resultados.as_view(), name='results'),
+	url(r'^settings/Results/Treatment/(?P<pk>\d+)/$', ResultadosTratamiento, name='results_treatment'),
+	url(r'^settings/Results/(?P<pk>\d+)/Details/$', Resultados_details, name='results_details'),
 
 	# Settings - Gallery
 	url(r'^settings/gallery/$', Gallery.as_view(), name='gallery'), 
@@ -60,10 +62,10 @@ urlpatterns = [
 	url(r'^settings/gallery/multimedia_id_clean/(?P<pk>\d+)/$', Multi_ID_delete, name='multi_id_delete'), 
 
 	# Settings - Music Game
-	url(r'^settings/players_list/$', Players_list.as_view(), name='players_list'), 
+	url(r'^settings/players_list/$', Actividads_list.as_view(), name='players_list'), 
 	url(r'^settings/players_list/(?P<pk>\d+)/update/$', Update_player.as_view(), name='update_player'),
 	url(r'^settings/players_list/category_player/$', Add_category_player.as_view(), name='add_category_player'), 
-	url(r'^settings/players_list/(?P<pk>\d+)/delete/$', Player_delete.as_view(), name='player_delete'), 
+	url(r'^settings/players_list/(?P<pk>\d+)/delete/$', Actividad_delete.as_view(), name='player_delete'), 
 	url(r'^settings/players_list/create/$', Create_player, name='create_player'), 
 	url(r'^settings/players_list/(?P<id>\d+)/add_multimedia_to_player/$', views.add_multimedia_to_player, name='add_multimedia_to_player'), 
 	url(r'^settings/players_list/(?P<id_player>\d+)/add_multimedia_to_player/(?P<id_multimedia>\d+)/$', views.add_multimedia_to_player_function, name='add_multimedia_to_player_function'), 
@@ -93,32 +95,32 @@ urlpatterns = [
 	url(r'^settings/users_list/create/$', Create_user.as_view(), name='create_user'), 
 
     # Settigns - Treatments
-	url(r'^settings/treatments_list/$', Treatments_list, name='treatments_list'),
+	url(r'^settings/treatments_list/$', Tratamientos_list, name='treatments_list'),
 	url(r'^settings/treatments_list/create/$', Create_treatment, name='create_treatment'),
 	url(r'^settings/treatmentss_list/(?P<pk>\d+)/update/$', Update_treatment.as_view(), name='update_treatment'),
-	url(r'^settings/treatmentss_list/(?P<pk>\d+)/delete/$', Treatment_delete.as_view(), name='treatment_delete'),
+	url(r'^settings/treatmentss_list/(?P<pk>\d+)/delete/$', Tratamiento_delete.as_view(), name='treatment_delete'),
 
     # Settigns - Therapies
 	url(r'^settings/therapies_list/$', Therapies_list, name='therapies_list'),
 	url(r'^settings/therapies_list/create$', Create_therapy, name='create_therapy'), 
 	url(r'^settings/therapies_list/(?P<pk>\d+)/update$', Update_therapy.as_view(), name='update_therapy'), 
-	url(r'^settings/therapies_list/(?P<pk>\d+)/delete$', Therapy_delete.as_view(), name='therapy_delete'), 
+	url(r'^settings/therapies_list/(?P<pk>\d+)/delete$', Terapia_delete.as_view(), name='therapy_delete'), 
 
     # Settigns - Diagnostic
-	url(r'^settings/user/(?P<pk>\d+)/diagnostic_list/$', Diagnostic_list, name='diagnostic_list'), 
+	url(r'^settings/user/(?P<pk>\d+)/diagnostic_list/$', Diagnostico_list, name='diagnostic_list'), 
 	url(r'^settings/user/(?P<pk>\d+)/diagnostic_create/$', Create_diagnostic, name='create_diagnostic'),
 	url(r'^settings/user/(?P<pk>\d+)/update_diagnostic/$', Update_diagnostic.as_view(), name='update_diagnostic'), 
 	url(r'^settings/user/(?P<pk>\d+)/delete_diagnostic/$', Delete_diagnostic.as_view(), name='delete_diagnostic'), 
     
 	#Settigns - Therapists
-	url(r'^settings/therapists_list/$', Therapists_list, name='therapists_list'), 
+	url(r'^settings/therapists_list/$', Especialistas_list, name='therapists_list'), 
 	url(r'^settings/create_therapists/$', Create_therapist.as_view(), name='create_therapist'), 
 
 	#Settings - Indicators
-	url(r'^settings/activities/indicators/$', Indicators_list.as_view(), name='indicators_list'),
+	url(r'^settings/activities/indicators/$', Lista_Indicadores.as_view(), name='indicators_list'),
 	url(r'^settings/activities/indicators/create/$', Create_indicator.as_view(), name='create_indicator'),
 	url(r'^settings/activities/indicators/(?P<pk>\d+)/update/$', Update_indicator.as_view(), name='update_indicator'),
-	url(r'^settings/activities/indicators/(?P<pk>\d+)/delete/$', Indicator_delete.as_view(), name='indicator_delete'),  
+	url(r'^settings/activities/indicators/(?P<pk>\d+)/delete/$', Indicador_delete.as_view(), name='indicator_delete'),  
 
 	#Settings - Summary
 	url(r'^settings/activities/summary/$', Summary, name='summary'),

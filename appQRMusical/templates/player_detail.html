@@ -7,35 +7,37 @@
 	<div class="row">
 <ul>
   <strong><li>
-  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a href="{% url 'settings' %}">Menu Principal</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a href="{% url 'activity_settings' %}">Actividad</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'game_settings' %}">Game Settings</a></li>
+  <li><a href="{% url 'game_settings' %}">Opciones-Actividades</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'players_list' %}">Activity List</a></li>
+  <li><a href="{% url 'players_list' %}">Lista Actividades</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a class="active" href="{% url 'players_list' %}">Edit Activity</a></li>
+  <li><a class="active" href="{% url 'players_list' %}">Editar Actividad</a></li>
 </strong>
 </ul>
 
 		<div class="jumbotron {{ QRM_color }}">
 			<center>
+                <p style="font-size:30px;color:white;">Detalles de la actividad</p>
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
-				    {{ form.as_p }}<h2>List of indicators active:</h2>
-                    {% for i in playerindicators %}
-                    <input type="checkbox" disabled checked name="i.indicator" value="i.id_indicator">{{i.indicator}}
+				    {{ form.as_p }}
+                    <p style="font-size:30px;">Lista de indicadores activos:</p>
+                    {% for i in object.indicador.all %}
+                    <input type="checkbox" disabled checked name="i.indicator" value="i.id_indicator">{{i}}
                     {% endfor %}
                     {{form1.as_p}}
                     <br><br>
-                    <a>List of therapies associated with this activity:</a>
+                    <p style="font-size:30px;">Lista de terapias asociadas:</p>
                     {% for i in therapy %}
-                    <a>{{i.therapy}},</a>
+                    <a style="font-size:20px;">{{i.terapia}},</a>
                     {% endfor %}
                     {{form2.as_p}}
                     <br><br>
-				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
+				    <input type="submit" value="Confirmar" style="font-size:20px;" class="btn btn-sm btn-success"/>
 				</form>
 			</center>
 		</div>
@@ -43,7 +45,7 @@
 		{% if object.id %}
 		<a href="{% url 'add_multimedia_to_player' object.id %}">
 			<div class="btn btn-sm btn-info">
-				<p>Add Multimedia</p>
+				<p>Añadir Multimedia</p>
 			</div>	
 		</a>
 		{% endif %}
@@ -52,11 +54,11 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>Image</th>
-					<th>Name</th>
-					<th>Code</th>
-					<th>Track</th>	
-					<th>unlink</th>						
+					<th>Imagen</th>
+					<th>Nombre</th>
+					<th>Tarjeta</th>
+					<th>Audio</th>	
+					<th>Eliminar de esta actividad</th>						
 
 		    	</tr>
 			</thead>
@@ -65,28 +67,28 @@
 				{% for son in activities %}
 					<tr >
 	      				<th scope="row" style="width: 5%;">{{ son.id }}</th>
-	      				<td style="width: 10%;"><img src="/{{ son.content.multimedia.image.url }}" style="width: 100px;"></td>
-	      				<td style="width: 10%;">{{ son.content.multimedia.name }}</td>
+	      				<td style="width: 10%;"><img src="/{{ son.contenido.multimedia.imagen.url }}" style="width: 100px;"></td>
+	      				<td style="width: 10%;">{{ son.contenido.multimedia.nombre }}</td>
 	      				<td style="width: 10%;">
-	      					{% if son.content.code %}
-	                            {{son.content.code }}
+	      					{% if son.contenido.codigo %}
+	                            {{son.contenido.codigo }}
 							{% endif %}
 						</td>
 
 	      				<td style="width: 40%;">
-	      					{% if son.content.multimedia.file %}
+	      					{% if son.contenido.multimedia.file %}
 	      					<audio controls style="width: 100%;">
 								<source src="/{{ son.file.url }}" type="audio/mp3">
-								Your browser does not support the audio element.
+								Su navegador no soporta este fichero de audio
 							</audio>
 							{% endif %}
 						</td>
 
 						<td>
-							<form action="{% url 'del_multimedia_of_player_function' player_id son.content.id_content %}" method="post">
+							<form action="{% url 'del_multimedia_of_player_function' player_id son.contenido.id_contenido %}" method="post">
 								{% csrf_token %}
 
-									<input type="hidden" name="son_id" value="{{ son.content.id_content }}"/>
+									<input type="hidden" name="son_id" value="{{ son.contenido.id_contenido }}"/>
 									<button type="submit" class="btn btn-default btn-sm">
 										<p>✖</p>
 									</button>
@@ -100,7 +102,7 @@
 		{% if object.id %}
 		<a href="{% url 'add_multimedia_to_player' object.id %}">
 			<div class="btn btn-sm btn-info">
-				<p>Add Multimedia</p>
+				<p>Añadir Multimedia</p>
 			</div>	
 		</a>
 		{% endif %}

@@ -11,11 +11,11 @@
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 				    {{ form.as_p }}
-                    <strong><p>Add Indicators (Optional):</p></strong>
+                    <strong><p>Añadir indicadores (Opcional):</p></strong>
 				    {{ form1.as_p }}
-                    <strong><p>Vinculate with a Therapy:</p></strong>
-				    {{ form2.as_p }}
-				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
+                    <strong><p>Vincular con una terapia (Opcional):</p></strong>
+	                {{ form2.as_p }}
+				    <input type="submit" value="Confirmar" class="btn btn-sm btn-success"/>
 				</form>
 			</center>
 		</div>

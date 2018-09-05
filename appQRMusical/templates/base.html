@@ -28,22 +28,27 @@
                         <a class="navbar-nav">
                             <button type="button" onclick="goBack()" class="btn btn-info btn-back btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:50px"></i></button>
                         </a>
+						{% if user.is_authenticated %}
+					<a href="{% url 'settings' %}" class="navbar-brand QRM_navbar-brand">
+						<img src="/files/static/RFIDMusic.png" class="QRM_logo">
+					</a>    
+                    {% else %}
 					<a class="navbar-brand QRM_navbar-brand">
-						<img src="/files/static/logo.png" class="QRM_logo">
-						PiMusic
-
-
+						<img src="/files/static/RFIDMusic.png" class="QRM_logo">
 					</a>
+
+                        {%endif%}
+
 				</div>
 				<div class="navbar-collapse collapse" style="height: 1px;">
 					<ul class="nav navbar-nav QRM_navbar_nav">
 
-                        {% if player.online == "yes" %}
-						<li><a>Connected as: {{ player }}</a></li>
-                        {% if player.image %}
+                        {% if player.online == "si" %}
+						<li><a>Conectado como: {{ player }}</a></li>
+                        {% if player.imagen %}
                             <li style="top: -11px;">
   						    <a>
-                                <img onclick="confirmationUser()" class="img-circle"src="/{{ player.image.url }}" style="width: 50px" title="Logout" alt="Logout" >
+                                <img onclick="confirmationUser()" class="img-circle"src="/{{ player.imagen.url }}" style="width: 50px" title="Logout" alt="Logout" >
 						    </a>
 						    </li>
                         {% else %}
@@ -55,20 +60,16 @@
                         {% endif %}
                         {% else %}
 						{% if user.is_authenticated %}
-						<li><a>Connected as: {{ user }}</a></li>
-							<li style="top: -11px;">
-								<a>
-									<img  onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
-								</a>
-							</li>
+						    <a>Conectado como: {{ user }}  </a>
+							<a href style="top: -11px;">  
+							<img  onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
+							</a>
+							<a href="{% url 'user' %}" style="font-size: 45px;"> <i style="top:15px;" class="glyphicon glyphicon-cog"> </i></a>
 						{% else %}
-						<li><a>Click to connect --></a></li>
-
-							<li style="top: -11px;">
-								<a href="/login/">
-									<img src="/files/static/log_b.png" style="width: 50px" title="Login" alt="Login">		
-								</a>
-							</li>
+						<a>Pulsa para conectar --></a>
+						<a href="/login/" style="top: -11px;">
+						<img src="/files/static/log_b.png" style="width: 50px" title="Login" alt="Login">		
+						</a>
 						{% endif %}
 
 
@@ -113,7 +114,7 @@
 
         function confirmationUser() {
             var txt;
-            var r = confirm("Are you sure?");
+            var r = confirm("¿Estas seguro de que deseas desconectarte?");
             if (r == true) {
             window.location.replace('/disconnect');
             } else {
@@ -122,7 +123,7 @@
 
         function confirmation() {
             var txt;
-            var r = confirm("Are you sure?");
+            var r = confirm("¿Estas seguro de que deseas desconectarte?");
             if (r == true) {
                  document.location.href ="/logout/"
             } else {

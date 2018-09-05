@@ -5,30 +5,30 @@
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 <ul>
   <strong><li>
-  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a href="{% url 'settings' %}">Menu Principal</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a href="{% url 'activity_settings' %}">Actividad</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'game_settings' %}">Game Settings</a></li>
+  <li><a href="{% url 'game_settings' %}">Opciones-Actividades</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a class="active" href="{% url 'players_list' %}">Activity List</a></li>
+  <li><a class="active" href="{% url 'players_list' %}">Lista de Actividades</a></li>
 </strong>
 </ul>
 	<div class="QRM_box_in">
 		<a href="{% url 'create_player' %}">
 			<div class="btn btn-sm btn-info">
-				<p>Create Activity</p>
+				<p>Añadir Actividad</p>
 			</div>	
 		</a>
 		<div class="QRM_wrapper_table">
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Name</th>
-						<th>Description</th>
-						<th>Purpose</th>
-						<th>Category</th>
-						<th>Delete</th>						
+						<th>Nombre</th>
+						<th>Descripción</th>
+						<th>Propósito</th>
+						<th>Categoría</th>
+						<th>Eliminar</th>						
 			    	</tr>
 				</thead>
 				<tbody>
@@ -36,18 +36,18 @@
 						<tr onclick="document.location = '{% url 'update_player' object.id %}';">
 
 		      				<td style="width: 20%; vertical-align: middle;">
-		      					{{ object.name }}				
+		      					{{ object.nombre }}				
 		      				</td>
 
-		      				<td style="width: 40%; vertical-align: middle;">{{ object.description }}</td>
+		      				<td style="width: 40%; vertical-align: middle;">{{ object.descripcion }}</td>
 							
-							<td style="width: 10%; vertical-align: middle;">{{ object.purpose }}</td>
+							<td style="width: 10%; vertical-align: middle;">{{ object.proposito }}</td>
 							
                             <td style="width: 30%; vertical-align: middle;">
-                            {% for i in category %}
-                                {% if i.player.id == object.id %}
-                                    {% if i.category %}
-                                        {{ i.category.category }},
+                            {% for i in categoria %}
+                                {% if i.actividad.id == object.id %} 
+                                    {% if i.categoria %}
+                                        {{ i.categoria }},
                                     {% endif %}
                                     {% endif %}
                             {% endfor %}
@@ -72,7 +72,7 @@
 		<a href="{% url 'create_player' %}">
 			<div class="btn btn-sm btn-info">
 
-				<p>Create Activity</p>
+				<p>Añadir Actividad</p>
 			</div>	
 		</a>
 	</div>

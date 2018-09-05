@@ -10,10 +10,11 @@
 
 		<div class="jumbotron {{ QRM_color }}">
 			<center>
+                <p style="font-size:30px;color:white;">Elija la categoría y la actividad que desea vincular</p>
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 				    {{ form.as_p }}
-				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
+				    <input type="submit" value="Confirmar" style="font-size:20px;" class="btn btn-sm btn-success"/>
 				</form>
 			</center>
 		</div>

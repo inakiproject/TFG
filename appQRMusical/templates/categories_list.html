@@ -5,38 +5,47 @@
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 <ul>
   <strong>
-  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a href="{% url 'settings' %}">Menú Principal</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a href="{% url 'activity_settings' %}">Actividad</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'game_settings' %}">Game Settings</a></li>
+  <li><a href="{% url 'game_settings' %}">Opciones-Actividades</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a class="active" href="{% url 'categories_list' %}">Category List</a></li>
+  <li><a class="active" href="{% url 'categories_list' %}">Lista Categorías</a></li>
 </strong>
 </ul>
 	<div class="QRM_box_in">
+		<a href="{% url 'create_category' %}">
+			<div class="btn btn-sm btn-info">
+				<p>Añadir nueva categoría</p>
+			</div>	
+		</a>
+<a href="{% url 'add_category_player' %}">
+			<div class="btn btn-sm btn-info">
+				<p>Vincular categoría con actividad</p>
+			</div>	
+		</a>
 		<div class="QRM_wrapper_table">
-
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Name</th>	
-						<th>Delete</th>						
+						<th>Nombre</th>	
+						<th>Eliminar</th>						
 			    	</tr>
 				</thead>
 				<tbody>
 					{% for object in object_list %}
-						<tr onclick="document.location = '{% url 'update_category' object.id_category %}';">
+						<tr onclick="document.location = '{% url 'update_category' object.id_categoria %}';">
 
 		      				<td style="width: 20%; vertical-align: middle;">
-		      					{{ object.category }}  					
+		      					{{ object }}  					
                             </td>
 
 							<td style=" vertical-align: middle;">
-								<form action="{% url 'category_delete' object.id_category %}" method="post">
+								<form action="{% url 'category_delete' object.id_categoria %}" method="post">
 									{% csrf_token %}
 
-										<input type="hidden" name="object_id" value="{{ object.id_category }}"/>
+										<input type="hidden" name="object_id" value="{{ object.id_categoria }}"/>
 										<button type="submit" class="btn btn-danger btn-sm">
 											<p>✖</p>
 										</button>
@@ -51,13 +60,13 @@
 		</div>
 
 		<a href="{% url 'create_category' %}">
-			<div class="btn btn-sm btn-default">
-				<p>Add new Category</p>
+			<div class="btn btn-sm btn-info">
+				<p>Añadir nueva categoria</p>
 			</div>	
 		</a>
 <a href="{% url 'add_category_player' %}">
-			<div class="btn btn-sm btn-default">
-				<p>Add Category to an Activity</p>
+			<div class="btn btn-sm btn-info">
+				<p>Vincular categoria con actividad</p>
 			</div>	
 		</a>
 	</div>

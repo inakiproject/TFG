@@ -6,61 +6,37 @@
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 <ul>
   <strong><li>
-  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a href="{% url 'settings' %}">Menu Principal</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a href="{% url 'activity_settings' %}">Actividades</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a class="active" href="{% url 'indicators_list' %}">Indicators List</a></li>
+  <li><a class="active" href="{% url 'indicators_list' %}">Lista de Indicadores</a></li>
 </strong>
 </ul>
+<strong><big style="color:white">Pulsa sobre la activdad para añadir/eliminar indicadores vinculados</big></strong>
 	<div class="QRM_box_in">
-		<a href="{% url 'create_indicator' %}">
-			<div class="btn btn-sm btn-info">
-				<p>Vinculate an Indicator with an Activity</p>
-			</div>	
-		</a>
 		<div class="QRM_wrapper_table">
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Activity</th>
-						<th>Indicators</th>
-						<th>Delete</th>						
-
+						<th>Actividad</th>
+						<th>Indicadores</th>
 			    	</tr>
 				</thead>
 				<tbody>
                         {% for i in Activities %}
-						<tr onclick="document.location = ;">
-		      				<td scope="row" style="width: 15%;">{{ i.name }}</td>
+						<tr onclick="document.location = '{% url 'update_indicator' i.id %}';">
+		      				<td scope="row" style="width: 15%;">{{ i }}</td>
 		      				<td style="width: 40%;">
-                                {% for son in object_list %}
-                                    {% if son.player == i %}
-                                    {{ son.indicator }},
-                                    {% endif %}
+                                {% for son in i.indicador.all %}
+                                    {{ son }},
                                 {% endfor %}
-                            </td>
-
-							<td style="width: 10%;">
-								<form action="" method="post">
-									{% csrf_token %}
-
-										<input type="hidden" name="son_id" value="{{ son.id }}"/>
-										<button type="submit" class="btn btn-danger btn-sm">
-											<p>✖</p>
-										</button>
-								</form>
-							</td>							
+                            </td>						
 		    			</tr>
 					{% endfor %}
 				</tbody>
 			</table>
 		</div>
-		<a href="{% url 'create_indicator' %}">
-			<div class="btn btn-sm btn-info">
-				<p>Vinculate an Indicator with an Activity</p>
-			</div>	
-		</a>
 </div>
 
 <!-- The Modal -->

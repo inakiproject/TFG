@@ -6,17 +6,17 @@
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 <ul>
   <strong><li>
-  <li><a href="{% url 'settings' %}">Settings</a></li>
+  <li><a href="{% url 'settings' %}">Menu Principal</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a href="{% url 'activity_settings' %}">Activity Settings</a></li>
+  <li><a href="{% url 'activity_settings' %}">Actividades</a></li>
   <li><a><i class="glyphicon glyphicon-arrow-right" ></i></a></li>
-  <li><a class="active" href="{% url 'therapy_player' %}">Therapies-Activities List</a></li>
+  <li><a class="active" href="{% url 'therapy_player' %}">Lista Terapia-Actividad</a></li>
 </strong>
 </ul>
 	<div class="QRM_box_in">
 		<a href="{% url 'add_therapy_player' %}">
 			<div class="btn btn-sm btn-info">
-				<p>Vinculate a Therapy with an Activity</p>
+				<p>Vincular terapia con actividad</p>
 			</div>	
 		</a>
 		<div class="QRM_wrapper_table">
@@ -24,8 +24,8 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Activity</th>
-						<th>Therapy//Unlik</th>
+						<th>Actividad</th>
+						<th>Therapia//Desvincular</th>
 
 			    	</tr>
 				</thead>
@@ -35,8 +35,8 @@
 		      				<td scope="row" style="width: 20%;">{{ son }}</td>
 		      				<td style="width: 80%;">
            					{% for i in object_list %}
-                                {% if i.player == son %}
-                                    {{ i.therapy }}
+                                {% if i.actividad == son %}
+                                    {{ i.terapia }}
 								    <form action="{% url 'delete_therapy_player' i.id %}" style="display:inline" method="post">
 									    {% csrf_token %}
 										    <input type="hidden" name="son_id" value="{{ i.id }}"/>
@@ -53,7 +53,7 @@
 
 		<a href="{% url 'add_therapy_player' %}">
 			<div class="btn btn-sm btn-info">
-				<p>Vinculate a Therapy with an Activity</p>
+				<p>Vincular terapia con actividad</p>
 			</div>	
 		</a>
 </div>

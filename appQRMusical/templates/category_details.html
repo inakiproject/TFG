@@ -8,25 +8,18 @@
 		<h1>{{ object.title }}</h1>
         <h2>{{ object.subtitle }}</h2>
 
-        <a href="{% url 'activity_settings' %}">
-	        <div>
-        <button type="button" class="btn btn-info btn-circle btn-xl"><i class="glyphicon glyphicon-circle-arrow-left" style="font-size:65px"></i></button>
-			</div>
-		</a>
-
-		<div class="jumbotron {{ QRM_color }}">
+		<div style="background:#019DE6"  class="jumbotron {{ QRM_color }}">
 			<center>
+                <p style="font-size:30px;color:white;">Introduzca el nombre de la categoría que se va a crear</p>
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 				    {{ form.as_p }}
-				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
+				    <input type="submit" value="Confirmar" style="font-size:20px"class="btn btn-sm btn-success"/>
 				</form>
 			</center>
 		</div>
 
 	</div>
 </div>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

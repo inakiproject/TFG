@@ -14,24 +14,24 @@
   <li><a class="ullista" href="{% url 'therapies_list' %}">Terapias </a></li>
   <li><a class="ullista" href="{% url 'activity_settings' %}">Actividades</a></li>
   <li><a class="ullistactive" href="{% url 'results' %}">Resultados</a></li>
-  <li><a class="ullista" href="{% url 'summary' %}">Inf. General</a></li>
 </strong>
 </ul>
 </div>
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 	<div class="QRM_box_in">
+<strong><p>{{ paciente }}</p></strong>
 		<div class="QRM_wrapper_table">
 
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Pacientes</th>											
+						<th>Tratamientos</th>											
 			    	</tr>
 				</thead>
 				<tbody>
-					{% for object in object_list %}
-						<tr onclick="document.location = '{% url 'results_treatment' object.id %}';">
+					{% for object in objects %}
+						<tr onclick="document.location = '{% url 'results_details' object.id %}';">
 
 		      				<td style="width: 20%; vertical-align: middle;">
 		      					{{ object }} 								

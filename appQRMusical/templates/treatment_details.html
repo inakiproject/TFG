@@ -13,11 +13,15 @@
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 				    {{ form.as_p }}
-                    <strong><p>Vinculate with a Therapy (Optional):</p></strong>
-				    {{ form2.as_p }}
-                    <strong><p>Vinculate with an Activity (Optional):</p></strong>
+                    <strong><p>Vincular con una o varias terapias (Opcional):</p></strong>
 				    {{ form1.as_p }}
-				    <input type="submit" value="Confirm" class="btn btn-sm btn-default"/>
+                    <strong><p>Crear una nueva Terapia</p></strong>
+		                <a href="{% url 'create_therapy' %}">
+			                <div class="btn btn-info">
+				                <p>Crear Terapia</p>
+			                </div>	
+		                </a><br><br>
+				    <input type="submit" value="Confirmar" class="btn btn-sm btn-success" style="font-size:20px"/>
 				</form>
 			</center>
 		</div>
@@ -26,3 +30,4 @@
 </div>
 
 {% endblock content_wrapper %}
+

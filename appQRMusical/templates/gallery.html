@@ -7,22 +7,22 @@
 
 <ul class="ullist">
   <strong>
-  <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
-  <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
-  <li><a class="ullistactive" href="{% url 'gallery' %}">Content</a></li>
-  <li><a class="ullista" href="{% url 'results' %}">Results</a></li>
-  <li><a class="ullista" href="{% url 'users_list' %}">Patients</a></li>
-  <li><a class="ullista" href="{% url 'treatments_list' %}">Treatments </a></li>
-  <li><a class="ullista" href="{% url 'therapies_list' %}">Therapies </a></li>
-  <li><a class="ullista" href="{% url 'user' %}">User </a></li>
-  <li><a class="ullista" href="{% url 'therapists_list' %}">Therapists </a></li>
+  <li><a class="ullista" href="{% url 'settings' %}">Menú Principal</a></li>
+  <li><a class="ullista" href="{% url 'users_list' %}">Pacientes</a></li>
+  <li><a class="ullistactive" href="{% url 'gallery' %}">Contenido</a></li>
+  <li><a class="ullista" href="{% url 'therapists_list' %}">Especialistas </a></li>
+  <li><a class="ullista" href="{% url 'treatments_list' %}">Tratamientos </a></li>
+  <li><a class="ullista" href="{% url 'therapies_list' %}">Terapias </a></li>
+  <li><a class="ullista" href="{% url 'activity_settings' %}">Actividades</a></li>
+  <li><a class="ullista" href="{% url 'results' %}">Resultados</a></li>
+  <li><a class="ullista" href="{% url 'summary' %}">Inf. General</a></li>
 </strong>
 </ul>
 </div>
 <div class="col-sm-12 QRM_box {{QRM_color}}">
 		<a href="{% url 'upload_multimedia' %}">
 			<div class="btn btn-sm btn-info">
-				<p>Add Multimedia</p>
+				<p>Añadir elemento Multimedia</p>
 			</div>	
 		</a>
 
@@ -33,63 +33,63 @@
 				<thead>
 					<tr>
 						<th>#</th>
-						<th>Image</th>
-						<th>Name</th>
-						<th>Activities asociated with</th>
-                        <th>Code</th>
-                        <th>Change ID</th>						
-                        <th>Clean ID</th>					
+						<th>Imagen</th>
+						<th>Nombre</th>
+						<th>Actividades en las que aparece</th>
+                        <th>Tarjeta</th>
+                        <th>Cambiar Tarjeta</th>						
+                        <th>Eliminar Tarjeta</th>					
 						<th>QR</th>	
-						<th>Track</th>						
-						<th>delete</th>						
+						<th>Audio</th>						
+						<th>Eliminar</th>						
 
 			    	</tr>
 				</thead>
 				<tbody>
 					{% for son in object_list %}
-						<tr onclick="document.location = '{% url 'multimedia_update' son.id_content %}';">
-		      				<th scope="row" style="width: 3%;">{{ son.id_content }}</th>
-		      				<td style="width: 10%;"><img src="/{{ son.image.url }}" style="width: 100px;"></td>
-		      				<td style="width: 10%;">{{ son.name }}</td>
+						<tr onclick="document.location = '{% url 'multimedia_update' son.id_contenido %}';">
+		      				<th scope="row" style="width: 3%;">{{ son.id_contenido }}</th>
+		      				<td style="width: 10%;"><img src="/{{ son.imagen.url }}" style="width: 100px;"></td>
+		      				<td style="width: 10%;">{{ son.nombre }}</td>
 		      				<td style="width: 15%;">
 			      				<p>
 				      				<small>
 
-				      					{% for player in player_content %}
-{% if player.content.id_content == son.id_content%}
-				      						<a>{{ player.player }},</a>
+				      					{% for Actividad in actividad_contenido %}
+{% if Actividad.contenido.id_contenido == son.id_contenido%}
+				      						<a>{{ Actividad.actividad }},</a>
 {%endif%}
 				      					{% endfor %}
 			      					</small>	
 			      				</p>
 		      				</td>
                             <td style="width: 10%;">
-                                {% if son.code %}	      					
+                                {% if son.codigo %}	      					
 
-                                    {{ son.code }}
+                                    {{ son.codigo }}
 
                             </td>
 
                             <td style="width: 10%; vertical-align: left;">
 
-                                    <form onclick="btn()" action="{% url 'multi_id' son.id_content %}" method="post">
+                                    <form onclick="btn()" action="{% url 'multi_id' son.id_contenido %}" method="post">
 									    {% csrf_token %}
 										<input type="hidden" name="son_id" value="{{ son.id }}"/>
-                                        <button type="submit" class="btn btn-warning">Change ID</button>
+                                        <button type="submit" class="btn btn-warning">Cambiar</button>
                                     </form>
                             </td>
                             <td style="width: 10%; vertical-align: left;">
-                                    <form action="{% url 'multi_id_delete' son.id_content %}" method="post">
+                                    <form action="{% url 'multi_id_delete' son.id_contenido %}" method="post">
 									    {% csrf_token %}
 										<input type="hidden" name="son_id" value="{{ son.id }}"/>
-										<button type="submit" class="btn btn-danger">Clean ID</button>
+										<button type="submit" class="btn btn-danger">Limpiar</button>
         							</form>
 		      				</td>
                                 {% else %}
-                                    <form onclick="btn()" action="{% url 'multi_id' son.id_content %}" method="post">
+                                    <form onclick="btn()" action="{% url 'multi_id' son.id_contenido %}" method="post">
 							        {% csrf_token %}
 									<input type="hidden" name="son_id" value="{{ son.id }}"/>
-                                    <button type="submit"class="btn btn-success">Add ID</button>
+                                    <button type="submit"class="btn btn-success">Añadir</button>
                                     </form>
                                     <td style="width: 5%;"></td>
                                     <td style="width: 5%;"></td>
@@ -114,7 +114,7 @@
 							</td>
 
 							<td>
-								<form action="{% url 'multimedia_delete' son.id_content %}" method="post">
+								<form action="{% url 'multimedia_delete' son.id_contenido %}" method="post">
 									{% csrf_token %}
 									<center>
 										<input type="hidden" name="son_id" value="{{ son.id }}"/>
@@ -132,7 +132,7 @@
 
 		<a href="{% url 'upload_multimedia' %}">
 			<div class="btn btn-sm btn-info">
-				<p>Add Multimedia</p>
+				<p>Añadir elemento Multimedia</p>
 			</div>	
 		</a>
 </div>
@@ -143,7 +143,7 @@
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
-    <h1>SCANNING...</h1>
+    <h1>ESCANEANDO...</h1>
     <div class="spinner">
   <div class="rect1"></div>
   <div class="rect2"></div>
@@ -151,7 +151,7 @@
   <div class="rect4"></div>
   <div class="rect5"></div>
 </div>
-    <h2>Put the card on the scanner</h2>
+    <h2>Pon la tarjeta en el escáner</h2>
   </div>
 
 <script>

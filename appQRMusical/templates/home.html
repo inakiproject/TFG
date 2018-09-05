@@ -7,19 +7,19 @@
 	<div class="QRM_box_in">
 		<div style='text-align:center; margin: 0 auto; width: 90%'>
 
-            {% if player.online == "yes" %}
+            {% if player.online == "si" %}
 
-			    <a href="{% url 'play' %}">
+			    <a href="{% url 'choose_treatment' %}">
 				    <div class="QRM_btn QRM_btn_home">
 					    <img class="QRM_btn_image" src="/files/static/game.png" >
-					    <h5>Play</h5>
+					    <h5>Jugar</h5>
 				    </div>
 			    </a>
     	        <a href="{% url 'disconnect' %}">
 
 			        <div class="QRM_btn QRM_btn_home">
 				        <img class="QRM_btn_image" src="/files/static/disconnect.png" >
-				        <h5>Disconnect {{ player.name }}</h5>
+				        <h5>Disconnect {{ player.nombre }}</h5>
 			        </div>
 		        </a>
 
@@ -28,7 +28,7 @@
 			        <a href="{% url 'identify' %}" id="myBtn" onclick="myFunction()">
 				        <div class="QRM_btn QRM_btn_home">
 					        <img class="QRM_btn_image" src="/files/static/rfid.png" >
-					        <h5>Identify Player</h5>
+					        <h5>Identificar Paciente</h5>
 				        </div>
 			        </a>
                 {% endif %}
@@ -41,7 +41,7 @@
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
-    <h1>SCANNING...</h1>
+    <h1>ESCANEANDO...</h1>
     <div class="spinner">
   <div class="rect1"></div>
   <div class="rect2"></div>
@@ -49,7 +49,7 @@
   <div class="rect4"></div>
   <div class="rect5"></div>
 </div>
-    <h2>Put the brazalet on the scanner</h2>
+    <h2>Acerca el brazalete al escáner</h2>
   </div>
 
 </div>

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django import forms
-from .models import Multimedia, Player, Profile, Therapist, Treatment, Diagnostic, Therapy, Asign_Therapy, Indicator, Content, Category, Category_Player, Player_Indicator, Therapy_Player
+from .models import Multimedia, Actividad, Paciente, Especialista, Tratamiento, Diagnostico, Terapia, Asigna_Terapia, Indicador, Contenido, Categoria, Categoria_Actividad, Terapia_Actividad
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -10,241 +10,198 @@ YEARS= [x for x in range(1990,2021)]
 
 # Create your tests here.
 
+#Formulario para elementos multimedia
+
 class UploadMultimediaForm(forms.ModelForm):	
 	class Meta:
 		model = Multimedia
-		fields = ['file', 'image']
+		fields = ['file', 'imagen']
 
 	def __init__(self, *args, **kwargs):
 		super(UploadMultimediaForm, self).__init__(*args, **kwargs)
 		self.fields['file'].widget.attrs.update({'class' : 'form-control btn btn-default btn-file'})
-		self.fields['image'].widget.attrs.update({'class' : 'form-control btn btn-default btn-file'})
+		self.fields['imagen'].widget.attrs.update({'class' : 'form-control btn btn-default btn-file'})
 
+#Formulario para Actividades
 
-class UploadPlayerForm(forms.ModelForm):	
+class FormularioActividad(forms.ModelForm):	
 	class Meta:
-		model = Player
-		fields = ['name', 'description','purpose']
+		model = Actividad
+		fields = ['nombre', 'descripcion','proposito']
 
 	def __init__(self, *args, **kwargs):
-		super(UploadPlayerForm, self).__init__(*args, **kwargs)
-		self.fields['name'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['description'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['purpose'].widget.attrs.update({'class' : 'form-control'})
+		super(FormularioActividad, self).__init__(*args, **kwargs)
+		self.fields['nombre'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['proposito'].widget.attrs.update({'class' : 'form-control'})
 
+#Formulario para Indicadores
 
-class UploadUserForm(forms.ModelForm):	
+class UploadIndicatorForm(forms.ModelForm):
 	class Meta:
-		model = Profile
-		fields = ['image','name', 'surname','date_of_birth','age','gender','level']
-
-	def __init__(self, *args, **kwargs):
-		super(UploadUserForm, self).__init__(*args, **kwargs)
-		self.fields['image'].widget.attrs.update({'class' : 'form-control btn btn-default btn-file'})
-		self.fields['name'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['surname'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['date_of_birth'].widget=forms.SelectDateWidget(years=YEARS)
-		self.fields['age'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['level'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
-		self.fields['gender'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
-
-
-class UploadTherapistForm(UserCreationForm):
-    model = User
-    fields = ('username', 'password1', 'password2', )
-
-class UploadTreatmentForm(forms.ModelForm):	
-	class Meta:
-		model = Treatment
-		fields = ['profile', 'start_date','end_date','description','enabled']
-
-	def __init__(self, *args, **kwargs):
-		super(UploadTreatmentForm, self).__init__(*args, **kwargs)
-		self.fields['profile'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
-		self.fields['start_date'].widget=forms.SelectDateWidget(years=YEARS)
-		self.fields['end_date'].widget=forms.SelectDateWidget(years=YEARS)
-		self.fields['description'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['enabled'].widget.attrs.update({'class' : 'custom-control-input'})
-
-class UploadTherapyForm(forms.ModelForm):	
-	class Meta:
-		model = Therapy
-		fields = ['name','description','therapy_type']
-
-	def __init__(self, *args, **kwargs):
-		super(UploadTherapyForm, self).__init__(*args, **kwargs)
-		self.fields['name'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
-		self.fields['description'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['therapy_type'].widget.attrs.update({'class' : 'custom-control-input'})
-
-class UploadAsignTherapyForm(forms.ModelForm):
-    therapy = forms.ModelChoiceField(queryset=Therapy.objects.all(),required=False)
-    class Meta:
-        model = Asign_Therapy
-        fields = ['therapy']
-
-    def __init__(self, *args, **kwargs):
-        super(UploadAsignTherapyForm, self).__init__(*args, **kwargs)
-        self.fields['therapy'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
-
-class UploadAsignForm(forms.ModelForm):
-    class Meta:
-        model = Asign_Therapy
-        fields = ['treatment']
-
-    def __init__(self, *args, **kwargs):
-        super(UploadAsignForm, self).__init__(*args, **kwargs)
-        self.fields['treatment'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
-
-class UploadIndicatorForm(forms.ModelForm):	
-	class Meta:
-		model = Player_Indicator
-		fields = ['player','indicator']
+		model = Actividad
+		fields = ['indicador']
 
 	def __init__(self, *args, **kwargs):
 		super(UploadIndicatorForm, self).__init__(*args, **kwargs)
-		self.fields['player'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['indicator'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['indicador'].widget.attrs.update({'class' : 'selectpicker'})
 
-class UploadOneIndicatorForm(forms.ModelForm):
-	indicator = forms.ModelChoiceField(queryset=Indicator.objects.all(),required=False)
+#Formulario para Pacientes
+
+class UploadUserForm(forms.ModelForm):	
 	class Meta:
-		model = Player_Indicator
-		fields = ['indicator']
+		model = Paciente
+		fields = ['imagen','nombre', 'apellido','fecha_de_nacimiento','genero','nivel']
 
 	def __init__(self, *args, **kwargs):
-		super(UploadOneIndicatorForm, self).__init__(*args, **kwargs)
-		self.fields['indicator'].widget.attrs.update({'class' : 'form-control'})
+		super(UploadUserForm, self).__init__(*args, **kwargs)
+		self.fields['imagen'].widget.attrs.update({'class' : 'form-control btn btn-default btn-file'})
+		self.fields['nombre'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['apellido'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['fecha_de_nacimiento'].widget=forms.SelectDateWidget(years=YEARS)
+		self.fields['nivel'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
+		self.fields['genero'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
 
-class UploadHitsForm(forms.Form):
-    option = Indicator.objects.get(id_indicator=2)
-    indicator = forms.ChoiceField(choices=[(option, option)], widget=forms.CheckboxInput(),required = False)
-    #option = Indicator.objects.get(name='Tiempo')
-    #indicator = forms.ChoiceField(widget=forms.CheckboxInput())
 
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        return super(UploadHitsForm, self).__init__(*args, **kwargs)
+#Formulario para Especialistas
 
-    def clean_indicator(self):
-        indicator2 = self.cleaned_data['indicator']
-#        exists = Player_Indicator.objects.filter(=email).exclude(username=username)
- #       if exists:
-  #          raise forms.ValidationError('This emails is already registed.')
-        return indicator2
+class FormularioEspecialista(UserCreationForm):
+    model = User
+    fields = ('username', 'password1', 'password2', )
 
-class UploadFailuresForm(forms.Form):
-    option = Indicator.objects.get(id_indicator=3)
-    indicator = forms.ChoiceField(choices=[(option, option)], widget=forms.CheckboxInput(),required = False)
-    #option = Indicator.objects.get(name='Tiempo')
-    #indicator = forms.ChoiceField(widget=forms.CheckboxInput())
+#Formulario para Tratamientos
 
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        return super(UploadFailuresForm, self).__init__(*args, **kwargs)
+class UploadTreatmentForm(forms.ModelForm):	
+	class Meta:
+		model = Tratamiento
+		fields = ['paciente','nombre', 'fecha_inicio','fecha_fin','descripcion','activado']
 
-    def clean_indicator(self):
-        indicator3 = self.cleaned_data['indicator']
-#        exists = Player_Indicator.objects.filter(=email).exclude(username=username)
- #       if exists:
-  #          raise forms.ValidationError('This emails is already registed.')
-        return indicator3
+	def __init__(self, *args, **kwargs):
+		super(UploadTreatmentForm, self).__init__(*args, **kwargs)
+		self.fields['paciente'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
+		self.fields['nombre'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['fecha_inicio'].widget=forms.SelectDateWidget(years=YEARS)
+		self.fields['fecha_fin'].widget=forms.SelectDateWidget(years=YEARS)
+		self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['activado'].widget.attrs.update({'class' : 'custom-control-input'})
 
-class UploadIndicatorFormbeta(forms.Form):
-    option = Indicator.objects.get(id_indicator=1)
-    player = forms.ChoiceField(choices=[(option, option) for option in Player.objects.all()], widget=forms.RadioSelect())
-    indicator = forms.ChoiceField(choices=[(option, option)], widget=forms.RadioSelect())
-    #option = Indicator.objects.get(name='Tiempo')
-    #indicator = forms.ChoiceField(widget=forms.CheckboxInput())
+#Formulario para Terapias
 
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        return super(UploadIndicatorFormbeta, self).__init__(*args, **kwargs)
-    def clean_player(self):
-        player = self.cleaned_data['player']
-#        exists = Player_Indicator.objects.filter(=email).exclude(username=username)
- #       if exists:
-  #          raise forms.ValidationError('This emails is already registed.')
-        return player
-    def clean_indicator(self):
-        indicator = self.cleaned_data['indicator']
-#        exists = Player_Indicator.objects.filter(=email).exclude(username=username)
- #       if exists:
-  #          raise forms.ValidationError('This emails is already registed.')
-        return indicator
-"""
-class UploadIndicatorFormbeta(forms.ModelForm):
+class UploadTherapyForm(forms.ModelForm):	
+	class Meta:
+		model = Terapia
+		fields = ['nombre','descripcion','tipo']
+
+	def __init__(self, *args, **kwargs):
+		super(UploadTherapyForm, self).__init__(*args, **kwargs)
+		self.fields['nombre'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
+		self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['tipo'].widget.attrs.update({'class' : 'custom-control-input'})
+
+#Formulario para Asignar las Terapias usado en la pantalla de creacion de tratamientos
+
+class UploadAsignTherapyForm(forms.ModelForm):
+    terapia = forms.ModelMultipleChoiceField(queryset=Terapia.objects.all(),required=False)
     class Meta:
-        model = Player_Indicator
-        fields = ['player','indicator']
+        model = Asigna_Terapia
+        fields = ['terapia']
 
     def __init__(self, *args, **kwargs):
-        super(UploadIndicatorFormbeta, self).__init__(*args, **kwargs)
-        self.fields['indicator'] =  ModelChoiceField(queryset=Player_Indicator.objects.get(indicator),empty_label="Choose a countries",)
-"""
+        super(UploadAsignTherapyForm, self).__init__(*args, **kwargs)
+        self.fields['terapia'].widget.attrs.update({'class' : 'selectpicker'})
+
+
+#Formulario para Asignar los Tratamientos usado en la pantalla de creacion de Terapias
+
+class UploadAsign(forms.ModelForm):
+    tratamiento = forms.ModelChoiceField(queryset=Tratamiento.objects.all(),required=False)
+    class Meta:
+        model = Asigna_Terapia
+        fields = ['tratamiento']
+
+    def __init__(self, *args, **kwargs):
+        super(UploadAsign, self).__init__(*args, **kwargs)
+        self.fields['tratamiento'].widget.attrs.update({'class' : 'selectpicker'})
+
+#Formulario para los Diagnosticos
 
 class UploadDiagnosticForm(forms.ModelForm):	
 	class Meta:
-		model = Diagnostic
-		fields = ['assesment','notes']
+		model = Diagnostico
+		fields = ['valoracion','notas']
 
 	def __init__(self, *args, **kwargs):
 		super(UploadDiagnosticForm, self).__init__(*args, **kwargs)
-		self.fields['assesment'].widget.attrs.update({'class' : 'form-control'})
-		self.fields['notes'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['valoracion'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['notas'].widget.attrs.update({'class' : 'form-control'})
+
+#Formulario para las categorias
 
 class UploadCategoryForm(forms.ModelForm):	
 	class Meta:
-		model = Category
-		fields = ['category']
+		model = Categoria
+		fields = ['nombre']
 
 	def __init__(self, *args, **kwargs):
 		super(UploadCategoryForm, self).__init__(*args, **kwargs)
-		self.fields['category'].widget.attrs.update({'class' : 'form-control'})
+		self.fields['nombre'].widget.attrs.update({'class' : 'form-control'})
 
-class UploadCategoryPlayerForm(forms.ModelForm):	
+#Formulario para Asignar las categorias con las actividades
+
+class FormularioCategoriaActividad(forms.ModelForm):	
 	class Meta:
-		model = Category_Player
-		fields = ['player','category']
+		model = Categoria_Actividad
+		fields = ['actividad','categoria']
 
 	def __init__(self, *args, **kwargs):
-		super(UploadCategoryPlayerForm, self).__init__(*args, **kwargs)
-		self.fields['player'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
-		self.fields['category'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
+		super(FormularioCategoriaActividad, self).__init__(*args, **kwargs)
+		self.fields['actividad'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
+		self.fields['categoria'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
 
-class UploadTherapyPlayerForm(forms.ModelForm):	
+#Formulario para Vincular las Actividades con las Terapias
+
+class UploadTherapyFormActividad(forms.ModelForm):	
 	class Meta:
-		model = Therapy_Player
-		fields = ['player','therapy']
+		model = Terapia_Actividad
+		fields = ['actividad','terapia']
 
 	def __init__(self, *args, **kwargs):
-		super(UploadTherapyPlayerForm, self).__init__(*args, **kwargs)
-		self.fields['player'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
-		self.fields['therapy'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
+		super(UploadTherapyFormActividad, self).__init__(*args, **kwargs)
+		self.fields['actividad'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
+		self.fields['terapia'].widget.attrs.update({'class' : 'selectpicker', 'id' : 'select'})
 
-class UploadOneTherapyPlayerForm(forms.ModelForm):	
+#Formulario para Vincular una Terapias con una actividad durante la creación de la actividad
+
+class UploadOnePlayerTerapiaForm(forms.ModelForm):
+	terapia = forms.ModelChoiceField(queryset=Terapia.objects.all(),required=False)
 	class Meta:
-		model = Therapy_Player
-		fields = ['therapy']
+		model = Terapia_Actividad
+		fields = ['terapia']
 
 	def __init__(self, *args, **kwargs):
-		super(UploadOneTherapyPlayerForm, self).__init__(*args, **kwargs)
-		self.fields['therapy'].widget.attrs.update({'class' : 'form-control'},required = False)
+		super(UploadOnePlayerTerapiaForm, self).__init__(*args, **kwargs)
+		self.fields['terapia'].widget.attrs.update({'class' : 'form-control'})
 
-class UploadOnePlayerTherapyForm(forms.ModelForm):
-	player = forms.ModelChoiceField(queryset=Player.objects.all(),required=False)
+#Formulario para Vincular una Terapias con una actividad durante la creación de la terapia
+
+class UploadOneActividadTherapyForm(forms.ModelForm):
+	actividad = forms.ModelChoiceField(queryset=Actividad.objects.all(),required=False)
 	class Meta:
-		model = Therapy_Player
-		fields = ['player']
+		model = Terapia_Actividad
+		fields = ['actividad']
 
 	def __init__(self, *args, **kwargs):
-		super(UploadOnePlayerTherapyForm, self).__init__(*args, **kwargs)
-		self.fields['player'].widget.attrs.update({'class' : 'selectpicker'})
+		super(UploadOneActividadTherapyForm, self).__init__(*args, **kwargs)
+		self.fields['actividad'].widget.attrs.update({'class' : 'selectpicker'})
+
+#Formulario para editar Nombre y Apellidos del especialista
 
 class EditNameForm(forms.Form):
     name = forms.CharField(
+        label='Nombre',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     surname = forms.CharField(
+        label='Apellidos',
         widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
@@ -258,6 +215,8 @@ class EditNameForm(forms.Form):
     def clean_surname(self):
         surname = self.cleaned_data['surname']
         return surname
+
+#Formulario para el email del especialista
 
 class EditEmailForm(forms.Form):
     email = forms.EmailField(
@@ -280,20 +239,21 @@ class EditEmailForm(forms.Form):
                 raise forms.ValidationError('This emails is already registed.')
         return email
 
+#Formulario para editar la contraseña especialista
 
 class EditPassForm(forms.Form):
     last_password = forms.CharField(
-        label='Last password',
+        label='Contraseña actual',
         min_length=5,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     password = forms.CharField(
-        label='New password',
+        label='Nueva contraseña',
         min_length=5,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     password2 = forms.CharField(
-        label='Repeat new password',
+        label='Repita contraseña',
         min_length=5,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 

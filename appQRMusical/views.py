@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView, UpdateView, CreateView
-from datetime import datetime, time
+from datetime import datetime, time, date
 
 #Users
 from django.contrib.auth.models import User
@@ -17,11 +17,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Play + Multimedia
-from .models import Player#, Game_List
+from .models import Actividad
 from . import global_vars
 
 # Multimedia
-from .models import Multimedia, Content, Player_Content
+from .models import Multimedia, Contenido, Actividad_Contenido
 import os
 from PIL import Image
 from django.conf import settings
@@ -29,40 +29,40 @@ from django.views.generic.edit import FormView
 from .forms import UploadMultimediaForm
 
 # Player
-from .models import Player, Player_Indicator
-from .forms import UploadPlayerForm#UploadMatchListForm
+from .models import Actividad
+from .forms import FormularioActividad
 from django.urls import reverse_lazy, reverse
 
-# Profile
-from .models import Profile
+# Paciente
+from .models import Paciente
 from .forms import UploadUserForm
 
-# Therapist
-from .models import Therapist
-from .forms import UploadTherapistForm
+# Especialista
+from .models import Especialista
+from .forms import FormularioEspecialista
 
-# Therapy
-from .models import Therapy, Asign_Therapy, Therapist_Asign_Therapy, Therapy_Player
-from .forms import UploadTherapyForm, UploadAsignForm, UploadTherapyPlayerForm, UploadOneTherapyPlayerForm, UploadAsignTherapyForm, UploadOnePlayerTherapyForm
+# Terapia
+from .models import Terapia, Asigna_Terapia, Especialista_Asigna_Terapia, Terapia_Actividad
+from .forms import UploadTherapyForm, UploadAsign, UploadTherapyFormActividad, UploadAsignTherapyForm, UploadOneActividadTherapyForm, UploadOnePlayerTerapiaForm
 
-# Treatment
-from .models import Treatment, Supervise
+# Tratamiento
+from .models import Tratamiento, Supervisa
 from .forms import UploadTreatmentForm
 
-# Diagnostic
-from .models import Diagnostic
+# Diagnostico
+from .models import Diagnostico
 from .forms import UploadDiagnosticForm
 
-# Indicator
-from .models import Indicator, Therapy_Indicator
-from .forms import UploadIndicatorForm, UploadIndicatorFormbeta,UploadFailuresForm,UploadHitsForm, UploadOneIndicatorForm
+# Indicador
+from .models import Indicador, Terapia_Indicador
+from .forms import UploadIndicatorForm
 
-# Category
-from .models import Category, Category_Player
-from .forms import UploadCategoryForm, UploadCategoryPlayerForm
+# Categoria
+from .models import Categoria, Categoria_Actividad
+from .forms import UploadCategoryForm, FormularioCategoriaActividad
 
-#Session
-from .models import Session, Result_Session
+#Sesion
+from .models import Sesion, Resultado_Sesion
 
 #Player Game
 import threading
@@ -82,7 +82,9 @@ from django.contrib.auth.hashers import make_password
 
 from django.http import JsonResponse
 
+# Create your views here.
 
+#Lector de Codigos que guarda en global vars el codigo leido.
 
 def read_ID():
     arduinoPort = serial.Serial(serialPort, 9600, timeout=1)
@@ -103,11 +105,14 @@ def read_ID():
                 arduinoPort.close()
 
 
+#Llamada al hilo que llama al lector para el juego
 
 def start_reader():
     #global_vars.message = 'Put the card near the scanner'
     t1 = threading.Thread(target=read_ID)
     t1.start()
+
+#Lector para identficación de usuario, elementos multimedia etc
 
 def Identify_ID():
     arduinoPort = serial.Serial(serialPort, 9600, timeout=1)
@@ -127,75 +132,86 @@ def Identify_ID():
                 arduinoPort.close()
                 return code
 
-# Create your views here.
+#Vista de la pagina inicial
+
 class Home(TemplateView):
 	template_name="home.html"
 	def get_context_data(self, **kwargs):
 		context = super(Home, self).get_context_data(**kwargs)
 		try:
-			player = Profile.objects.get(online="yes")
-			context['subtitle'] = "Willkommen, Bienvenue, Benvenuti, Bienvenido, Namaste, karibu. Let's go to play!!"
-		except Profile.DoesNotExist:
+			player = Paciente.objects.get(online="si")
+		except Paciente.DoesNotExist:
 			player = None
-			context['subtitle'] = "Willkommen, Bienvenue, Benvenuti, Bienvenido, Namaste, karibu. Identify a user and let's go to play!!"
 
 		context['QRM_color'] = "QRM_blue"
-		context['message_alert'] = "alert-info"
-		context['message_head'] = "Info, "
-		context['message_text'] = "welcome to PiMusic project, made by Iñaki."
-		context['title'] = "Welcome!"
 		context['player'] = player
 		return context
 
+#Vista de la elección de tratamiento una vez identificado el paciente
 
-# ======== PLAY zone ========
-class Play(TemplateView):
-	template_name="play.html"
-	model = Player.objects.all()
+class Choose_treatment(TemplateView):
+	mixer.init()
+	mixer.stop()
+	template_name="choose_treatment.html"
+	model = Actividad.objects.all()
 	def get_context_data(self, **kwargs):
-		context = super(Play, self).get_context_data(**kwargs)
+		context = super(Choose_treatment, self).get_context_data(**kwargs)
 		try:
-			player = Profile.objects.get(online="yes")
-		except Profile.DoesNotExist:
-			player = None
+			actividad = Paciente.objects.get(online="si")
+		except Paciente.DoesNotExist:
+			actividad = None
 			return context
 
-		player = Profile.objects.get(online="yes")
+		actividad = Paciente.objects.get(online="si")
 
 		content = list()
 		skip = 1
-		terapy = Therapy.objects.all()
-		tera2 = Treatment.objects.filter(enabled=True)
-		tera2 = Asign_Therapy.objects.filter(treatment_id__in=tera2.filter(profile_id=player.id))
+		terapy = Terapia.objects.all()
+		tera2 = Tratamiento.objects.filter(activado=True)
+		tera2 = Asigna_Terapia.objects.filter(tratamiento_id__in=tera2.filter(paciente_id=actividad.id))
 		for i in tera2:
-			for j in terapy:
-				if i.therapy.id == j.id:
-					content.append(j)
-					skip = 0
-
-		#tera2 = Therapy_Player.objects.filter(therapy_id__in=Therapy.objects.filter(id__in=Asign_Therapy.objects.filter(treatment_id__in=tera2)))
-
+			content.append(i)
+			skip = 0
 		context['treat'] = tera2
-		context['therapy_p'] = Therapy_Player.objects.all()
-		context['kk'] = content
+		context['therapy_p'] = Terapia_Actividad.objects.all()
+		context['content'] = content
 		context['skip'] = skip
 		context['QRM_color'] = "QRM_pink"
-		context['message_alert'] = "alert-info"
-		context['message_head'] = "Info, "
-		context['message_text'] = "Select a game."
-		context['title'] = "Play"
-		context['subtitle'] = "Select between the different games"
-		context['player'] = player
+		context['player'] = actividad
 		return context
 
 
+def Play(request, pk):
+	try:
+		actividad = Paciente.objects.get(online="si")
+	except Paciente.DoesNotExist:
+		actividad = None
+		return context
+	print(pk)
+	actividad = Paciente.objects.get(online="si")
+	tera = Asigna_Terapia.objects.filter(pk=pk)
+	print(tera)
+	skip = 1
+	if tera:
+		skip = 0
+
+	context = {
+		'therapy_p' : Terapia_Actividad.objects.all(),
+		'content' : tera,
+		'skip' : skip,
+		'QRM_color' : "QRM_pink",
+		'player' : actividad
+	}
+	return render(request, 'play.html', context)		
+
+
 class Songs(ListView):
-	model = Player
+	model = Actividad
 	template_name="songs_list.html"
 	def get_context_data(self, **kwargs):
 		context = super(Songs, self).get_context_data(**kwargs)
 		context.update({
-			'object_list': Player.objects.all().filter(list_type="Music_list"),
+			'object_list': Actividad.objects.all().filter(list_type="Music_list"),
 		})
 		context['QRM_color'] = "QRM_pink"
 		context['message_alert'] = "alert-info"
@@ -206,12 +222,12 @@ class Songs(ListView):
 		return context
 
 class List(ListView):
-	model = Player
+	model = Actividad
 	template_name="matchs_list.html"
 	def get_context_data(self, **kwargs):
 		context = super(List, self).get_context_data(**kwargs)
 		context.update({
-			'object_list': Player.objects.all().filter(list_type="Match_list"),
+			'object_list': Actividad.objects.all().filter(list_type="Match_list"),
 		})
 		context['QRM_color'] = "QRM_pink"
 		context['message_alert'] = "alert-info"
@@ -318,29 +334,27 @@ def Identify(request):
 	coder = Identify_ID()
 	#global_vars.rfid_code = ''
 	try:
-		user = Profile.objects.get(code=coder)
-		user.online = "yes"
+		user = Paciente.objects.get(codigo=coder)
+		user.online = "si"
 		user.save()
 		context = {
 			'QRM_color' : "QRM_blue",
 			'message_alert' : "alert-info",
-			'message_head' : user.name,
+			'message_head' : user.nombre,
 			'message_text' : "is ready to play",
 			'title' : "User identified",
 			'subtitle' : "Click on Play to begin!!",
 			'player' : user
     	}
-		return HttpResponseRedirect('/play/')
+		return HttpResponseRedirect('/choose_treatment/')
 		return render(request, 'home.html', context)		
 	except:
 		user = None
 		context = {
 			'QRM_color' : "QRM_blue",
 			'message_alert' : "alert-info",
-			'message_head' : "No User with this ID",
-			'message_text' : ", Please try another one",
-			'title' : "No User Found",
-			'subtitle' : "Click on Identify Player to try again",
+			'message_head' : "No se ha encontrado un jugador con este Identificador",
+			'message_text' : ", Por favor intentelo de nuevo",
 			'player' : user
     	}	
 
@@ -348,20 +362,20 @@ def Identify(request):
 
 def Disconnect(request):
 	try:
-		user = Profile.objects.get(online="yes")
+		user = Paciente.objects.get(online="si")
 		user.online = "no"
 		user.save()
 		context = {
 			'QRM_color' : "QRM_blue",
 			'message_alert' : "alert-info",
-			'message_head' : user.name,
+			'message_head' : user.nombre,
 			'message_text' : "Has just disconnect",
 			'title' : "User disconnected",
 			'subtitle' : "Click on Identify Player to register another player!!",
 			'player' : user
 	    }
 		return render(request, 'home.html', context)
-	except Profile.DoesNotExist:
+	except Paciente.DoesNotExist:
 		user = None
 		context = {
 			'QRM_color' : "QRM_blue",
@@ -422,18 +436,16 @@ def game(id_player):
 
 
 def gamem(id_player,asgn_thera,thera_indi):
-	indis = Player_Indicator.objects.filter(player_id=id_player)
-
 	if global_vars.game_initialized == False: 	# First start of game
-		mults = Player_Content.objects.filter(player_id=id_player)
+		mults = Actividad_Contenido.objects.filter(actividad_id=id_player)
 		global_vars.game_number_objects = mults.count()
 		mults = list(mults)
 		global_vars.game_objects = mults
 		global_vars.game_initialized = True
-		sessionone = Session()
-		sessionone.asign_therapy = asgn_thera
+		sessionone = Sesion()
+		sessionone.asigna_Terapia = asgn_thera
 		sessionone.save()
-		global_vars.identifier = sessionone.id_session
+		global_vars.identifier = sessionone.id_sesion
 		global_vars.thera_indi = thera_indi
 		global_vars.timestart =time.time()
 
@@ -452,29 +464,30 @@ def gamem(id_player,asgn_thera,thera_indi):
 		global_vars.timeend =  time.time()
 		timefinal = global_vars.timeend - global_vars.timestart
 		if global_vars.end == 0:
+			print(id_player)
 			for i in global_vars.thera_indi:
-				if i.indicator.id_indicator == 2:
-					results = Result_Session()
-					results.session = Session.objects.get(id_session=global_vars.identifier)
-					results.player = Player.objects.get(id=id_player)
-					results.indicator = Indicator.objects.get(id_indicator=2)
-					results.result = global_vars.correct
+				if i.id_indicador == 2:
+					results = Resultado_Sesion()
+					results.sesion = Sesion.objects.get(id_sesion=global_vars.identifier)
+					results.actividad = Actividad.objects.get(id=id_player)
+					results.indicador = Indicador.objects.get(id_indicador=2)
+					results.resultado = global_vars.correct
 					results.save()
-				if i.indicator.id_indicator == 3:
-					results = Result_Session()
-					results.session = Session.objects.get(id_session=global_vars.identifier)
-					results.player = Player.objects.get(id=id_player)
-					results.indicator = Indicator.objects.get(id_indicator=3)
-					results.result = global_vars.fail
+				if i.id_indicador == 3:
+					results = Resultado_Sesion()
+					results.sesion = Sesion.objects.get(id_sesion=global_vars.identifier)
+					results.actividad = Actividad.objects.get(id=id_player)
+					results.indicador = Indicador.objects.get(id_indicador=3)
+					results.resultado = global_vars.fail
 					results.save()
-				if i.indicator.id_indicator == 1:
-					results = Result_Session()
-					results.session = Session.objects.get(id_session=global_vars.identifier)
-					results.player = Player.objects.get(id=id_player)
-					results.indicator = Indicator.objects.get(id_indicator=1)
-					results.result = round(timefinal,2)
+				if i.id_indicador == 1:
+					results = Resultado_Sesion()
+					results.sesion = Sesion.objects.get(id_sesion=global_vars.identifier)
+					results.actividad = Actividad.objects.get(id=id_player)
+					results.indicador = Indicador.objects.get(id_indicador=1)
+					results.resultado = round(timefinal,2)
 					print(timefinal)
-					print(results.result)
+					print(results.resultado)
 					results.save()
 					global_vars.end = 1
 
@@ -483,7 +496,7 @@ def gamem(id_player,asgn_thera,thera_indi):
 	else:
 		for index, obj in enumerate(global_vars.game_objects):
 			if "images" == code.split('/')[0]:
-				url = obj.image.url
+				url = obj.imagen.url
 
 				
 			elif "songs" == code.split('/')[0] or "movies" == code.split('/')[0]:
@@ -493,9 +506,9 @@ def gamem(id_player,asgn_thera,thera_indi):
 			url = url[6:]  			# del "files/" of url
 			#os.system('wmctrl -r zbar barcode reader -b add,above')
 			if index == 0:
-				global_vars.game_image_prev = ('/%s%s') % (settings.MEDIA_URL,obj.content.multimedia.image.url[6:])
+				global_vars.game_image_prev = ('/%s%s') % (settings.MEDIA_URL,obj.contenido.multimedia.imagen.url[6:])
 
-				if obj.content.code == code: 		# Match OK
+				if obj.contenido.codigo == code: 		# Match OK
 					global_vars.match = 1
 					global_vars.game_success +=1
 					global_vars.correct = global_vars.game_success
@@ -503,14 +516,14 @@ def gamem(id_player,asgn_thera,thera_indi):
 					global_vars.last_message = global_vars.message
 					matching = True
 					global_vars.message_alert = "alert-success"
-					global_vars.game_image = ('/%s%s') % (settings.MEDIA_URL,obj.content.multimedia.image.url[6:])
-					if obj.content.multimedia.file:
-						global_vars.game_file = obj.content.multimedia.file.url
+					global_vars.game_image = ('/%s%s') % (settings.MEDIA_URL,obj.contenido.multimedia.imagen.url[6:])
+					if obj.contenido.multimedia.file:
+						global_vars.game_file = obj.contenido.multimedia.file.url
 						#music = '/home/kiwi/Escritorio/PiMusic/appQRMusical/'+ global_vars.game_file
 						music = os.path.abspath('') + '/appQRMusical/'
 						music = music + global_vars.game_file
 						print(music)
-						print(global_vars.fail)
+						print(global_vars.failsong)
 						mixer.init()
 						mixer.music.load(os.path.abspath(music))
 						mixer.music.play()
@@ -565,34 +578,6 @@ def player_game_song(request, id_player):
 	context['game_display'] = global_vars.game_display
 	"""
 	return render(request, 'player_game_song.html', context)
-
-"""
-def match_game_image(request, id_player):
-	context = {'message_alert' : global_vars.message_alert}
-	if global_vars.game_file != None:
-		name, ext = global_vars.game_file.split('.')
-		context['extension'] = ext 
-	else:
-	    context['extension'] = None		
-	context['image'] = global_vars.game_image
-	context['file'] = global_vars.game_file
-	context['id_player'] = id_player 
-
-	global_vars.game_file = None
-	
-	context['message_text'] = global_vars.message
-	context['title'] = "%s Player Game" % player.name
-	context['subtitle'] = "Select a list of songs"
-	context['id_player'] = id_player 
-	context['name_player'] = player.name 
-	context['game_fail'] = global_vars.game_fail
-	context['game_success'] = global_vars.game_success
-	context['game_points'] = global_vars.game_points
-	context['game_number_objects'] = global_vars.game_number_objects
-	context['game_display'] = global_vars.game_display
-	
-	return render(request, 'match_game_image.html', context)
-"""
 		
 def player_game(request, id_player):
 	global_vars.cam = 0
@@ -605,35 +590,37 @@ def player_game(request, id_player):
 	global_vars.game_display = "none"
 
 
-	player = Player.objects.get(id=id_player)
-	player = Profile.objects.get(online="yes")
-	treat = Treatment.objects.filter(profile_id=player.id)
-	treat = treat.filter(enabled=True)
+	player = Actividad.objects.get(id=id_player)
+	player = Paciente.objects.get(online="si")
+	treat = Tratamiento.objects.filter(paciente_id=player.id)
+	treat = treat.filter(activado=True)
 
 		#treat = treat.filter(enabled=True)
 		#tera = list()
 		#tera2 = list()
 		
 	for i in treat:
-		#tera = Asign_Therapy.objects.filter(treatment_id=i.id)
-		if  Asign_Therapy.objects.filter(treatment_id=i.id):
-			tera = Asign_Therapy.objects.filter(treatment_id=i.id)
+		#tera = Asigna_Terapia.objects.filter(treatment_id=i.id)
+		if  Asigna_Terapia.objects.filter(tratamiento_id=i.id):
+			tera = Asigna_Terapia.objects.filter(tratamiento_id=i.id)
 			#itera=itera+1
 		#itera = 0
-		#tera2 = Therapy.objects.filter(id__in=tera.filter(treatment_id=tera.treatment_id)
+		#tera2 = Terapia.objects.filter(id__in=tera.filter(treatment_id=tera.treatment_id)
 
 	for i in tera:
-		if  Therapy.objects.filter(id=i.treatment_id) != None:
-			tera2 = Therapy.objects.filter(id=i.treatment_id)
+		if  Terapia.objects.filter(id=i.treatment_id) != None:
+			tera2 = Terapia.objects.filter(id=i.treatment_id)
 
-	terapy = Therapy_Player.objects.all()
+	terapy = Terapia_Actividad.objects.all()
 	for i in tera2:
 		for j in terapy:
 			if i.id == j.therapy.id:
 				asgn_thera = i.get.all()
 				therapyid = j.therapy.id
 
-	thera_indi = Player_Indicator.objects.filter(player_id=id_player)
+	thera_indi=list()
+	for i in player.indicador.all():
+		thera_indi.append(i)
 	start_cam()
 
 	print(global_vars.message)
@@ -644,10 +631,10 @@ def player_game(request, id_player):
 	context['image'] = global_vars.game_image
 	context['file'] = global_vars.game_file
 	context['message_text'] = global_vars.message
-	context['title'] = "%s Player Game" % player.name
+	context['title'] = "%s Player Game" % player.nombre
 	context['subtitle'] = "Select a list of songs"
 	context['id_player'] = id_player 
-	context['name_player'] = player.name 
+	context['name_player'] = player.nombre 
 	context['game_fail'] = global_vars.game_fail
 	context['game_success'] = global_vars.game_success
 	context['game_points'] = global_vars.game_points
@@ -668,24 +655,27 @@ def match_game(request, id_player):
 	global_vars.game_display = "none"
 
 
-	player = Player.objects.get(id=id_player)
-	profile = Profile.objects.get(online="yes")
+	player = Actividad.objects.get(id=id_player)
+	profile = Paciente.objects.get(online="si")
 	global_vars.time = datetime.now()
 	start_reader()
 
 	#print(global_vars.message)
 	print(global_vars.thera_indi)
-	treat = Treatment.objects.filter(profile_id=profile.id)
-	treat = treat.filter(enabled=True)
+	treat = Tratamiento.objects.filter(paciente_id=profile.id)
+	treat = treat.filter(activado=True)
 		
 	for i in treat:
-		if  Asign_Therapy.objects.filter(treatment_id=i.id):
-			tera = Asign_Therapy.objects.filter(treatment_id=i.id)
+		if  Asigna_Terapia.objects.filter(tratamiento_id=i.id):
+			tera = Asigna_Terapia.objects.filter(tratamiento_id=i.id)
 
 	for i in tera:
 		asgn_thera = tera.get(id_asign_therapy=i.id_asign_therapy)
 
-	thera_indi = Player_Indicator.objects.filter(player_id=id_player)
+	thera_indi=list()
+	for i in player.indicador.all():
+		thera_indi.append(i)
+	#thera_indi = Actividad_Indicador.objects.filter(player_id=id_player)
 	gamem(id_player,asgn_thera,thera_indi)
 
 	context = {'message_alert' : global_vars.message_alert}	
@@ -694,11 +684,11 @@ def match_game(request, id_player):
 	context['check'] = global_vars.match
 	context['file'] = global_vars.game_file
 	context['message_text'] = global_vars.message
-	context['title'] = "%s Player Game" % player.name
+	context['title'] = "%s Player Game" % player.nombre
 	context['subtitle'] = "Search the correct card!!"
 	context['id_player'] = id_player
-	context['player_name'] = profile.name
-	context['name_player'] = player.name 
+	context['player_name'] = profile.nombre
+	context['name_player'] = player.nombre
 	context['game_fail'] = global_vars.game_fail
 	context['game_success'] = global_vars.game_success
 	context['game_points'] = global_vars.game_points
@@ -714,19 +704,21 @@ def match_game(request, id_player):
 
 def player_game_matching(request, id_player):
 
-        player = Player.objects.get(id=id_player)
-        profile = Profile.objects.get(online="yes")
-        treat = Treatment.objects.filter(profile_id=profile.id)
+        player = Actividad.objects.get(id=id_player)
+        profile = Paciente.objects.get(online="si")
+        treat = Tratamiento.objects.filter(actividad_id=profile.id)
         treat = treat.filter(enabled=True)
 		
         for i in treat:
-            if  Asign_Therapy.objects.filter(treatment_id=i.id):
-                tera = Asign_Therapy.objects.filter(treatment_id=i.id)
+            if  Asigna_Terapia.objects.filter(tratamiento_id=i.id):
+                tera = Asigna_Terapia.objects.filter(tratamiento_id=i.id)
 
         for i in tera:
             asgn_thera = tera.get(id_asign_therapy=i.id_asign_therapy)
 
-        thera_indi = Therapy_Indicator.objects.filter(therapy_id=asgn_thera.therapy.id)
+        thera_indi=list()
+        for i in player.indicador.all():
+            thera_indi.append(i)
         start_cam()
 
         game(id_player,asgn_thera,thera_indi)
@@ -735,10 +727,10 @@ def player_game_matching(request, id_player):
         context['image'] = global_vars.game_image  
         context['file'] = global_vars.game_file
         context['message_text'] = global_vars.message
-        context['title'] = "%s Player Game" % player.name
+        context['title'] = "%s Player Game" % player.nombre
         context['subtitle'] = "Select a list of songs"
         context['id_player'] = id_player
-        context['name_player'] = player.name
+        context['name_player'] = player.nombre
         context['game_fail'] = global_vars.game_fail
         context['game_success'] = global_vars.game_success
         context['game_points'] = global_vars.game_points
@@ -750,33 +742,36 @@ def player_game_matching(request, id_player):
         return JsonResponse(context)
 
 def match_game_matching(request, id_player):
-        player = Player.objects.get(id=id_player)
-        profile = Profile.objects.get(online="yes")
+        player = Actividad.objects.get(id=id_player)
+        profile = Paciente.objects.get(online="si")
         global_vars.time = datetime.now()
         start_reader()
 
         #print(global_vars.message)
-        treat = Treatment.objects.filter(profile_id=profile.id)
-        treat = treat.filter(enabled=True)
+        treat = Tratamiento.objects.filter(paciente_id=profile.id)
+        treat = treat.filter(activado=True)
 	
         for i in treat:
-            if  Asign_Therapy.objects.filter(treatment_id=i.id):
-                tera = Asign_Therapy.objects.filter(treatment_id=i.id)
+            if  Asigna_Terapia.objects.filter(tratamiento_id=i.id):
+                tera = Asigna_Terapia.objects.filter(tratamiento_id=i.id)
 
         for i in tera:
             asgn_thera = tera.get(id_asign_therapy=i.id_asign_therapy)
 
-        thera_indi = Player_Indicator.objects.filter(player_id=id_player)
+        thera_indi=list()
+        for i in player.indicador.all():
+            thera_indi.append(i)
+
         gamem(id_player,asgn_thera,thera_indi)
 
         context = {'message_alert' : global_vars.message_alert}
         context['image'] = global_vars.game_image  
         context['file'] = global_vars.game_file
         context['message_text'] = global_vars.message
-        context['title'] = "%s Player Game" % player.name
+        context['title'] = "%s Player Game" % player.nombre
         context['subtitle'] = "Select a list of songs"
         context['id_player'] = id_player
-        context['name_player'] = player.name
+        context['name_player'] = player.nombre
         context['game_fail'] = global_vars.game_fail
         context['game_success'] = global_vars.game_success
         context['game_points'] = global_vars.game_points
@@ -796,6 +791,7 @@ def Login(request):
 	context = {
 		'message_alert' : 	'alert-info',
 		'message_head'	:	'Info!',
+		'QRM_color' : "QRM_blue",
 		'message_text'	:	'Sign in form access to settings.',
 	}
 
@@ -825,15 +821,13 @@ def Login(request):
 
 	return render(request, 'login.html', context)  
 
+#Cierra sesion del usuario Especialista o administrador conectado
 
 @login_required
 def Logout(request):
     logout(request)
     context = {
 		'QRM_color' : "QRM_blue",
-    	'message_alert' : 	'alert-success',
-    	'message_head'	:	'Success!',
-    	'message_text'	:	'User logout correctly.',
     }
     return render(request, 'home.html', context)  
     return HttpResponseRedirect('/')
@@ -883,35 +877,35 @@ class Activity_settings(LoginRequiredMixin, TemplateView):
 		context['subtitle'] = "Configure your Activities"
 		return context
 
-class Indicators_list(LoginRequiredMixin, ListView):
-	model = Player_Indicator
+class Lista_Indicadores(LoginRequiredMixin, ListView):
+	model = Actividad
 	template_name="indicators_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
 	def get_context_data(self, **kwargs):
-		context = super(Indicators_list, self).get_context_data(**kwargs)
-		context['Activities'] = Player.objects.all
+		context = super(Lista_Indicadores, self).get_context_data(**kwargs)
+		context['Activities'] = Actividad.objects.all
 		context['QRM_color'] = "QRM_orange"
 		context['message_alert'] = "alert-info"
 		context['message_head'] = "Info, "
 		context['message_text'] = "List of indicators."
-		context['title'] = "Indicators"
+		context['title'] = "Indicadores"
 		context['subtitle'] = "Configure your indicators"
 		return context
 
-class Therapy_player_list(LoginRequiredMixin, ListView):
-	model = Therapy_Player
+class Terapia_player_list(LoginRequiredMixin, ListView):
+	model = Terapia_Actividad
 	template_name="therapy_player_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
 	def get_context_data(self, **kwargs):
-		context = super(Therapy_player_list, self).get_context_data(**kwargs)
+		context = super(Terapia_player_list, self).get_context_data(**kwargs)
 		context['QRM_color'] = "QRM_orange"
 		context['message_alert'] = "alert-info"
 		context['message_head'] = "Info, "
 		context['message_text'] = "List of Therapies associated with activities."
-		context['title'] = "Therapy-Activities"
-		context['activities'] = Player.objects.all()
+		context['title'] = "Terapia-Activities"
+		context['activities'] = Actividad.objects.all()
 		context['subtitle'] = "Configure your Therapies-Activities"
 		return context
 
@@ -928,7 +922,7 @@ class Gallery(LoginRequiredMixin, ListView):
 		context['message_text'] = "Setting of the gallery."
 		context['title'] = "Gallery"
 		context['subtitle'] = "Configure your app"
-		context['player_content'] = Player_Content.objects.all()
+		context['actividad_contenido'] = Actividad_Contenido.objects.all()
 		return context
 
 
@@ -943,7 +937,7 @@ class Multimedia_detail(LoginRequiredMixin, DetailView):
 		if self.object.file:
 			url = str(self.object.file.url)
 		else:  # If there are not file and only exists image:
-			url = str(self.object.image.url)
+			url = str(self.object.imagen.url)
 
 		url = url[6:] # Deleting 'files/'
 		
@@ -954,13 +948,13 @@ class Multimedia_detail(LoginRequiredMixin, DetailView):
 		context['qr'] = os.popen(qrencode_command)
 
 		if context['qr']:
-			print("QR code of %s make it!" % self.object.name)
+			print("QR code of %s make it!" % self.object.nombre)
 
 		context['QRM_color'] = "QRM_orange"
 		context['title'] = "QR code"
-		context['subtitle'] = "QR of multimedia %s" % self.object.name
+		context['subtitle'] = "QR of multimedia %s" % self.object.nombre
 
-		img_thumb = square_thumbnail(self.object.image.path)
+		img_thumb = square_thumbnail(self.object.imagen.path)
 		imgQR = img_QR("appQRMusical/files/temp/temp.png")
 		join_thumbnails(img_thumb, imgQR)
 
@@ -1009,9 +1003,10 @@ def join_thumbnails(img, imgQR):
 def upload_multimedia(request):
 
 	context = {
+		'QRM_color': "QRM_blue",
 		'message_alert' : 	'alert-info',
 		'message_head'	:	'Info, ',
-		'message_text'	:	'Select a File, and press Upload.',
+		'message_text'	:	'Selecciona un fichero y pulsa subir.',
 	}
 
 	if request.method == 'POST':
@@ -1021,17 +1016,17 @@ def upload_multimedia(request):
 			files = request.FILES
 			data = request.POST
 			success_url = '/settings/gallery'
-			file_up.image = files['image']
+			file_up.imagen = files['imagen']
 
 			if 'file' in files:
 				file_up.file = files['file']
 				file_up.name = file_up.file.name
 			else:
 				file_up.file = None
-				file_up.name = file_up.image.name
+				file_up.name = file_up.imagen.name
 
-			name, ext = file_up.name.rsplit('.', 1)
-			file_up.name = name
+			nombre, ext = file_up.name.rsplit('.', 1)
+			file_up.nombre = nombre
 			file_up.filetype = ext
 			file_up.save()
 
@@ -1039,8 +1034,8 @@ def upload_multimedia(request):
 			#	file_up.players = dict((request.POST))['players']
 
 			context['message_alert'] = "alert-success"
-			context['message_head'] = "Success! "
-			context['message_text'] = "File \"%s\" upload success" % (file_up.name)
+			context['message_head'] = "Conseguido! "
+			context['message_text'] = "Fichero \"%s\" subido con exito, pulse atras para volver a la pantalla anterior " % (file_up.nombre)
 
 	else:
 		context['form'] = UploadMultimediaForm()
@@ -1056,7 +1051,7 @@ class Multimedia_update(LoginRequiredMixin, UpdateView):
 	redirect_field_name = "/login/"
 
 	def get_success_url(self):
-		return reverse('multimedia_update', kwargs={'pk': self.object.id_content})
+		return reverse('multimedia_update', kwargs={'pk': self.object.id_contenido})
 
 
 class Multimedia_delete(DeleteView):
@@ -1080,25 +1075,25 @@ def join_url_with_media_root(url):
 	return path
 
 
-class Players_list(LoginRequiredMixin, ListView):
-	model = Player
+class Actividads_list(LoginRequiredMixin, ListView):
+	model = Actividad
 	template_name="players_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
 
 	def get_context_data(self, **kwargs):
-		context = super(Players_list, self).get_context_data(**kwargs)
+		context = super(Actividads_list, self).get_context_data(**kwargs)
 		context['QRM_color'] = "QRM_orange"
 		context['message_alert'] = "alert-info"
 		context['message_head'] = "Info, "
 		context['message_text'] = "Setting player's game."
 		context['title'] = "Players"
-		context['category'] = Category_Player.objects.all()
+		context['categoria'] = Categoria_Actividad.objects.all()
 		context['subtitle'] = "Configure your app"
 		return context
 
 class Match_list(LoginRequiredMixin, ListView):
-	model = Player
+	model = Actividad
 	template_name="players_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1115,7 +1110,7 @@ class Match_list(LoginRequiredMixin, ListView):
 
 
 class Users_list(LoginRequiredMixin, ListView):
-	model = Profile
+	model = Paciente
 	template_name="users_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1123,22 +1118,23 @@ class Users_list(LoginRequiredMixin, ListView):
 	def get_context_data(self, **kwargs):
 		context = super(Users_list, self).get_context_data(**kwargs)
 		context['QRM_color'] = "QRM_orange"
-		context['message_alert'] = "alert-info"
-		context['message_head'] = "Info, "
-		context['message_text'] = "Actual list of Users."
 		context['title'] = "Users"
-		context['subtitle'] = "Configure your app"
+		nacimiento = Paciente.objects.all()
+		for i in nacimiento:
+			if i.edad == None:
+				i.edad = (date.today().year - i.fecha_de_nacimiento.year - ((date.today().month, date.today().day) < (i.fecha_de_nacimiento.month, i.fecha_de_nacimiento.day))) 
+				i.save()
 		return context
 
-def Treatments_list(request):
-	#model = Treatment
+def Tratamientos_list(request):
+	model = Tratamiento
 	req = request.user.id
-	thera = Therapist.objects.get(user_id=req)
-	sup = Supervise.objects.filter(therapist_id=thera)
+	thera = Especialista.objects.get(user_id=req)
+	sup = Supervisa.objects.filter(especialista_id=thera)
 	#for i in sup:
 		#sup1 = sup.objects.get(id=i)
 		#wanted_id = sup.treatment_id
-	#treatments = Treatment.objects.filter(id=sup.treatment.id)
+	#treatments = Tratamiento.objects.filter(id=sup.treatment.id)
 	template_name="treatments_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1147,19 +1143,19 @@ def Treatments_list(request):
 	'QRM_color' : "QRM_orange",
 	'message_alert' : "alert-info",
 	'message_head' : "Info, ",
-	'message_text' : "Actual list of Treatments.",
-	'title' : "Treatments",
-	'subtitle' : "Configure your Treatments",
-	'object_list' : Treatment.objects.all(),
+	'message_text' : "Actual list of Tratamientos.",
+	'title' : "Tratamientos",
+	'subtitle' : "Configure your Tratamientos",
+	'object_list' : Tratamiento.objects.all(),
 	'thera' : thera,
-    'supervise' :  Supervise.objects.all()
+    'supervise' :  Supervisa.objects.all()
 	}
 	return render(request,'treatments_list.html',context)
 
 def Therapies_list(request):
 	req = request.user.id
-	thera = Therapist.objects.get(user_id=req)
-	asig_t = Therapist_Asign_Therapy.objects.filter(therapist_id=thera)
+	thera = Especialista.objects.get(user_id=req)
+	asig_t = Especialista_Asigna_Terapia.objects.filter(especialista_id=thera)
 	template_name="therapies_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1171,8 +1167,8 @@ def Therapies_list(request):
 	'message_text' : "Actual list of Therapies.",
 	'title' : "Therapies",
 	'subtitle' : "Configure your Therapies",
-	'object_list' : Therapy.objects.all(),
-	'asign_therapy' : Therapist_Asign_Therapy.objects.all(),
+	'object_list' : Terapia.objects.all(),
+	'asign_therapy' : Especialista_Asigna_Terapia.objects.all(),
     'asign' : asig_t
 	}
 	return render(request,'therapies_list.html',context)
@@ -1187,20 +1183,20 @@ def Summary(request):
 	'QRM_color' : "QRM_orange",
 	'message_alert' : "alert-info",
 	'message_head' : "Info, ",
-	'message_text' : "Actual list of Treatments.",
-	'title' : "Treatments",
-	'subtitle' : "Configure your Treatments",
-	'patients' : Profile.objects.all(),
-	'treatments' : Treatment.objects.all(),
-	'therapies' : Asign_Therapy.objects.all(),
-	'activities' : Therapy_Player.objects.all()
+	'message_text' : "Actual list of Tratamientos.",
+	'title' : "Tratamientos",
+	'subtitle' : "Configure your Tratamientos",
+	'patients' : Paciente.objects.all(),
+	'treatments' : Tratamiento.objects.all(),
+	'therapies' : Asigna_Terapia.objects.all(),
+	'activities' : Terapia_Actividad.objects.all()
 	}
 	return render(request,'summary.html',context)
 
 
 
 @login_required(login_url='login')
-def Therapists_list(request):
+def Especialistas_list(request):
 	template_name="therapists_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1208,17 +1204,17 @@ def Therapists_list(request):
 		'QRM_color': "QRM_orange",
 		'message_alert' : "alert-info",
 		'message_head' : "Info, ",
-		'message_text' : "Actual list of Therapists.",
-		'title' : "Therapists",
+		'message_text' : "Actual list of Especialistas.",
+		'title' : "Especialistas",
 		'subtitle' : "Configure your app",
-		'thera_list' : Therapist.objects.all(),
+		'thera_list' : Especialista.objects.all(),
 		'admin' : request.user.is_staff
 	}
 	return render(request,'therapists_list.html',context)
 
 class Create_therapist(LoginRequiredMixin, CreateView):
-	model = Profile
-	form_class = UploadTherapistForm
+	model = Paciente
+	form_class = FormularioEspecialista
 	template_name="create_therapist.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1238,7 +1234,7 @@ class Create_therapist(LoginRequiredMixin, CreateView):
 
 
 class Create_user(LoginRequiredMixin, CreateView):
-	model = Profile
+	model = Paciente
 	form_class = UploadUserForm
 	template_name="user_detail.html"
 	login_url='/login/'
@@ -1258,7 +1254,7 @@ class Create_user(LoginRequiredMixin, CreateView):
 
 
 class Update_user(LoginRequiredMixin, UpdateView):
-	model = Profile
+	model = Paciente
 	form_class = UploadUserForm
 	template_name="user_detail.html"
 	login_url='/login/'
@@ -1273,21 +1269,21 @@ class Update_user(LoginRequiredMixin, UpdateView):
 		context['message_text'] = "Update the information."
 		context['title'] = "Update User"
 		context['subtitle'] = "Update and Configure your User"
-		#context['songs'] = Multimedia.objects.filter(players__in=[self.object])
+		context['image'] = Paciente.objects.get(id=self.object.id)
 		context['btn_label'] = 'Update'
 		context['user_id'] = self.object.id
 		return context
 
 
 class User_delete(DeleteView):
-	model = Profile
+	model = Paciente
 	success_url = '/settings/users_list/'
 	def get_object(self):
 		obj = super(User_delete, self).get_object()
 		return obj	
 
 class Delete_therapy_player(DeleteView):
-	model = Therapy_Player
+	model = Terapia_Actividad
 	success_url = '/settings/Activities/therapy-player/'
 	def get_object(self):
 		obj = super(Delete_therapy_player, self).get_object()
@@ -1295,24 +1291,24 @@ class Delete_therapy_player(DeleteView):
 
 
 def ID_delete(request, pk):
-    model = get_object_or_404(Profile, pk=pk)
-    model.code = ''
+    model = get_object_or_404(Paciente, pk=pk)
+    model.codigo = ''
     model.save()
     context = {
         'QRM_color' : "QRM_orange",
         'message_alert' : "alert-info",
         'message_head' : "Info, ",
-        'message_text' : "Update the information.",
-        'title' : "Update User",
-        'subtitle' : "Update and Configure your User",
-        'btn_label' : 'Update',
+        'message_text' : "Informacion actualizada.",
+        'title' : "Actualiza los Ususarios",
+        'subtitle' : "Actualiza y configura tu usuario",
+        'btn_label' : 'Actualiza',
         'source' : '/files/static/success.png'
         }
     return render(request,'user_ID.html',context)
 
 def User_ID(request, pk):
-    model = get_object_or_404(Profile, pk=pk)
-    users = Profile.objects.all()
+    model = get_object_or_404(Paciente, pk=pk)
+    users = Paciente.objects.all()
     cards = Multimedia.objects.all()
     code = Identify_ID()
 
@@ -1320,63 +1316,61 @@ def User_ID(request, pk):
         'QRM_color' : "QRM_orange",
         'message_alert' : "alert-info",
         'message_head' : "Info, ",
-        'message_text' : "The information was updated succesfully.",
-        'title' : "Info View",
-        'subtitle' : "TASK DONE!!",
-        'btn_label' : 'Update',
+        'message_text' : "La información se ha actualizado correctamente.",
+        'title' : "Info",
+        'subtitle' : "TERMINADO CON EXITO!!",
+        'btn_label' : 'Actualizar',
         'source' : '/files/static/success.png'
         }
     for i in users:
-        if i.code == code:
+        if i.codigo == code:
             context = {
                 'QRM_color' : "QRM_orange",
                 'message_alert' : "alert-info",
                 'message_head' : "Info, ",
-                'message_text' : "Couldn't update the information.",
-                'title' : "Info View",
-                'subtitle' : "THE ID IS ALREADY IN USE, TRY A NEW ONE",
-                'btn_label' : 'Update',
+                'message_text' : "No se ha podido actualizar la información.",
+                'title' : "Info",
+                'subtitle' : "EL CODIGO USADO YA ESTA EN USO, PRUEBE UNO NUEVO",
+                'btn_label' : 'Actualizar',
                 'source' : '/files/static/error.png'
             }
             return render(request,'user_ID.html',context)
 
     for i in cards:
-        if i.code == code:
+        if i.codigo == code:
             context = {
                 'QRM_color' : "QRM_orange",
                 'message_alert' : "alert-info",
                 'message_head' : "Info, ",
-                'message_text' : "Couldn't update the information.",
-                'title' : "Info View",
-                'subtitle' : "THE ID IS ALREADY IN USE IDENTIFYING A MUTIMEDIA FILE, TRY A NEW ONE",
-                'btn_label' : 'Update',
+                'message_text' : "No se ha podido actualizar la información.",
+                'title' : "Info",
+                'subtitle' : "EL CODIGO USADO YA ESTA EN USO ASOCIADO CON UN ARCHIVO MULTIMEDIA, PRUEBE UNO NUEVO.",
+                'btn_label' : 'Actualizar',
                 'source' : '/files/static/error.png'
             }
             return render(request,'user_ID.html',context)
      
-    model.code = code
+    model.codigo = code
     model.save()
     return render(request,'user_ID.html',context)
 
 def Multi_ID_delete(request, pk):
     model = get_object_or_404(Multimedia, pk=pk)
-    model.code = ''
+    model.codigo = ''
     model.save()
     context = {
         'QRM_color' : "QRM_orange",
         'message_alert' : "alert-info",
         'message_head' : "Info, ",
-        'message_text' : "Update the information.",
-        'title' : "Update Multimedia",
-        'subtitle' : "Update and Configure your Multimedia",
-        'btn_label' : 'Update',
+        'message_text' : "Informacion actualizada.",
+        'btn_label' : 'Actualizar',
         'source' : '/files/static/success.png'
         }
     return render(request,'card_ID.html',context)
 
 def Multi_ID(request, pk):
     model = get_object_or_404(Multimedia, pk=pk)
-    users = Profile.objects.all()
+    users = Paciente.objects.all()
     cards = Multimedia.objects.all()
     code = Identify_ID()
 
@@ -1384,48 +1378,48 @@ def Multi_ID(request, pk):
         'QRM_color' : "QRM_orange",
         'message_alert' : "alert-info",
         'message_head' : "Info, ",
-        'message_text' : "The information was updated succesfully.",
+        'message_text' : "La información se ha actualizado correctamente.",
         'title' : "Info View",
         'subtitle' : "TASK DONE!!",
-        'btn_label' : 'Update',
+        'btn_label' : 'Actualizar',
         'source' : '/files/static/success.png'
         }
     for i in cards:
-        if i.code == code:
+        if i.codigo == code:
             context = {
                 'QRM_color' : "QRM_orange",
                 'message_alert' : "alert-info",
                 'message_head' : "Info, ",
-                'message_text' : "Couldn't update the information.",
-                'title' : "Info View",
-                'subtitle' : "THE ID IS ALREADY IN USE IN ANOTHER MUTIMEDIA, TRY A NEW ONE",
-                'btn_label' : 'Update',
+                'message_text' : "No se ha podido actualizar la información.",
+                'title' : "Info",
+                'subtitle' : "EL CODIGO USADO YA ESTA EN USO ASOCIADO CON UN ARCHIVO MULTIMEDIA, PRUEBE UNO NUEVO.",
+                'btn_label' : 'Actualizar',
                 'source' : '/files/static/error.png'
             }
             return render(request,'card_ID.html',context)
 
     for i in users:
-        if i.code == code:
+        if i.codigo == code:
             context = {
                 'QRM_color' : "QRM_orange",
                 'message_alert' : "alert-info",
                 'message_head' : "Info, ",
-                'message_text' : "Couldn't update the information.",
-                'title' : "Info View",
-                'subtitle' : "THE ID IS ALREADY IN USE IDENTIFYING AN USER, TRY A NEW ONE",
-                'btn_label' : 'Update',
+                'message_text' : "No se ha podido actualizar la información.",
+                'title' : "Info",
+                'subtitle' : "EL CODIGO USADO YA ESTA EN USO ASOCIADO CON UN USUARIO, PRUEBE UNO NUEVO.",
+                'btn_label' : 'Actualizar',
                 'source' : '/files/static/error.png'
             }   
             return render(request,'card_ID.html',context)
     
-    model.code = code
+    model.codigo = code
     model.save()
     return render(request,'card_ID.html',context)
 
 
 class Update_player(LoginRequiredMixin, UpdateView):
-	model = Player
-	form_class = UploadPlayerForm
+	model = Actividad
+	form_class = FormularioActividad
 	template_name="player_detail.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1440,16 +1434,16 @@ class Update_player(LoginRequiredMixin, UpdateView):
 		context['title'] = "Update the Activity"
 		context['subtitle'] = "Update and Configure your activity"
 		context['btn_label'] = 'Update'
-		context['therapy'] = Therapy_Player.objects.filter(player_id=self.object.id)
-		context['indicators'] = Indicator.objects.all()
-		context['playerindicators'] = Player_Indicator.objects.filter(player_id=self.object.id)
-		context['activities'] = Player_Content.objects.filter(player_id=self.object.id)
+		context['therapy'] = Terapia_Actividad.objects.filter(actividad_id=self.object.id)
+		context['indicators'] = Indicador.objects.all()
+		#context['playerindicators'] = Actividad_Indicador.objects.filter(player_id=self.object.id)
+		context['activities'] = Actividad_Contenido.objects.filter(actividad_id=self.object.id)
 		context['player_id'] = self.object.id
 		return context
 
 class Add_category_player(LoginRequiredMixin, CreateView):
-	model = Category_Player
-	form_class = UploadCategoryPlayerForm
+	model = Categoria_Actividad
+	form_class = FormularioCategoriaActividad
 	template_name="playerc_detail.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1467,8 +1461,8 @@ class Add_category_player(LoginRequiredMixin, CreateView):
 		return context
 
 class Add_therapy_player(LoginRequiredMixin, CreateView):
-	model = Therapy_Player
-	form_class = UploadTherapyPlayerForm
+	model = Terapia_Actividad
+	form_class = UploadTherapyFormActividad
 	template_name="therapy_player_detail.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1485,100 +1479,50 @@ class Add_therapy_player(LoginRequiredMixin, CreateView):
 		context['btn_label'] = 'Update'
 		return context
 
-"""class Create_player(LoginRequiredMixin, CreateView):
-	model = Player
-	form_class = UploadPlayerForm
-	template_name="create_player.html"
-	login_url='/login/'
-	redirect_field_name = "/login/"
-	success_url = reverse_lazy('players_list')
 
-	def get_context_data(self, **kwargs):
-		context = super(Create_player, self).get_context_data(**kwargs)
-		context['QRM_color'] = "QRM_orange"
-		context['message_alert'] = "alert-info"
-		context['message_head'] = "Info, "
-		context['message_text'] = "Create an activity."
-		context['title'] = "Create an Activity"
-		context['subtitle'] = "Create your activity"
-		context['btn_label'] = "Create"
-		return context
-"""
 def Create_player(request):
 	context = {
 		'QRM_color'		: "QRM_blue"
 	}
 	if request.method == 'POST':
-		context['form'] = UploadPlayerForm(request.POST)
-		context['form1'] = UploadOneIndicatorForm(request.POST)
-		context['form2'] = UploadOneTherapyPlayerForm(request.POST)
+		context['form'] = FormularioActividad(request.POST)
+		context['form1'] = UploadIndicatorForm(request.POST)
+		context['form2'] = UploadOnePlayerTerapiaForm(request.POST)
 		if context['form'].is_valid() & context['form1'].is_valid() & context['form2'].is_valid():
 #			indi = Player_Indicator()
-			Player = context['form'].save(commit=False)
-			Player_Indicator = context['form1'].save(commit=False)
-			Therapy_Player = context['form2'].save(commit=False)
-			Player.name = context['form'].cleaned_data['name']
-			Player.description = context['form'].cleaned_data['description']
-			Player.purpose = context['form'].cleaned_data['purpose']
-			Player.save()
-			Player_Indicator.indicator = context['form1'].cleaned_data['indicator']
-			Player_Indicator.player = Player
-			try:
-				Player_Indicator.indicator
-				Player_Indicator.save()
-			except:
-				Player_Indicator.player = Player
-			Therapy_Player.therapy = context['form2'].cleaned_data['therapy']
-			Therapy_Player.player = Player
-			Therapy_Player.save()
-			return render(request, 'Game_settings.html', context)
+			act = Actividad()
+			TA = Terapia_Actividad()
+			act = context['form'].save(commit=False)
+			act = context['form1'].save(commit=False)
+			TA = context['form2'].save(commit=False)
+			act.nombre = context['form'].cleaned_data['nombre']
+			act.descripcion = context['form'].cleaned_data['descripcion']
+			act.proposito = context['form'].cleaned_data['proposito']
+			act.save()
+			indi = context['form1'].cleaned_data['indicador']
+			terapia = context['form2'].cleaned_data['terapia']
+
+			print(terapia)
+			asigna_indi = Indicador.objects.filter(pk__in=indi)
+			#asigna_tera = Terapia.objects.filter(pk__in=terapia)
+			print(asigna_indi)
+			if indi:
+				for i in asigna_indi:
+					act.indicador.add(i)
+			if terapia:
+				TA.actividad = act
+				TA.terapia = terapia
+				TA.save()
+			context['object_list'] = Actividad.objects.all()
+			return render(request, 'players_list.html', context)
 	else:
-		context['form'] = UploadPlayerForm()
-		context['form1'] = UploadOneIndicatorForm()
-		context['form2'] = UploadOneTherapyPlayerForm()
+		context['form'] = FormularioActividad()
+		context['form1'] = UploadIndicatorForm()
+		context['form2'] = UploadOnePlayerTerapiaForm ()
 	return render(request, 'create_player.html', context)
-"""
-def Update_player(request,pk):
-	context = {
-		'QRM_color'		: "QRM_orange",
-	}
-	if request.method == 'POST':
-		context['form'] = UploadPlayerForm(request.POST)
-		context['form1'] = UploadOneIndicatorForm(request.POST)
-		context['form2'] = UploadOneTherapyPlayerForm(request.POST)
-		if context['form'].is_valid() & context['form1'].is_valid() & context['form2'].is_valid():
-#			indi = Player_Indicator()
-			Player = context['form'].save(commit=False)
-			Player_Indicator = context['form1'].save(commit=False)
-			Therapy_Player = context['form2'].save(commit=False)
-			Player.name = context['form'].cleaned_data['name']
-			Player.description = context['form'].cleaned_data['description']
-			Player.purpose = context['form'].cleaned_data['purpose']
-			Player.save()
-			Player_Indicator.indicator = context['form1'].cleaned_data['indicator']
-			Player_Indicator.player = Player
-			try:
-				Player_Indicator.indicator
-				Player_Indicator.save()
-			except:
-				Player_Indicator.player = Player
-			Therapy_Player.therapy = context['form2'].cleaned_data['therapy']
-			Therapy_Player.player = Player
-			Therapy_Player.save()
-			context['therapy'] = Therapy_Player.objects.filter(player_id=self.object.id)
-			context['indicators'] = Indicator.objects.all()
-			context['playerindicators'] = Player_Indicator.objects.filter(player_id=self.object.id)
-			context['activities'] = Player_Content.objects.filter(player_id=self.object.id)
-			context['player_id'] = self.object.id
-			return render(request, 'Game_settings.html', context)
-	else:
-		context['form'] = UploadPlayerForm()
-		context['form1'] = UploadOneIndicatorForm()
-		context['form2'] = UploadOneTherapyPlayerForm()
-	return render(request, 'player_detail.html', context)
-"""
+
 class Create_indicator(LoginRequiredMixin, CreateView):
-	model = Indicator
+	model = Actividad
 	form_class = UploadIndicatorForm
 	template_name="indicator_details.html"
 	login_url='/login/'
@@ -1597,7 +1541,7 @@ class Create_indicator(LoginRequiredMixin, CreateView):
 		return context
 
 class Update_indicator(LoginRequiredMixin, UpdateView):
-	model = Indicator
+	model = Actividad
 	form_class = UploadIndicatorForm
 	template_name = 'indicator_details.html'
 	login_url='/login/'
@@ -1606,11 +1550,11 @@ class Update_indicator(LoginRequiredMixin, UpdateView):
 	def get_success_url(self):
 		return reverse('indicators_list')
 
-class Indicator_delete(DeleteView):
-	model = Indicator
+class Indicador_delete(DeleteView):
+	model = Indicador
 	success_url = '/settings/activities/indicators'
 	def get_object(self):
-		obj = super(Indicator_delete, self).get_object()
+		obj = super(Indicador_delete, self).get_object()
 		return obj
 
 
@@ -1632,56 +1576,49 @@ def Create_treatment(request):
 	context = {
 		'message_alert' : 'alert-info',
 		'message_head' : 'Info!',
-		'message_text' : 'Create a Treatment.',
+		'message_text' : 'Create a Tratamiento.',
 		'QRM_color'	: "QRM_blue"
 	}
 
 	if request.method == 'POST':
 		context['form'] = UploadTreatmentForm(request.POST)
-		context['form1'] = UploadOnePlayerTherapyForm(request.POST)
-		context['form2'] = UploadAsignTherapyForm(request.POST)
-		if context['form'].is_valid() & context['form1'].is_valid() & context['form2'].is_valid():
-			supervise = Supervise()
+		context['form1'] = UploadAsignTherapyForm(request.POST)
+		if context['form'].is_valid() & context['form1'].is_valid():
+			supervise = Supervisa()
+			asigna = Asigna_Terapia()
 			req = request.user.id
-			thera = Therapist.objects.get(user_id=req)
-			Treatment = context['form'].save(commit=False)
-			Therapy_Player = context['form1'].save(commit=False)
-			Asign_Therapy = context['form2'].save(commit=False)
-			Therapy_Player.player = context['form1'].cleaned_data['player']
-			Asign_Therapy.therapy = context['form2'].cleaned_data['therapy']
-			Treatment.profile = context['form'].cleaned_data['profile']
-			Treatment.start_date = context['form'].cleaned_data['start_date']
-			Treatment.end_date = context['form'].cleaned_data['end_date']
-			Treatment.description = context['form'].cleaned_data['description']
-			Treatment.enabled = context['form'].cleaned_data['enabled']
-			Treatment.save()
-			supervise.treatment = Treatment
-			supervise.therapist = thera
+			thera = Especialista.objects.get(user_id=req)
+			Tratamiento = context['form'].save(commit=False)
+#			Asigna_Terapia = context['form1'].save(commit=False)
+			terapia = context['form1'].cleaned_data['terapia']
+			#print(terapia)
+			asigna_list = Terapia.objects.filter(pk__in=terapia)
+			Tratamiento.paciente = context['form'].cleaned_data['paciente']
+			Tratamiento.nombre = context['form'].cleaned_data['nombre']
+			Tratamiento.fecha_inicio = context['form'].cleaned_data['fecha_inicio']
+			Tratamiento.fecha_fin = context['form'].cleaned_data['fecha_fin']
+			Tratamiento.descripcion = context['form'].cleaned_data['descripcion']
+			Tratamiento.activado = context['form'].cleaned_data['activado']
+			Tratamiento.save()
+			supervise.tratamiento = Tratamiento
+			supervise.especialista = thera
 			supervise.save()
-			try:
-				Asign_Therapy.therapy
-				Asign_Therapy.save()
-			except:
-				context['message_alert'] = 'alert-success'
-				context['message_head'] = 'Success!!. '
-				context['message_text'] = 'Changes saved successfully'
-			try:
-				Therapy_Player.player
-				Therapy_Player.save()
-			except:
-				context['message_alert'] = 'alert-success'
-				context['message_head'] = 'Success!!. '
-				context['message_text'] = 'Changes saved successfully'
+			if terapia:
+				asigna.tratamiento = Tratamiento
+				asigna.save()
+				for i in asigna_list:
+					asigna.terapia.add(i)
+					#asigna.terapia = i
+					#asigna.save()
 			return render(request, 'settings.html', context)
 
 	else:
 		context['form'] = UploadTreatmentForm()
-		context['form1'] = UploadOnePlayerTherapyForm()
-		context['form2'] = UploadAsignTherapyForm()
+		context['form1'] = UploadAsignTherapyForm()
 	return render(request, 'treatment_details.html', context)
 
 class Update_treatment(LoginRequiredMixin, UpdateView):
-	model = Treatment
+	model = Tratamiento
 	form_class = UploadTreatmentForm
 	template_name="treatment_details.html"
 	login_url='/login/'
@@ -1699,11 +1636,11 @@ class Update_treatment(LoginRequiredMixin, UpdateView):
 		context['btn_label'] = 'Update'
 		return context
 
-class Treatment_delete(DeleteView):
-	model = Treatment
+class Tratamiento_delete(DeleteView):
+	model = Tratamiento
 	success_url = '/settings/treatments_list/'
 	def get_object(self):
-		obj = super(Treatment_delete, self).get_object()
+		obj = super(Tratamiento_delete, self).get_object()
 		return obj	
 
 def Create_therapy(request):
@@ -1714,42 +1651,51 @@ def Create_therapy(request):
 
 	if request.method == 'POST':
 		context['form'] = UploadTherapyForm(request.POST)
-		context['form1'] = UploadOnePlayerTherapyForm(request.POST)
-		context['form2'] = UploadAsignForm(request.POST)
-		if context['form'].is_valid() & context['form2'].is_valid():
-			TAT = Therapist_Asign_Therapy()
+		context['form1'] = UploadOneActividadTherapyForm(request.POST)
+		context['form2'] = UploadAsign(request.POST)
+		if context['form'].is_valid() & context['form1'].is_valid() & context['form2'].is_valid():
+			TAT = Especialista_Asigna_Terapia()
 			req = request.user.id
-			thera = Therapist.objects.get(user_id=req)
-			Therapy = context['form'].save(commit=False)
-			Therapy_Player = context['form1'].save(commit=False)
-			Asign_Therapy = context['form2'].save(commit=False)
-			Therapy.profile = context['form'].cleaned_data['name']
-			Therapy.description = context['form'].cleaned_data['description']
-			Therapy.enabled = context['form'].cleaned_data['therapy_type']
-			Therapy.save()
-			Therapy_Player.therapy = Therapy
-			Therapy_Player.player = context['form1'].cleaned_data['player']
-			Asign_Therapy.treatment = context['form2'].cleaned_data['treatment']
-			Asign_Therapy.therapy = Therapy
-			Asign_Therapy.save()
-			TAT.asign_therapy = Asign_Therapy
-			TAT.therapist = thera
-			TAT.save()
+			tera = Terapia()
+			thera = Especialista.objects.get(user_id=req)
+			tera = context['form'].save(commit=False)
+			Terapia_Actividad = context['form1'].save(commit=False)
+			Asigna_Terapia = context['form2'].save(commit=False)
+			tera.paciente = context['form'].cleaned_data['nombre']
+			tera.description = context['form'].cleaned_data['descripcion']
+			tera.tipo = context['form'].cleaned_data['tipo']
+			tera.save()
+			Terapia_Actividad.terapia = tera
+			Terapia_Actividad.actividad = context['form1'].cleaned_data['actividad']
+			tratamiento = context['form2'].cleaned_data['tratamiento']
+			print(Terapia_Actividad.terapia)
+			if tratamiento:
+				Asigna_Terapia.tratamiento = tratamiento
+				Asigna_Terapia.save()
+				Asigna_Terapia.terapia.add(tera)
+				TAT.asigna_terapia = Asigna_Terapia
+				TAT.especialista = thera
+				print(TAT)
+				TAT.save()
 			try:
-				Therapy_Player.player
-				Therapy_Player.save()
+				Terapia_Actividad.actividad
+				Terapia_Actividad.save()
 			except:
 				context['message_alert'] = 'alert-success'
 				context['message_head'] = 'Success!!. '
 				context['message_text'] = 'Changes saved successfully'
+
+			context['object_list'] = Terapia.objects.all()
+			context['asign_therapy'] = Especialista_Asigna_Terapia.objects.all()
+			return render(request, 'therapies_list.html', context)
 	else:
 		context['form'] = UploadTherapyForm()
-		context['form1'] = UploadOnePlayerTherapyForm()
-		context['form2'] = UploadAsignForm()
+		context['form1'] = UploadOneActividadTherapyForm()
+		context['form2'] = UploadAsign()
 	return render(request, 'therapy_details.html', context)
 
 class Update_therapy(LoginRequiredMixin, UpdateView):
-	model = Therapy
+	model = Terapia
 	form_class = UploadTherapyForm
 	template_name="therapy_details.html"
 	login_url='/login/'
@@ -1767,22 +1713,22 @@ class Update_therapy(LoginRequiredMixin, UpdateView):
 		context['btn_label'] = 'Update'
 		return context
 
-class Therapy_delete(DeleteView):
-	model = Therapy
+class Terapia_delete(DeleteView):
+	model = Terapia
 	success_url = '/settings/therapies_list/'
 	def get_object(self):
-		obj = super(Therapy_delete, self).get_object()
+		obj = super(Terapia_delete, self).get_object()
 		return obj	
 
 
-class Player_delete(DeleteView):
-	model = Player
+class Actividad_delete(DeleteView):
+	model = Actividad
 	success_url = '/settings/players_list/'
 	def get_object(self):
-		obj = super(Player_delete, self).get_object()
+		obj = super(Actividad_delete, self).get_object()
 		return obj	
 
-def Diagnostic_list(request, pk):
+def Diagnostico_list(request, pk):
 	login_url='/login/'
 	redirect_field_name = "/login/"
 	context = {
@@ -1792,13 +1738,13 @@ def Diagnostic_list(request, pk):
 		'message_text' : "Actual list of Therapies.",
 		'title' : "Therapies",
 		'ide' : pk,
-		'object_list' : Diagnostic.objects.filter(profile_id=pk),
+		'object_list' : Diagnostico.objects.filter(paciente_id=pk),
 		'subtitle' : "Configure your Therapies"
 	}
 	return render(request, 'diagnostic_list.html', context)
 
 class Categories_list(LoginRequiredMixin, ListView):
-	model = Category
+	model = Categoria
 	template_name="categories_list.html"
 	login_url='/login/'
 	redirect_field_name = "/login/"
@@ -1814,7 +1760,7 @@ class Categories_list(LoginRequiredMixin, ListView):
 		return context
 
 class Create_category(LoginRequiredMixin, CreateView):
-	model = Category
+	model = Categoria
 	form_class = UploadCategoryForm
 	template_name="category_details.html"
 	login_url='/login/'
@@ -1833,20 +1779,20 @@ class Create_category(LoginRequiredMixin, CreateView):
 		return context
 
 class Update_category(LoginRequiredMixin, UpdateView):
-	model = Category
+	model = Categoria
 	form_class = UploadCategoryForm
 	template_name = 'category_details.html'
 	login_url='/login/'
 	redirect_field_name = "/login/"
 
 	def get_success_url(self):
-		return reverse('category_list')
+		return reverse('categories_list')
 
-class Category_delete(DeleteView):
-	model = Category
+class Categoria_delete(DeleteView):
+	model = Categoria
 	success_url = '/settings/Categories'
 	def get_object(self):
-		obj = super(Category_delete, self).get_object()
+		obj = super(Categoria_delete, self).get_object()
 		return obj
 
 
@@ -1854,29 +1800,31 @@ class Category_delete(DeleteView):
 @login_required(login_url='login')
 def Create_diagnostic(request, pk):
 	context = {
+		'QRM_color' :"QRM_blue",
 		'message_alert' : 'alert-info',
 		'message_head' : 'Info!',
-		'message_text' : 'Create a Treatment.' 
+		'message_text' : 'Create a Tratamiento.' 
 	}
-	profile = Profile.objects.get(id=pk)
+	profile = Paciente.objects.get(id=pk)
 
 	if request.method == 'POST':
 		context['form'] = UploadDiagnosticForm(request.POST)
 		if context['form'].is_valid():
-			diagnostic = Diagnostic()
-			diagnostic.profile = profile
-			diagnostic.assesment = context['form'].cleaned_data['assesment']
-			diagnostic.notes = context['form'].cleaned_data['notes']
+			diagnostic = Diagnostico()
+			diagnostic.paciente = profile
+			diagnostic.valoracion = context['form'].cleaned_data['valoracion']
+			diagnostic.notas = context['form'].cleaned_data['notas']
 			diagnostic.save()
 			context['message_alert'] = 'alert-success'
 			context['message_head'] = 'Success!!. '
-			context['message_text'] = 'Changes saved successfully'
+			context['object_list'] = Diagnostico.objects.filter(paciente_id=pk)
+			return render(request, 'diagnostic_list.html', context)
 	else:
 		context['form'] = UploadDiagnosticForm()
 	return render(request, 'diagnostic.html', context)
 
 class Update_diagnostic(LoginRequiredMixin, UpdateView):
-	model = Diagnostic
+	model = Diagnostico
 	form_class = UploadDiagnosticForm
 	template_name="diagnostic.html"
 	login_url='/login/'
@@ -1895,7 +1843,7 @@ class Update_diagnostic(LoginRequiredMixin, UpdateView):
 		return context
 
 class Delete_diagnostic(DeleteView):
-	model = Diagnostic
+	model = Diagnostico
 	success_url = reverse_lazy('users_list')
 	def get_object(self):
 		obj = super(Delete_diagnostic, self).get_object()
@@ -1903,20 +1851,20 @@ class Delete_diagnostic(DeleteView):
 
 @login_required(login_url='login')
 def add_multimedia_to_player(request, id):
-	objs = Player.objects.filter(id=id)
-	listcont = Player_Content.objects.filter(player_id=id)
-	content = Content.objects.all()
+	objs = Actividad.objects.filter(id=id)
+	listcont = Actividad_Contenido.objects.filter(actividad_id=id)
+	content = Contenido.objects.all()
 	content1 = list(content)
 	for obj in content:
 		for i in listcont:
-			if i.content.id_content == obj.id_content:
+			if i.contenido.id_contenido == obj.id_contenido:
 				content1.remove(obj)
 	context = { 
 		'object_list' 	:content1,
 		'object_list1' 	:listcont,
 		'title' 		: objs[0],
 		'activities'    : objs,
-		'subtitle'		: "Add Content to the Activity %s" % objs[0],
+		'subtitle'		: "Add Contenido to the Activity %s" % objs[0],
 		'QRM_color'		: "QRM_orange",
 		'player_id'		: id
 		}
@@ -1926,19 +1874,19 @@ def add_multimedia_to_player(request, id):
 
 @login_required(login_url='login')
 def add_multimedia_to_player_function(request, id_player, id_multimedia):
-	player_to_add = Player.objects.get(id=id_player)
-	mults = Content.objects.get(id_content=id_multimedia)
-	new_content = Player_Content()
-	new_content.player = player_to_add
-	new_content.content = mults
+	player_to_add = Actividad.objects.get(id=id_player)
+	mults = Contenido.objects.get(id_contenido=id_multimedia)
+	new_content = Actividad_Contenido()
+	new_content.actividad = player_to_add
+	new_content.contenido = mults
 	new_content.save()
 
-	objs = Player.objects.filter(id=id_player)
+	objs = Actividad.objects.filter(id=id_player)
 
 	context = { 
-		'object_list' 	: Player_Content.objects.exclude(player_id=id_player),
+		'object_list' 	: Actividad_Contenido.objects.exclude(actividad_id=id_player),
 		'title' 		: objs[0],
-		'subtitle'		: "Add Content to the Activity %s" % objs[0],
+		'subtitle'		: "Add Contenido to the Activity %s" % objs[0],
 		'QRM_color'		: "QRM_orange",
 		'player_id'		: id_player
 		}
@@ -1947,15 +1895,15 @@ def add_multimedia_to_player_function(request, id_player, id_multimedia):
 
 @login_required(login_url='login')
 def del_multimedia_of_player_function(request, id_player, id_multimedia):
-	player_to_del = Player.objects.get(id=id_player)
-	mults = Player_Content.objects.filter(content_id=id_multimedia)
-	mults = mults.get(player_id=id_player)
+	player_to_del = Actividad.objects.get(id=id_player)
+	mults = Actividad_Contenido.objects.filter(contenido_id=id_multimedia)
+	mults = mults.get(actividad_id=id_player)
 	mults.delete()
 
-	objs = Player.objects.filter(id=id_player)
+	objs = Actividad.objects.filter(id=id_player)
 
 	context = { 
-		'object_list' 	:Player_Content.objects.exclude(player_id=id_player),
+		'object_list' 	:Actividad_Contenido.objects.exclude(actividad_id=id_player),
 		'title' 		: objs[0],
 		'subtitle'		: "Add songs to Player %s" % objs[0],
 		'QRM_color'		: "QRM_orange",
@@ -2015,14 +1963,14 @@ class User(LoginRequiredMixin, TemplateView):
 		context['subtitle'] = "Settings in user"		
 		return context
 
-class Results(LoginRequiredMixin, ListView):
+class Resultados(LoginRequiredMixin, ListView):
 	template_name="results.html"
-	model = Profile
+	model = Paciente
 	login_url='/login/'
 	redirect_field_name = "/login/"
 	success_url = reverse_lazy('settings')
 	def get_context_data(self, **kwargs):
-		context = super(Results , self).get_context_data(**kwargs)
+		context = super(Resultados , self).get_context_data(**kwargs)
 		context['QRM_color'] = "QRM_orange"
 		context['message_alert'] = "alert-info"
 		context['message_head'] = "Info, "
@@ -2031,57 +1979,43 @@ class Results(LoginRequiredMixin, ListView):
 		context['subtitle'] = "Settings in user"		
 		return context
 
-def Results_details(request, pk):
-	#model = Result_Session.objects.filter(session__in=Session.objects.filter(id_session=pk))
-	#objects = Treatment()
-	#objects = Treatment.objects.filter(profile_id=pk)
-	#objects = Asign_Therapy.objects.filter(treatment_id=Treatment.objects.filter(profile_id=pk))
-	objects = Result_Session.objects.filter(session_id__in=Session.objects.filter(asign_therapy_id__in=Asign_Therapy.objects.filter(treatment_id__in=Treatment.objects.filter(profile_id=pk))))
-	success = objects.filter(indicator_id=2)
-	fail = objects.filter(indicator_id=3)
-	timing = objects.filter(indicator_id=1)
+def ResultadosTratamiento(request, pk):
+	objects = Tratamiento.objects.filter(paciente__id=pk)
+	context = {
+		'QRM_color' : "QRM_orange",
+		'objects' : objects,
+		'paciente' : Paciente.objects.get(pk=pk)
+	}	
+	return render(request, 'results_treatment.html', context) 
+
+def Resultados_details(request, pk):
+	#model = Resultado_Sesion.objects.filter(session__in=Sesion.objects.filter(id_session=pk))
+	#objects = Tratamiento()
+	objects_treat = Tratamiento.objects.filter(id=pk)
+	#objects = Asigna_Terapia.objects.filter(treatment_id=Tratamiento.objects.filter(profile_id=pk))
+	objects = Resultado_Sesion.objects.filter(sesion_id__in=Sesion.objects.filter(asigna_Terapia__tratamiento__in=objects_treat))
+	success = objects.filter(indicador_id=2)
+	fail = objects.filter(indicador_id=3)
+	timing = objects.filter(indicador_id=1)
+	print(success)
+	print(fail)
+	print(timing)
 	context = {
 		'QRM_color' : "QRM_orange",
 		'message_alert' : "alert-info",
 		'message_head' : "Info, ",
-		'message_text' : "Result table.",
-		'title' : "Results",
+		'message_text' : "Resultado table.",
+		'title' : "Resultados",
 		'success' : success,
 		'failures' : fail,
 		'time' : timing,
 		#'data' : data,
+		'objects_treat' : objects_treat,
 		'objects' : objects,
 		'subtitle' : "Add the data that you want"
 	}	
 	return render(request, 'results_details.html', context)  
-"""
-def Create_indicator(request):
-	context = {
-		'QRM_color'		: "QRM_blue"
-	}
 
-	if request.method == 'POST':
-		context['form'] = UploadIndicatorFormbeta(request.POST, request=request)
-		if context['form'].is_valid():
-			indi = Player_Indicator()
-			#print(indi.player)
-			print(indi)
-			player = context['form'].cleaned_data['player']
-			indi.player = Player.objects.get(name=player)
-			indicator = context['form'].cleaned_data['indicator']
-			print(indicator)
-			indi.indicator = Indicator.objects.get(name=indicator)
-			try:
-				PLINDI = Player_Indicator.objects.get(player=indi.player,indicator=indi.indicator)
-			except PLINDI.DoesNotExist:
-				indi.save()
-				return render(request, 'indicators_list.html', context)
-			return render(request, 'indicators_list.html', context)
-
-	else:
-		context['form'] = UploadIndicatorFormbeta(request=request)
-	return render(request, 'indicator_details.html', context)
-"""
 @login_required(login_url='login')
 def edit_name(request):
 	context = {
@@ -2095,16 +2029,17 @@ def edit_name(request):
 		context['form'] = EditNameForm(request.POST, request=request)
 		if context['form'].is_valid():
 			req = request.user.id
-			therapist = Therapist.objects.get(user_id=req)
+			therapist = Especialista.objects.get(user_id=req)
 			request.user.first_name = context['form'].cleaned_data['name']
 			request.user.last_name = context['form'].cleaned_data['surname']
-			therapist.name = context['form'].cleaned_data['name']
-			therapist.surname = context['form'].cleaned_data['surname']
+			therapist.nombre = context['form'].cleaned_data['name']
+			therapist.apellido = context['form'].cleaned_data['surname']
 			request.user.save()
 			therapist.save()
-			context['message_alert'] = 'alert-success'
-			context['message_head'] = 'Success!!. '
-			context['message_text'] = 'Changes saved successfully'
+			context['QRM_color'] ="QRM_blue"
+			context['thera_list'] = Especialista.objects.all()
+			context['admin'] = request.user.is_staff
+			return render(request, 'therapists_list.html', context)
 	else:
 		context['form'] = EditNameForm(
 		request=request,
@@ -2124,14 +2059,15 @@ def edit_email(request):
 		context['form'] = EditEmailForm(request.POST, request=request)
 		if context['form'].is_valid():
 			req = request.user.id
-			therapist = Therapist.objects.get(user_id=req)
+			therapist = Especialista.objects.get(user_id=req)
 			request.user.email = context['form'].cleaned_data['email']
 			therapist.email = context['form'].cleaned_data['email']
 			request.user.save()
 			therapist.save()
-			context['message_alert'] = 'alert-success'
-			context['message_head'] = 'Success!!. '
-			context['message_text'] = 'Changes saved successfully'
+			context['QRM_color'] ="QRM_blue"
+			context['thera_list'] = Especialista.objects.all()
+			context['admin'] = request.user.is_staff
+			return render(request, 'therapists_list.html', context)
 	else:
 		context['form'] = EditEmailForm(
 		request=request,

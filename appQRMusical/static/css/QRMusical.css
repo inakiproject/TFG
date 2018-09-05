@@ -77,19 +77,19 @@ svg:hover #play{
 }
 
 .QRM_green{
-	background-color: #00CC44;
+	background-color: #009588;
 }
 
 .QRM_pink{
-    background-color: #FF59AC;
+    background-color: #008C9E;
 }
 
 .QRM_orange{
-    background-color: #FF9F19;
+    background-color: #0466A6;
 }
 
 .QRM_blue{
-    background-color: #49C8F2;
+    background-color: #019DE6;
 }
 
 .QRM_love{
@@ -187,7 +187,7 @@ svg:hover #play{
 }
 
 .QRM_logo{
-    width: 60px; 
+    width: 300px; 
     top: -5px; 
     position: relative; 
     display: inline-block !important;
@@ -395,7 +395,7 @@ ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #FF9F19;
+    background-color: #0457A6;
 }
 
 div.sticky {
@@ -419,7 +419,7 @@ li a {
 
 li a:hover:not(.active) {
     color: white;
-    background-color: #FF9F19;
+    background-color: #0426A6;
 }
 
 .ullista {
@@ -437,7 +437,7 @@ li a:hover:not(.active) {
 
 .active {
     color: white;
-    background-color: #FF9F19;
+    background-color: #0426A6;
 }
 
 .ullistactive {

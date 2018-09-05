@@ -7,13 +7,13 @@
 	<div class="row">
 		<div class="jumbotron {{ QRM_color }}">
 			<center>
-            <p style="font-size:30px"><strong>Fill all the fields to create a new Therapist<strong></p>
+            <p style="font-size:30px;color:white"><strong>Rellena todos los campos para crear un nuevo especialista<strong></p>
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
-				    <p>USERNAME : {{ form.username }}* MAX ----> 150 characters.</p>
-                    <p>PASSWORD : {{ form.password1 }}* MIN ----> 8 characters.</p>
-                    <p>PASSWORD : {{ form.password2 }}* Confirm the password.</p>
-				    <input type="submit" value="Confirm" class="btn btn-sm btn-success" style="font-size:20px">
+				    <p>USUARIO : {{ form.username }}* MAX ----> 150 caracteres.</p>
+                    <p>CONTRASEÑA : {{ form.password1 }}* MIN ----> 8 caracteres.</p>
+                    <p>CONTRASEÑA : {{ form.password2 }}* Confirme la contraseña.</p>
+				    <input type="submit" value="Confirmar" class="btn btn-sm btn-success" style="font-size:20px">
 				</form>
 			</center>
 		</div>	

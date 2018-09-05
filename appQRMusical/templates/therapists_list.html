@@ -5,15 +5,15 @@
 
 <ul class="ullist">
   <strong>
-  <li><a class="ullista" href="{% url 'settings' %}">Settings</a></li>
-  <li><a class="ullista" href="{% url 'activity_settings' %}">Activity Settings</a></li>
-  <li><a class="ullista" href="{% url 'gallery' %}">Content</a></li>
-  <li><a class="ullista" href="{% url 'results' %}">Results</a></li>
-  <li><a class="ullista" href="{% url 'users_list' %}">Patients</a></li>
-  <li><a class="ullista" href="{% url 'treatments_list' %}">Treatments </a></li>
-  <li><a class="ullista" href="{% url 'therapies_list' %}">Therapies </a></li>
-  <li><a class="ullista" href="{% url 'user' %}">User </a></li>
-  <li><a class="ullistactive" href="{% url 'therapists_list' %}">Therapists </a></li>
+  <li><a class="ullista" href="{% url 'settings' %}">Menú Principal</a></li>
+  <li><a class="ullista" href="{% url 'users_list' %}">Pacientes</a></li>
+  <li><a class="ullista" href="{% url 'gallery' %}">Contenido</a></li>
+  <li><a class="ullistactive" href="{% url 'therapists_list' %}">Especialistas </a></li>
+  <li><a class="ullista" href="{% url 'treatments_list' %}">Tratamientos </a></li>
+  <li><a class="ullista" href="{% url 'therapies_list' %}">Terapias </a></li>
+  <li><a class="ullista" href="{% url 'activity_settings' %}">Actividades</a></li>
+  <li><a class="ullista" href="{% url 'results' %}">Resultados</a></li>
+  <li><a class="ullista" href="{% url 'summary' %}">Inf. General</a></li>
 </strong>
 </ul>
 
@@ -21,7 +21,7 @@
 		{% if admin %}
 		    <a href="{% url 'create_therapist' %}">
 		    	<div class="btn btn-sm btn-info">
-		    		<p>Add a Therapist</p>
+		    		<p>Añade un especialista</p>
 		    	</div>	
 		    </a>
         {% endif %}
@@ -31,9 +31,9 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Username</th>
-						<th>Name</th>
-						<th>Surname</th>
+						<th>Usuario</th>
+						<th>Nombre</th>
+						<th>Apellido</th>
 						<th>Email</th>
 			    	</tr>
 				</thead>
@@ -44,10 +44,10 @@
                             </th>
 
 		      				<td style="width: 10%; vertical-align: middle;">
-		      					{{ object.name }}  					
+		      					{{ object.nombre }}  					
 		      				</td>
 		      				<td style="width: 10%; vertical-align: middle;">
-		      					{{ object.surname }}  					
+		      					{{ object.apellido }}  					
 		      				</td>
 		      				<td style="width: 10%; vertical-align: middle;">
 		      					{{ object.email }}  					
@@ -61,7 +61,7 @@
 		{% if admin %}
 		    <a href="{% url 'create_therapist' %}">
 		    	<div class="btn btn-sm btn-info">
-		    		<p>Add a Therapist</p>
+		    		<p>Añade un especialista</p>
 		    	</div>	
 		    </a>
         {% endif %}

@@ -31,5 +31,5 @@ correct = 0
 fail = 0
 identifier = 0
 thera_indi = None
-fail='/files/songs/fail.mp3'
+failsong='/files/songs/fail.mp3'
 end=0

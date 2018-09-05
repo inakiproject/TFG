@@ -4,33 +4,33 @@
 {% block content_wrapper %}
 
 <div class="col-sm-12 QRM_box {{QRM_color}}">
-    <p style="font-size:30px;color:white;"><strong>Click on any of the multimedia to add it<strong></p>
+    <p style="font-size:30px;color:white;"><strong>Pulsa en cualquier elemento multimedia para añadirlo<strong></p>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
 			<table class="table table-hover ">
 				<thead>
 					<tr>
 						<th>#</th>
-						<th>Image</th>
-						<th>Name</th>
-						<th>track</th>	
+						<th>Imagen</th>
+						<th>Nombre</th>
+						<th>Audio</th>	
 						<th>QR</th>						
-						<th>Delete</th>						
+						<th>Eliminar</th>						
 
 			    	</tr>
 				</thead>
 				<tbody>
 					{% for son in object_list %}
 
-						<tr onclick="document.location = '{% url 'add_multimedia_to_player_function' player_id son.id_content %}';">
-		      				<th scope="row" style="width: 3%;">{{son.id_content}}</th>
-		      				<td style="width: 10%;"><img src="/{{ son.multimedia.image.url }}" style="width: 100px;"></td>
-		      				<td style="width: 10%;">{{ son.multimedia.name}}</td>
+						<tr onclick="document.location = '{% url 'add_multimedia_to_player_function' player_id son.id_contenido %}';">
+		      				<th scope="row" style="width: 3%;">{{son.id_contenido}}</th>
+		      				<td style="width: 10%;"><img src="/{{ son.multimedia.imagen.url }}" style="width: 100px;"></td>
+		      				<td style="width: 10%;">{{ son.multimedia.nombre}}</td>
 		      				<td style="width: 60%;">
 		      					{% if son.file %}
 		      					<audio controls style="width: 100%;">
 									<source src="/{{ i.file.url }}" type="audio/mp3">
-									Your browser does not support the audio element.
+							    	Su navegador no soporta este fichero de audio
 								</audio>
 								{% endif %}
 							</td>
@@ -42,9 +42,9 @@
 								</a>								
 							</td>
 							<td>
-								<form action="{% url 'multimedia_delete' son.id_content %}" method="post">
+								<form action="{% url 'multimedia_delete' son.id_contenido %}" method="post">
 									{% csrf_token %}
-										<input type="hidden" name="son_id" value="{{ son.id_content }}"/>
+										<input type="hidden" name="son_id" value="{{ son.id_contenido }}"/>
 										<button type="submit" class="btn btn-danger btn-sm">
 											<p>✖</p>
 										</button>
@@ -60,7 +60,5 @@
 
 	</div>
 </div>
-
-{% include "message.html" %}
 
 {% endblock content_wrapper %}

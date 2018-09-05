@@ -6,15 +6,15 @@
 
     <h1 class="page-header">
         {% if 'update' in request.get_full_path %}
-            Multimedia Edit
-        <h2 class="form-signin-heading">Edit the file/files </h2>
+            Editar multimedia
+        <h2 class="form-signin-heading">Edita el/los archivo/archivos</h2>
         {% else %}
-            Upload Files
-        <h2 class="form-signin-heading">Select your files to upload</h2>
+            Subir archivos
+        <h2 class="form-signin-heading">Selecciona los archivos para subir</h2>
         {% endif %}
     </h1>
 
-    <div class="jumbotron">
+    <div class="jumbotron {{QRM_color}} ">
 
         <form method="post" enctype="multipart/form-data" class="form-signin">
             
@@ -23,15 +23,16 @@
 				{% if object.file %}
   					<audio controls style="width: 100%;">
 					<source src="/{{ object.file.url }}" type="audio/mp3">
-					Your browser does not support the audio element.
+					Su buscador no soporta este elemento de audio.
 					</audio>
 					{% endif %}
+                <strong style="font-size:30px">Archivo de audio</strong>
                 <p>{{ form.file }}</p>
-                <img src="/{{ object.image.url }}" style="width: 100px;">
-                <p>{{ form.image }}</p>
+                <strong style="font-size:30px">Imagen</strong>
+                <p>{{ form.imagen }}</p>
             </center>
             <br>
-            <input class="btn btn-default" type="submit" value="Upload" />
+            <input class="btn btn-success" type="submit" value="Subir" />
         
         </form>
     </div>
