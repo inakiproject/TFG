@@ -41,15 +41,11 @@
 			        {% endif %}
 			        
 			        <div style="margin-top:10px">
-			                {% if file %}
-                    <audio controls autoplay>
-<a>Audio</a>
-                    <source src="{{ file }}" type="audio/mp3">
-                    </audio>
-<!--
-                                    <a id="file" href="/{{ file }}" target="_blank" class="btn btn-default" >play file</a> 
---> 
-                                    <a href="{% url 'match_game_image' id_player %}" class="btn btn-default"> Jugar!</a>
+			            {% if file %}
+                            <audio controls autoplay>
+                            <a>Audio</a>
+                            <source src="{{ file }}" type="audio/mp3">
+                            </audio>
                                                                                  
 			                {% endif %}
 			        </div>
@@ -121,9 +117,6 @@
         	}
 		})
 
-
-
-		//$('#auto').load('{% url 'player_game' id_player %} #auto');
 	}
    
     setInterval( "update_message_home()", 4000 );

@@ -44,25 +44,21 @@
 					<ul class="nav navbar-nav QRM_navbar_nav">
 
                         {% if player.online == "si" %}
-						<li><a>Conectado como: {{ player }}</a></li>
+						    <a>Conectado como: {{ player }}</a>
                         {% if player.imagen %}
-                            <li style="top: -11px;">
   						    <a>
-                                <img onclick="confirmationUser()" class="img-circle"src="/{{ player.imagen.url }}" style="width: 50px" title="Logout" alt="Logout" >
+                                <img onclick="confirmationUser()" class="img-circle"src="/{{ player.imagen.url }}" style="width: 50px">
 						    </a>
-						    </li>
                         {% else %}
-                            <li style="top: -11px;">
-								    <a>
-									    <img onclick="confirmationUser()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
+								    <a style="top: -11px;">
+									    <img onclick="confirmationUser()" src="/files/static/log_g.png" style="width: 50px">
 								    </a>
-						    </li>
                         {% endif %}
                         {% else %}
 						{% if user.is_authenticated %}
 						    <a>Conectado como: {{ user }}  </a>
 							<a href style="top: -11px;">  
-							<img  onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px" title="Logout" alt="Logout">
+							<img  onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px">
 							</a>
 							<a href="{% url 'user' %}" style="font-size: 45px;"> <i style="top:15px;" class="glyphicon glyphicon-cog"> </i></a>
 						{% else %}
@@ -116,7 +112,7 @@
             var txt;
             var r = confirm("¿Estas seguro de que deseas desconectarte?");
             if (r == true) {
-            window.location.replace('/disconnect');
+                window.location.replace('/disconnect');
             } else {
             }
         }

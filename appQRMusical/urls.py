@@ -1,5 +1,5 @@
 from django.conf.urls import include, url
-from appQRMusical.views import Home, Identify, Disconnect, Settings, Game_settings, Play, Songs, List, Gallery, Multimedia_detail, Multimedia_delete, Actividads_list, Users_list, Update_player, Update_user, User_ID, Multi_ID, Multi_ID_delete, Create_player, Create_user, Multimedia_update, Actividad_delete, ID_delete, User_delete, User, Match, Match_list, Identify_ID, Especialistas_list, Tratamientos_list, Therapies_list, Create_therapist, Create_treatment, Tratamiento_delete, Update_treatment, Diagnostico_list, Create_diagnostic, Update_diagnostic, Delete_diagnostic, Create_therapy, Update_therapy, Terapia_delete, Activity_settings,Lista_Indicadores, Create_indicator, Update_indicator, Indicador_delete, Categories_list, Update_category, Categoria_delete, Create_category, Add_category_player, Resultados, Resultados_details, Add_therapy_player, Terapia_player_list,  Delete_therapy_player, Summary, ResultadosTratamiento, Choose_treatment
+from appQRMusical.views import Home, Identify, Disconnect, Settings, Game_settings, Play, Gallery, Multimedia_detail, Multimedia_delete, Actividads_list, Users_list, Update_player, Update_user, User_ID, Multi_ID, Multi_ID_delete, Create_player, Create_user, Multimedia_update, Actividad_delete, ID_delete, User_delete, User, Identify_ID, Especialistas_list, Tratamientos_list, Therapies_list, Create_therapist, Create_treatment, Tratamiento_delete, Update_treatment, Diagnostico_list, Create_diagnostic, Update_diagnostic, Delete_diagnostic, Create_therapy, Update_therapy, Terapia_delete, Activity_settings,Lista_Indicadores, Create_indicator, Update_indicator, Indicador_delete, Categories_list, Update_category, Categoria_delete, Create_category, Add_category_player, Resultados, Resultados_details, Add_therapy_player, Terapia_player_list,  Delete_therapy_player, Summary, ResultadosTratamiento, Choose_treatment
 from . import views
 
 # For load images in dev mode
@@ -17,17 +17,11 @@ urlpatterns = [
 
 	# Play-Songs
 	url(r'^choose_treatment/$', Choose_treatment.as_view(), name='choose_treatment'),	
-	url(r'^choose_treatment/(?P<pk>\d+)/play/$', Play, name='play'),	
-	url(r'^play/songs_list/$', Songs.as_view(), name='songs_list'),	
-	url(r'^play/songs_list/(?P<id_player>\d+)/player_game/$', views.player_game, name='player_game'),	
-	url(r'^play/songs_list/(?P<id_player>\d+)/player_game_matching/$', views.player_game_matching, name='player_game_matching'),	
-	url(r'^play/songs_list/(?P<id_player>\d+)/player_game/player_game_song$', views.player_game_song, name='player_game_song'),	
+	url(r'^choose_treatment/(?P<pk>\d+)/play/$', Play, name='play'),
 
     #Play-Match
-	url(r'^play/match_game_list/$', List.as_view(), name='list'),
 	url(r'^play/match_game_list/(?P<id_player>\d+)/match_game/$', views.match_game, name='match_game'),	
 	url(r'^play/match_game_list/(?P<id_player>\d+)/match_game_matching/$', views.match_game_matching, name='match_game_matching'),	
-	#url(r'^play/match_game_list/(?P<id_player>\d+)/match_game_image/$', views.match_game_image, name='match_game_image'),	
 
     # Login
 	url(r'^login/$', views.Login, name='login'),
@@ -70,15 +64,6 @@ urlpatterns = [
 	url(r'^settings/players_list/(?P<id>\d+)/add_multimedia_to_player/$', views.add_multimedia_to_player, name='add_multimedia_to_player'), 
 	url(r'^settings/players_list/(?P<id_player>\d+)/add_multimedia_to_player/(?P<id_multimedia>\d+)/$', views.add_multimedia_to_player_function, name='add_multimedia_to_player_function'), 
 	url(r'^settings/players_list/(?P<id_player>\d+)/update/(?P<id_multimedia>\d+)/$', views.del_multimedia_of_player_function, name='del_multimedia_of_player_function'), 
-
-	# Settings - Match Game
-	url(r'^settings/match_list/$', Match_list.as_view(), name='match_list'), 
-	#url(r'^settings/match_list/(?P<pk>\d+)/update/$', Update_match_list.as_view(), name='update_match_list'), 
-	#url(r'^settings/match_list/(?P<pk>\d+)/delete/$', Delete_match_list.as_view(), name='delete_match_list'),
-	#url(r'^settings/match_list/create/$', Create_match_list.as_view(), name='create_match_list'), 
-
-	# Settigns - Camera
-	url(r'^settings/camera/$', views.camera, name='camera'), 
 
 	# Settigns - User	
 	url(r'^settings/user/$', User.as_view(), name='user'),
