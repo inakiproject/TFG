@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load zbar_extras %}
 <html lang="es">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 	<head>
 		<title>PiMusic</title>
 
@@ -57,7 +58,7 @@
                         {% else %}
 						{% if user.is_authenticated %}
 						    <a>Conectado como: {{ user }}  </a>
-							<a href style="top: -11px;">  
+							<a style="top: -11px;">  
 							<img  onclick="confirmation()" src="/files/static/log_g.png" style="width: 50px">
 							</a>
 							<a href="{% url 'user' %}" style="font-size: 45px;"> <i style="top:15px;" class="glyphicon glyphicon-cog"> </i></a>

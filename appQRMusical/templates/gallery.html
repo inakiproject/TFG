@@ -19,7 +19,7 @@
 </strong>
 </ul>
 </div>
-<div class="col-sm-12 QRM_box {{QRM_color}}">
+<div class="col-sm-12 QRM_box {{QRM_color}}"  style="overflow-x:auto;font-size:15px">
 		<a href="{% url 'upload_multimedia' %}">
 			<div class="btn btn-sm btn-info">
 				<p>Añadir elemento Multimedia</p>
@@ -27,7 +27,7 @@
 		</a>
 
 	<div class="QRM_box_in">
-		<div class="QRM_wrapper_table">
+		<div class="QRM_wrapper_table"  style="overflow-x:auto">
 
 			<table class="table table-hover">
 				<thead>
@@ -48,9 +48,9 @@
 				<tbody>
 					{% for son in object_list %}
 						<tr onclick="document.location = '{% url 'multimedia_update' son.id_contenido %}';">
-		      				<th scope="row" style="width: 3%;">{{ son.id_contenido }}</th>
+		      				<th scope="row" style="width: 1%;">{{ son.id_contenido }}</th>
 		      				<td style="width: 10%;"><img src="/{{ son.imagen.url }}" style="width: 100px;"></td>
-		      				<td style="width: 10%;">{{ son.nombre }}</td>
+		      				<td style="width: 9%;">{{ son.nombre }}</td>
 		      				<td style="width: 15%;">
 			      				<p>
 				      				<small>
@@ -96,7 +96,7 @@
                                 {% endif %}
                             </td>
 
-							<td>
+							<td style="width: 10%; vertical-align: left;">
 								<a href="{% url 'multimedia_detail' son.pk %}">
 									<div class="btn btn-sm btn-info">
 										<p>QR</p>
@@ -104,16 +104,16 @@
 								</a>								
 							</td>
 
-		      				<td style="width: 25%;">
+		      				<td style="width: 15%;">
 		      					{% if son.file %}
 		      					<audio controls style="width: 100%;">
 									<source src="/{{ son.file.url }}" type="audio/mp3">
-									Your browser does not support the audio element.
+									Su buscador no soporta audio
 								</audio>
 								{% endif %}
 							</td>
 
-							<td>
+							<td style="width: 10%; vertical-align: left;">
 								<form action="{% url 'multimedia_delete' son.id_contenido %}" method="post">
 									{% csrf_token %}
 									<center>

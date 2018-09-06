@@ -5,7 +5,7 @@
 {% for i in objects_treat %}
 <center><strong><h1>PACIENTE : {{i.paciente}} <> TRATAMIENTO : {{i}}</h1></strong></center>
 {% endfor %}
-<div style="font-size:14px" class="col-sm-5 QRM_box {{QRM_color}}">
+<div style="overflow-x:auto;font-size:10px" class="col-sm-5 QRM_box {{QRM_color}}">
     <strong><p style="color:white">Aciertos/Fallos</p></strong>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
@@ -49,7 +49,7 @@
 	</div>
 </div>
 
-<div style="font-size:14px" class="col-sm-5 QRM_box {{QRM_color}}">
+<div style="overflow-x:auto;font-size:10px" class="col-sm-5 QRM_box {{QRM_color}}">
     <strong><p style="color:white">Tiempo</p></strong>
 	<div class="QRM_box_in">
 		<div class="QRM_wrapper_table">
@@ -86,10 +86,10 @@
 	</div>
 </div>
 
-<div style="font-size:12px" class="col-sm-2 QRM_box {{QRM_color}}">
+<div style="overflow-x:auto;font-size:8px" class="col-sm-2 QRM_box {{QRM_color}}">
 	<strong><p style="color:white">Mostrar/Ocultar</p></strong>
 	<div class="QRM_box_in">
-		<div class="QRM_wrapper_table">
+		<div class="QRM_wrapper_table" style="overflow-x:auto">
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -110,7 +110,7 @@
 	</div>
 </div>
 
-<div class="col-sm-12" id="Hits">
+<div class="col-sm-12" id="Hits" style="overflow-x:auto;">
 <h1>Tipo de diagrama</h1>
   <p class="btn btn-warning" value="bar" onclick="ChangeType(1)">Barras</p>
   <p class="btn btn-warning" value="horizontalbar" onclick="ChangeType(2)">Barras Horizontales</p>

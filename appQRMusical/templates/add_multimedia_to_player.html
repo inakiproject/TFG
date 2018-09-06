@@ -14,7 +14,6 @@
 						<th>Imagen</th>
 						<th>Nombre</th>
 						<th>Audio</th>	
-						<th>QR</th>						
 						<th>Eliminar</th>						
 
 			    	</tr>
@@ -33,13 +32,6 @@
 							    	Su navegador no soporta este fichero de audio
 								</audio>
 								{% endif %}
-							</td>
-							<td style="width: 10%;">
-								<a href="{% url 'multimedia_detail' son.pk %}">
-									<div class="btn btn-sm btn-info">
-										<p>QR</p>
-									</div>
-								</a>								
 							</td>
 							<td>
 								<form action="{% url 'multimedia_delete' son.id_contenido %}" method="post">
