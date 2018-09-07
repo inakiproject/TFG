@@ -27,6 +27,7 @@ match = 0
 rfid_code = 'No code read'
 timestart = 0
 timeend = 0
+time = 0
 correct = 0
 fail = 0
 identifier = 0

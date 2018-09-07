@@ -6,19 +6,21 @@
 {% load staticfiles %}
 
 <div id="auto" >
-	
+	<center>
 	<div class="QRM_supercool_background" style="display:{{game_display}};">
 		<div class="col-sm-1" style="display:inline"></div>
 		<div class="col-sm-6 QRM_supercool_window">
 			<h1>Lo has conseguido!!!</h1>
 			<a  href="{% url 'choose_treatment' %}"><img src="/files/static/congrats.png"><a>
 			<p>Eres increible {{ player_name }}!!</p>
-			<p>Aciertos: {{game_success}} Fallos: {{game_fail}}</p>
+			<p style="color:green">Aciertos: {{game_success}}</p>
+            <p style="color:red"> Fallos: {{game_fail}}</p>
+            <p>Tiempo {{game_time}}</p>
             <p>Pulsa sobre la imagen para volver atrás</p>
 		</div>
 		<div class="col-sm-2" style="display:inline"></div>
 	</div>
-
+	</center>
 	<div class="col-sm-12 QRM_box QRM_pink" id="media">
 <!-- Desde aquí -->
 		<div class="QRM_box_in">
@@ -119,7 +121,7 @@
 
 	}
    
-    setInterval( "update_message_home()", 4000 );
+    setInterval( "update_message_home()", 2000 );
     
 </script>
 
