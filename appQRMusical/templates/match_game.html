@@ -6,7 +6,6 @@
 {% load staticfiles %}
 
 <div id="auto" >
-	<center>
 	<div class="QRM_supercool_background" style="display:{{game_display}};">
 		<div class="col-sm-1" style="display:inline"></div>
 		<div class="col-sm-6 QRM_supercool_window">
@@ -15,12 +14,11 @@
 			<p>Eres increible {{ player_name }}!!</p>
 			<p style="color:green">Aciertos: {{game_success}}</p>
             <p style="color:red"> Fallos: {{game_fail}}</p>
-            <p>Tiempo {{game_time}}</p>
+            <p>Tiempo: {{game_time}}</p>
             <p>Pulsa sobre la imagen para volver atrás</p>
 		</div>
 		<div class="col-sm-2" style="display:inline"></div>
 	</div>
-	</center>
 	<div class="col-sm-12 QRM_box QRM_pink" id="media">
 <!-- Desde aquí -->
 		<div class="QRM_box_in">

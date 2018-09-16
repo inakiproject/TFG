@@ -99,7 +99,9 @@ def read_ID():
             if len(code)==8:
                 global_vars.message = code
                 arduinoPort.flushInput()
-                arduinoPort.close()
+                #arduinoPort.close()
+            else:
+                arduinoPort.flushInput()
 
 #Llamada al hilo que llama al lector para el juego
 
@@ -371,7 +373,7 @@ def gamem(id_player,asgn_thera,thera_indi):
 		global_vars.game_display = "inline"
 		global_vars.timeend =  time.time()
 		timefinal = global_vars.timeend - global_vars.timestart
-		global_vars.time = timefinal
+		global_vars.time = round(timefinal,2)
 		if global_vars.end == 0:
 			print(id_player)
 			for i in global_vars.thera_indi:
@@ -506,6 +508,7 @@ def match_game(request, id_player):
 	context['player'] = profile
 	context['correct'] = global_vars.correct
 	context['fails'] = global_vars.fail
+	context['game_time'] = global_vars.time
 	
 	return render(request, 'match_game.html', context)
 
