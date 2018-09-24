@@ -73,6 +73,7 @@ import time
 
 # Card reader
 import sys, time, serial
+import pygame
 from pygame import mixer
 serialPort ='/dev/ttyACM0'
 
@@ -105,6 +106,8 @@ def read_ID():
 
 #Llamada al hilo que llama al lector para el juego
 
+
+
 def start_reader():
     #global_vars.message = 'Put the card near the scanner'
     t1 = threading.Thread(target=read_ID)
@@ -114,21 +117,20 @@ def start_reader():
 
 def Identify_ID():
     arduinoPort = serial.Serial(serialPort, 9600, timeout=1)
-    arduinoPort.setDTR(False)
-    time.sleep(0.3)
-
-    arduinoPort.flushInput()
-    arduinoPort.setDTR()
-    time.sleep(0.3)
     code = 0
 
     while True:
         tag = arduinoPort.readline()
         code = tag.decode('utf-8')
         if hash(tag) != 0:
+            #global_vars.message = code
+            #arduinoPort.flushInput()
             if len(code)==8:
-                arduinoPort.close()
                 return code
+                arduinoPort.flushInput()
+                #arduinoPort.close()
+            else:
+                arduinoPort.flushInput()
 
 #Vista de la pagina inicial
 
@@ -148,8 +150,8 @@ class Home(TemplateView):
 #Vista de la elección de tratamiento una vez identificado el paciente
 
 class Choose_treatment(TemplateView):
-	mixer.init()
-	mixer.stop()
+	pygame.mixer.init()
+	pygame.mixer.stop()
 	template_name="choose_treatment.html"
 	model = Actividad.objects.all()
 	def get_context_data(self, **kwargs):
@@ -432,15 +434,15 @@ def gamem(id_player,asgn_thera,thera_indi):
 						music = music + global_vars.game_file
 						print(music)
 						print(global_vars.failsong)
-						mixer.init()
-						mixer.music.load(os.path.abspath(music))
-						mixer.music.play()
+						pygame.mixer.init()
+						pygame.mixer.music.load(os.path.abspath(music))
+						pygame.mixer.music.play()
 					else:
 						global_vars.game_file = None
 						music = os.path.abspath('') + '/appQRMusical/files/songs/success.wav'
-						mixer.init()
-						mixer.music.load(os.path.abspath(music))
-						mixer.music.play()
+						pygame.mixer.init()
+						pygame.mixer.music.load(os.path.abspath(music))
+						pygame.mixer.music.play()
 
 		
 		if global_vars.last_message != global_vars.message and matching == False: # Doesnt match
@@ -449,10 +451,9 @@ def gamem(id_player,asgn_thera,thera_indi):
 			global_vars.last_message = global_vars.message
 			global_vars.message_alert = "alert-danger"
 			music = os.path.abspath('') + '/appQRMusical/files/songs/fail.mp3'
-			print(global_vars.fail)
-			mixer.init()
-			mixer.music.load(os.path.abspath(os.path.abspath(music)))
-			mixer.music.play()
+			pygame.mixer.init()
+			pygame.mixer.music.load(os.path.abspath(os.path.abspath(music)))
+			pygame.mixer.music.play()
 		
 #Vista que se llama desde el juego para comprobar aciertos/fallos lectura de codigo con el tiempo
 
@@ -518,7 +519,7 @@ def match_game_matching(request, id_player):
         player = Actividad.objects.get(id=id_player)
         profile = Paciente.objects.get(online="si")
         global_vars.time = datetime.now()
-        start_reader()
+        #start_reader()
 
         #print(global_vars.message)
         treat = Tratamiento.objects.filter(paciente_id=profile.id)
