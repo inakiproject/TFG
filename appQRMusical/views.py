@@ -434,7 +434,7 @@ def gamem(id_player,asgn_thera,thera_indi):
 						#music = music + global_vars.game_file
 						#print(music)
 						#print(global_vars.failsong)
-						music = '/home/pi/Desktop/RFIDMusic/appQRMusical/files/songs/' + global_vars.game_file
+						music = '/home/pi/Desktop/RFIDMusic/appQRMusical/' + global_vars.game_file
 						pygame.mixer.init()
 						pygame.mixer.music.load(os.path.abspath(music))
 						pygame.mixer.music.play()
