@@ -434,14 +434,14 @@ def gamem(id_player,asgn_thera,thera_indi):
 						#music = music + global_vars.game_file
 						#print(music)
 						#print(global_vars.failsong)
-						music = 'home/pi/Desktop/RFIDMusic/appQRMusical/files/songs/' + global_vars.game_file
+						music = '/home/pi/Desktop/RFIDMusic/appQRMusical/files/songs/' + global_vars.game_file
 						pygame.mixer.init()
 						pygame.mixer.music.load(os.path.abspath(music))
 						pygame.mixer.music.play()
 					else:
 						global_vars.game_file = None
 						#music = os.path.abspath('') + '/appQRMusical/files/songs/success.wav'
-						music = 'home/pi/Desktop/RFIDMusic/appQRMusical/files/songs/success.wav'
+						music = '/home/pi/Desktop/RFIDMusic/appQRMusical/files/songs/success.wav'
 						pygame.mixer.init()
 						pygame.mixer.music.load(os.path.abspath(music))
 						pygame.mixer.music.play()
@@ -453,7 +453,7 @@ def gamem(id_player,asgn_thera,thera_indi):
 			global_vars.last_message = global_vars.message
 			global_vars.message_alert = "alert-danger"
 			#music = os.path.abspath('') + '/appQRMusical/files/songs/fail.mp3'
-			music = 'home/pi/Desktop/RFIDMusic/appQRMusical/files/songs/fail.mp3'
+			music = '/home/pi/Desktop/RFIDMusic/appQRMusical/files/songs/fail.mp3'
 			pygame.mixer.init()
 			pygame.mixer.music.load(os.path.abspath(os.path.abspath(music)))
 			pygame.mixer.music.play()
