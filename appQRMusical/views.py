@@ -183,6 +183,11 @@ class Choose_treatment(TemplateView):
 #Vista de la elección de actividad una vez seleccionado tratamiento
 
 def Play(request, pk):
+	print("Antes")
+	print(global_vars.end)
+	global_vars.end = 0
+	print("Despues")
+	print(global_vars.end)
 	try:
 		actividad = Paciente.objects.get(online="si")
 	except Paciente.DoesNotExist:
@@ -370,15 +375,19 @@ def gamem(id_player,asgn_thera,thera_indi):
 
 	matching = False
 	print(code)
+	print(global_vars.end)
 
 	if global_vars.game_success == global_vars.game_number_objects:
 		global_vars.game_display = "inline"
 		global_vars.timeend =  time.time()
 		timefinal = global_vars.timeend - global_vars.timestart
 		global_vars.time = round(timefinal,2)
+		print("Fin del juego")
+		print(global_vars.end)
 		if global_vars.end == 0:
-			print(id_player)
+			print("Guardando resultados...")
 			for i in global_vars.thera_indi:
+				print(i.id_indicador)
 				if i.id_indicador == 2:
 					results = Resultado_Sesion()
 					results.sesion = Sesion.objects.get(id_sesion=global_vars.identifier)
@@ -386,6 +395,8 @@ def gamem(id_player,asgn_thera,thera_indi):
 					results.indicador = Indicador.objects.get(id_indicador=2)
 					results.resultado = global_vars.correct
 					results.save()
+					print("Aciertos")
+					print(global_vars.correct)
 				if i.id_indicador == 3:
 					results = Resultado_Sesion()
 					results.sesion = Sesion.objects.get(id_sesion=global_vars.identifier)
@@ -393,16 +404,20 @@ def gamem(id_player,asgn_thera,thera_indi):
 					results.indicador = Indicador.objects.get(id_indicador=3)
 					results.resultado = global_vars.fail
 					results.save()
+					print("Fallos")
+					print(global_vars.correct)
 				if i.id_indicador == 1:
 					results = Resultado_Sesion()
 					results.sesion = Sesion.objects.get(id_sesion=global_vars.identifier)
 					results.actividad = Actividad.objects.get(id=id_player)
 					results.indicador = Indicador.objects.get(id_indicador=1)
 					results.resultado = round(timefinal,2)
-					print(timefinal)
+					print("Tiempo")
 					print(results.resultado)
 					results.save()
-					global_vars.end = 1
+			time.sleep(2)
+			print("Cerrando juego...")
+			global_vars.end = 1
 
 
 	else:
